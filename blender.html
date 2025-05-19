@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animation Blending Demo - Transportation</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+            font-family: Arial, sans-serif;
+        }
+        
+        #renderCanvas {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            touch-action: none;
+        }
+
+        #controls {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            z-index: 10;
+        }
+        
+        select, button {
+            padding: 8px;
+            margin: 5px 0;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            background-color: #45a049;
+        }
+        
+        #loadingMessage {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 5px;
+            display: none;
+            font-size: 18px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .slider-container {
+            margin: 10px 0;
+        }
+        
+        .slider-container label {
+            display: inline-block;
+            width: 100px;
+        }
+        
+        .slider-container input {
+            width: 150px;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="renderCanvas"></canvas>
+    
+    <div id="controls">
+        <h2>Die Pil Die + Transport</h2>
+        <div>
+            <label for="transportSelect">Select Transportation:</label>
+            <select id="transportSelect">
+                <option value="none">None (Base Only)</option>
+                <option value="auto_rijden_250507_51.glb">Auto Rijden</option>
+                <option value="fietsen_250507_53.glb">Fietsen</option>
+                <option value="motor_rijden_250507_52.glb">Motor Rijden</option>
+            </select>
+        </div>
+        
+        <div class="slider-container">
+            <label for="blendWeight">Blend Weight:</label>
+            <input type="range" id="blendWeight" min="0" max="1" step="0.1" value="0.5">
+            <span id="blendWeightValue">0.5</span>
+        </div>
+        
+        <div>
+            <button id="playBtn">Play</button>
+            <button id="pauseBtn">Pause</button>
+            <button id="stopBtn">Stop</button>
+            <button id="resetBtn">Reset</button>
+        </div>
+        
+        <div style="margin-top: 10px;">
+            <button id="exportBtn" style="background-color: #ff9800;">Export Blended Animation</button>
+        </div>
+        
+        <div class="slider-container">
+            <label for="loopAnimation">
+                <input type="checkbox" id="loopAnimation" checked> Loop Animation
+            </label>
+        </div>
+        
+        <div style="margin-top: 20px; border-top: 1px solid #666; padding-top: 10px;">
+            <h3>Animation Info</h3>
+            <div id="animInfo">
+                Base: <span id="baseAnimName">None</span><br>
+                Transport: <span id="transportAnimName">None</span><br>
+                Frames: <span id="frameCount">0</span><br>
+                Current: <span id="currentFrame">0</span>
+            </div>
+            
+            <div id="timelineContainer" style="margin-top: 10px;"></div>
+        </div>
+    </div>
+    
+    <div id="loadingMessage">
+        Loading animations, please wait...
+        <div id="loadingProgress" style="margin-top: 10px; width: 100%; height: 10px; background-color: #333; border-radius: 5px;">
+            <div id="progressBar" style="width: 0%; height: 100%; background-color: #4CAF50; border-radius: 5px;"></div>
+        </div>
+    </div>
+    
+    <!-- Babylon.js core scripts -->
+    <script src="https://cdn.babylonjs.com/babylon.js"></script>
+    <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+    
+    <!-- Application specific scripts -->
+    <script src="SceneAndMeshLoader.js"></script>
+    <script src="initialize.js"></script>
+    <script src="animationBlender.js"></script>
+    <script src="animationBlenderHelpers.js"></script>
+    <script src="normalizationHelper.js"></script>
+    <script src="timelineVisualizer.js"></script>
+    <script src="animationExporter.js"></script>
+    <script src="animFetchAndDestroy.js"></script>
+    <script src="retargetAnims.js"></script>
+    
+    <script>
+        // Main application code
+        document.addEventListener("DOMContentLoaded", function() {
+            // Get UI elements
+            const renderCanvas = document.getElementById("renderCanvas");
+            const transportSelect = document.getElementById("transportSelect");
+            const blendWeightSlider = document.getElementById("blendWeight");
+            const blendWeightValue = document.getElementById("blendWeightValue");
+            const playBtn = document.getElementById("playBtn");
+            const pauseBtn = document.getElementById("pauseBtn");
+            const stopBtn = document.getElementById("stopBtn");
+            const resetBtn = document.getElementById("resetBtn");
+            const exportBtn = document.getElementById("exportBtn");
+            const loopCheckbox = document.getElementById("loopAnimation");
+            const loadingMessage = document.getElementById("loadingMessage");
+            const progressBar = document.getElementById("progressBar");
+            const baseAnimName = document.getElementById("baseAnimName");
+            const transportAnimName = document.getElementById("transportAnimName");
+            const frameCount = document.getElementById("frameCount");
+            const currentFrameDisplay = document.getElementById("currentFrame");
+            const timelineContainer = document.getElementById("timelineContainer");
+            
+            // Application state
+            let scene, engine, baseMesh;
+            let baseAnimation = null;
+            let transportAnimation = null;
+            let blendedAnimation = null;
+            let currentTransportFile = "none";
+            
+            // Path configuration
+            const basePath = "die_pil_die_VERVOER/";
+            const baseFile = "die_pil_die_VERVOER.glb";
+            
+            // Initialize Babylon.js
+            async function initializeBabylon() {
+                // Show loading message
+                loadingMessage.style.display = "block";
+                
+                // Create engine and scene
+                engine = new BABYLON.Engine(renderCanvas, true);
+                scene = new BABYLON.Scene(engine);
+                
+                // Set background color
+                scene.clearColor = new BABYLON.Color4(0.2, 0.2, 0.3, 1);
+                
+                // Add lighting
+                const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
+                light.intensity = 0.7;
+                
+                // Add camera
+                const camera = new BABYLON.ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 2.5, 3, new BABYLON.Vector3(0, 0.8, 0), scene);
+                camera.attachControl(renderCanvas, true);
+                camera.lowerRadiusLimit = 2;
+                camera.upperRadiusLimit = 10;
+                
+                // Load base mesh and animation
+                await loadBaseMesh();
+                
+                // Start rendering loop
+                engine.runRenderLoop(() => {
+                    scene.render();
+                });
+                
+                // Handle window resize
+                window.addEventListener("resize", () => {
+                    engine.resize();
+                });
+                
+                // Hide loading message
+                loadingMessage.style.display = "none";
+            }
+            
+            // Load base mesh and animation
+            async function loadBaseMesh() {
+                try {
+                    // Show loading progress
+                    loadingMessage.style.display = "block";
+                    progressBar.style.width = "0%";
+                    
+                    // Set up loading progress
+                    BABYLON.SceneLoader.ShowLoadingScreen = false;
+                    
+                    // Create a callback to handle loading progress
+                    const onProgress = (evt) => {
+                        if (evt && typeof evt.loaded === 'number' && typeof evt.total === 'number') {
+                            const progress = evt.loaded / evt.total;
+                            progressBar.style.width = `${progress * 100}%`;
+                        }
+                    };
+                    
+                    // Set up the plugin observer safely
+                    const pluginObserver = BABYLON.SceneLoader.OnPluginActivatedObservable.add(function(loader) {
+                        if (loader && loader.onProgressObservable) {
+                            loader.onProgressObservable.add(onProgress);
+                        }
+                    });
+                    
+                    // Load base animation file
+                    const result = await BABYLON.SceneLoader.ImportMeshAsync(null, basePath, baseFile, scene);
+                    // Clean up the observer
+                    if (pluginObserver) {
+                        BABYLON.SceneLoader.OnPluginActivatedObservable.remove(pluginObserver);
+                    }
+                    baseMesh = result.meshes[0];
+                    
+                    // Get base animation
+                    if (scene.animationGroups && scene.animationGroups.length > 0) {
+                        baseAnimation = scene.animationGroups[0];
+                        baseAnimName.textContent = baseAnimation.name || "die_pil_die";
+                        console.log("Loaded base animation:", baseAnimation.name);
+                    } else {
+                        console.error("No animation groups found in base file");
+                    }
+                    
+                    // Set up initial animation
+                    initializeAnimation();
+                } catch (error) {
+                    console.error("Error loading base mesh:", error);
+                    loadingMessage.textContent = "Error loading animations. Please try again.";
+                    
+                    // Make sure to clean up the observer if there was an error
+                    if (pluginObserver) {
+                        BABYLON.SceneLoader.OnPluginActivatedObservable.remove(pluginObserver);
+                    }
+                }
+            }
+            
+            // Load transport animation
+            async function loadTransportAnimation(filename) {
+                if (filename === "none") {
+                    transportAnimation = null;
+                    updateBlendedAnimation();
+                    return;
+                }
+                
+                try {
+                    loadingMessage.style.display = "block";
+                    // Update loading message text safely
+                    if (loadingMessage.firstChild && loadingMessage.firstChild.nodeType === Node.TEXT_NODE) {
+                        loadingMessage.firstChild.textContent = "Loading transport animation...";
+                    } else {
+                        loadingMessage.textContent = "Loading transport animation...";
+                    }
+                    progressBar.style.width = "0%";
+                    
+                    // Set up loading progress
+                    BABYLON.SceneLoader.ShowLoadingScreen = false;
+                    
+                    // Create a callback to handle loading progress
+                    const onProgress = (evt) => {
+                        if (evt && typeof evt.loaded === 'number' && typeof evt.total === 'number') {
+                            const progress = evt.loaded / evt.total;
+                            progressBar.style.width = `${progress * 100}%`;
+                        }
+                    };
+                    
+                    // Set up the plugin observer safely
+                    const pluginObserver = BABYLON.SceneLoader.OnPluginActivatedObservable.add(function(loader) {
+                        if (loader && loader.onProgressObservable) {
+                            loader.onProgressObservable.add(onProgress);
+                        }
+                    });
+                    
+                    // Dispose previous transport animation if exists
+                    if (transportAnimation) {
+                        transportAnimation.dispose();
+                        transportAnimation = null;
+                    }
+                    
+                    // Load new transport animation
+                    const result = await BABYLON.SceneLoader.ImportMeshAsync(null, basePath, filename, scene);
+                    
+                    // Clean up the observer
+                    if (pluginObserver) {
+                        BABYLON.SceneLoader.OnPluginActivatedObservable.remove(pluginObserver);
+                    }
+                    
+                    // Find the animation group
+                    if (result.animationGroups && result.animationGroups.length > 0) {
+                        transportAnimation = result.animationGroups[0];
+                        transportAnimName.textContent = transportAnimation.name || filename.replace(".glb", "");
+                        console.log("Loaded transport animation:", transportAnimation.name);
+                        
+                        // Dispose the imported meshes as we only need the animation
+                        result.meshes.forEach(mesh => {
+                            if (mesh.id !== baseMesh.id) {
+                                mesh.dispose();
+                            }
+                        });
+                        
+                        // Update the blended animation
+                        // Make sure the animations have the same target
+                        if (baseAnimation && transportAnimation) {
+                            // Retarget the transport animation to the base mesh
+                            try {
+                                // Use retargetAnimWithBlendshapes if available
+                                if (typeof retargetAnimWithBlendshapes === 'function') {
+                                    const retargetedAnim = retargetAnimWithBlendshapes(
+                                        baseMesh,
+                                        transportAnimation,
+                                        `retargeted_${filename}`
+                                    );
+                                    if (retargetedAnim) {
+                                        transportAnimation = retargetedAnim;
+                                    }
+                                }
+                            } catch (error) {
+                                console.warn("Could not retarget animation:", error);
+                            }
+                        }
+                        updateBlendedAnimation();
+                    } else {
+                        console.error("No animation groups found in transport file");
+                    }
+                    
+                    loadingMessage.style.display = "none";
+                } catch (error) {
+                    console.error("Error loading transport animation:", error);
+                    loadingMessage.textContent = "Error loading transport animation.";
+                    
+                    // Make sure to clean up the observer if there was an error
+                    if (pluginObserver) {
+                        BABYLON.SceneLoader.OnPluginActivatedObservable.remove(pluginObserver);
+                    }
+                    
+                    setTimeout(() => {
+                        loadingMessage.style.display = "none";
+                    }, 2000);
+                }
+            }
+            
+            // Initialize animation
+            function initializeAnimation() {
+                // Make sure base animation is stopped
+                if (baseAnimation) {
+                    baseAnimation.stop();
+                }
+                
+                // Set up initial blended animation
+                updateBlendedAnimation();
+            }
+            
+            // Update the blended animation based on current selections
+            function updateBlendedAnimation() {
+                // Dispose previous blended animation if exists
+                if (blendedAnimation) {
+                    blendedAnimation.stop();
+                    blendedAnimation.dispose();
+                    blendedAnimation = null;
+                }
+                
+                // If no transport animation selected, just use base animation
+                if (!transportAnimation) {
+                    blendedAnimation = baseAnimation;
+                    transportAnimName.textContent = "None";
+                    if (baseAnimation && baseAnimation.targetedAnimations.length > 0) {
+                        const keys = baseAnimation.targetedAnimations[0].animation.getKeys();
+                        frameCount.textContent = keys.length;
+                    }
+                    return;
+                }
+                
+                // Get blend weight
+                const weight = parseFloat(blendWeightSlider.value);
+                
+                // Normalize animations to the same length for better blending
+                let baseAnim = baseAnimation;
+                let transportAnim = transportAnimation;
+                
+                try {
+                    // Use the NormalizationHelper if available
+                    if (window.NormalizationHelper) {
+                        const normalizedAnimations = window.NormalizationHelper.normalizeAnimationsToSameLength(
+                            [baseAnimation, transportAnimation],
+                            scene
+                        );
+                        
+                        if (normalizedAnimations && normalizedAnimations.length === 2) {
+                            if (normalizedAnimations[0]) baseAnim = normalizedAnimations[0];
+                            if (normalizedAnimations[1]) transportAnim = normalizedAnimations[1];
+                            console.log("Normalized animations for better blending");
+                        }
+                    }
+                } catch (error) {
+                    console.warn("Could not normalize animations:", error);
+                }
+                
+                // Create animation blend inputs
+                const animations = [
+                    { animGroup: baseAnim, weight: 1.0 - weight },
+                    { animGroup: transportAnim, weight: weight }
+                ];
+                
+                // Get loop setting
+                const shouldLoop = loopCheckbox.checked;
+                
+                // Create blended animation using the AnimationBlender utility
+                blendedAnimation = window.AnimationBlender.createBlendedAnimation(
+                    "blended_animation",
+                    scene,
+                    animations
+                );
+                
+                // Set loop mode
+                if (blendedAnimation) {
+                    blendedAnimation.loopAnimation = shouldLoop;
+                    
+                    // Update animation info
+                    if (blendedAnimation.targetedAnimations.length > 0) {
+                        const keys = blendedAnimation.targetedAnimations[0].animation.getKeys();
+                        frameCount.textContent = keys.length;
+                    }
+                    
+                    // Clean up any existing frame observers to avoid duplicates
+                    if (window._frameObserver) {
+                        scene.onBeforeRenderObservable.remove(window._frameObserver);
+                        window._frameObserver = null;
+                    }
+                    
+                    // Set up a new frame observer to update current frame display
+                    window._frameObserver = scene.onBeforeRenderObservable.add(() => {
+                        if (blendedAnimation && 
+                            blendedAnimation.isPlaying && 
+                            blendedAnimation.targetedAnimations && 
+                            blendedAnimation.targetedAnimations.length > 0 &&
+                            blendedAnimation.targetedAnimations[0].animation) {
+                            
+                            const currentFrame = blendedAnimation.targetedAnimations[0].animation.currentFrame;
+                            currentFrameDisplay.textContent = Math.round(currentFrame);
+                            
+                            // Update timeline visualization marker safely
+                            if (window.TimelineVisualizer && timelineContainer) {
+                                try {
+                                    window.TimelineVisualizer.updateTimeline(
+                                        timelineContainer, 
+                                        [baseAnimation, transportAnimation].filter(anim => anim), 
+                                        blendedAnimation
+                                    );
+                                } catch (e) {
+                                    console.warn("Error updating timeline:", e);
+                                }
+                            }
+                        }
+                    });
+                    
+                    // Create timeline visualization
+                    if (window.TimelineVisualizer && timelineContainer) {
+                        try {
+                            // Filter out any null animations
+                            const animations = [baseAnimation, transportAnimation, blendedAnimation].filter(anim => anim);
+                            const labels = ["Base", "Transport", "Blended"].slice(0, animations.length);
+                            
+                            window.TimelineVisualizer.createTimeline(
+                                timelineContainer,
+                                animations,
+                                labels,
+                                ["#4CAF50", "#2196F3", "#FFC107"]
+                            );
+                        } catch (e) {
+                            console.warn("Error creating timeline visualization:", e);
+                        }
+                    }
+                }
+                
+                console.log("Created blended animation with weights:", 1.0 - weight, weight);
+            }
+            
+            // Event listeners
+            transportSelect.addEventListener("change", function() {
+                const selectedFile = this.value;
+                if (selectedFile !== currentTransportFile) {
+                    currentTransportFile = selectedFile;
+                    loadTransportAnimation(selectedFile);
+                }
+            });
+            
+            blendWeightSlider.addEventListener("input", function() {
+                const weight = this.value;
+                blendWeightValue.textContent = weight;
+                
+                if (transportAnimation && baseAnimation) {
+                    // Update blend weights if we have both animations
+                    updateBlendedAnimation();
+                }
+            });
+            
+            playBtn.addEventListener("click", function() {
+                if (blendedAnimation) {
+                    const shouldLoop = loopCheckbox.checked;
+                    
+                    // Stop any existing animations first to ensure clean state
+                    if (scene.animationGroups) {
+                        scene.animationGroups.forEach(group => {
+                            if (group !== blendedAnimation) {
+                                group.stop();
+                            }
+                        });
+                    }
+                    
+                    // Reset animation to beginning if it's not already playing
+                    if (!blendedAnimation.isPlaying) {
+                        blendedAnimation.reset();
+                    }
+                    
+                    // Play the animation with loop parameter
+                    blendedAnimation.play(shouldLoop);
+                    console.log(`Playing animation: ${blendedAnimation.name}, Loop: ${shouldLoop}`);
+                } else {
+                    console.warn("No animation available to play");
+                }
+            });
+            
+            pauseBtn.addEventListener("click", function() {
+                if (blendedAnimation) {
+                    blendedAnimation.pause();
+                }
+            });
+            
+            stopBtn.addEventListener("click", function() {
+                if (blendedAnimation) {
+                    blendedAnimation.stop();
+                }
+            });
+            
+            resetBtn.addEventListener("click", function() {
+                if (blendedAnimation) {
+                    // Stop the animation first
+                    blendedAnimation.stop();
+                    
+                    // Reset all animation values to starting position
+                    blendedAnimation.reset();
+                    
+                    // Explicitly move to frame 0 to ensure visuals update
+                    if (blendedAnimation.targetedAnimations.length > 0) {
+                        try {
+                            blendedAnimation.goToFrame(0);
+                            currentFrameDisplay.textContent = "0";
+                            console.log("Animation reset to beginning");
+                        } catch (e) {
+                            console.warn("Could not go to frame 0:", e);
+                        }
+                    }
+                    
+                    // Force scene to render once to update visuals
+                    scene.render();
+                }
+            });
+            
+            loopCheckbox.addEventListener("change", function() {
+                if (blendedAnimation) {
+                    blendedAnimation.loopAnimation = this.checked;
+                }
+            });
+            
+            exportBtn.addEventListener("click", function() {
+                if (blendedAnimation && baseMesh && window.AnimationExporter) {
+                    // Generate filename with current date/time
+                    const now = new Date();
+                    const timestamp = now.getFullYear() + 
+                                     ('0' + (now.getMonth() + 1)).slice(-2) + 
+                                     ('0' + now.getDate()).slice(-2) + '_' + 
+                                     ('0' + now.getHours()).slice(-2) + 
+                                     ('0' + now.getMinutes()).slice(-2);
+                    
+                    const filename = `die_pil_die_blended_${currentTransportFile.replace('.glb', '')}_${timestamp}.glb`;
+                    
+                    try {
+                        window.AnimationExporter.exportToGLB(scene, blendedAnimation, baseMesh, filename);
+                        alert(`Exporting animation as "${filename}". Check your downloads folder.`);
+                    } catch (error) {
+                        console.error("Error exporting animation:", error);
+                        alert("Error exporting animation. See console for details.");
+                    }
+                } else {
+                    alert("No animation available to export.");
+                }
+            });
+            
+            // Initialize Babylon.js
+            initializeBabylon();
+        });
+    </script>
+</body>
+</html>. 

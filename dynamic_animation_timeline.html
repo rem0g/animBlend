@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Animation Timeline</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        h1, h2, h3 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 8px 16px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        button:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+
+        .back-button {
+            display: inline-block;
+            padding: 8px 16px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        .file-browser {
+            display: flex;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .file-list {
+            width: 250px;
+            height: 400px;
+            overflow-y: auto;
+            border-right: 1px solid #ddd;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+
+        .file-item {
+            padding: 8px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+            transition: background-color 0.2s;
+        }
+
+        .file-item:hover {
+            background-color: #ecf0f1;
+        }
+
+        .file-item.selected {
+            background-color: #e1f0fa;
+            border-left: 3px solid #3498db;
+        }
+
+        .timeline-container {
+            flex: 1;
+            position: relative;
+            height: 400px;
+            overflow-y: auto;
+            background-color: #fff;
+        }
+
+        .timeline {
+            position: relative;
+            padding: 20px;
+            min-height: 100%;
+        }
+
+        .timeline-track {
+            position: relative;
+            height: 50px;
+            margin: 10px 0;
+            background-color: #f5f5f5;
+            border-radius: 4px;
+        }
+
+        .timeline-label {
+            position: absolute;
+            left: -200px;
+            width: 190px;
+            padding-right: 10px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            font-weight: bold;
+        }
+
+        .animation-block {
+            position: absolute;
+            height: 80%;
+            top: 10%;
+            background-color: #3498db;
+            border-radius: 4px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            padding: 0 10px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            transition: transform 0.2s;
+            user-select: none;
+        }
+
+        .animation-block:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+        }
+
+        .animation-block.gloss {
+            background-color: #e74c3c;
+        }
+
+        .animation-block.sentence {
+            background-color: #2ecc71;
+        }
+
+        .animation-block.selected {
+            border: 2px solid #f1c40f;
+            z-index: 5;
+        }
+
+        .timeline-ruler {
+            position: sticky;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 30px;
+            background-color: #f0f0f0;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            overflow: hidden;
+            z-index: 100;
+        }
+
+        .ruler-mark {
+            position: relative;
+            flex: 1;
+            text-align: center;
+            font-size: 10px;
+            color: #666;
+            border-right: 1px solid #ddd;
+        }
+
+        .ruler-mark::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 1px;
+            height: 5px;
+            background-color: #666;
+        }
+
+        .time-marker {
+            position: absolute;
+            top: 0;
+            width: 2px;
+            height: 100%;
+            background-color: #f39c12;
+            z-index: 50;
+            pointer-events: none;
+        }
+
+        .animation-details {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        .flex-container {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .preview-container {
+            flex: 1;
+            min-width: 300px;
+            height: 400px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #renderCanvas {
+            width: 100%;
+            height: 100%;
+            touch-action: none;
+        }
+
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            z-index: 1000;
+        }
+
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .control-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        select, input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 100%;
+        }
+
+        .tooltip {
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            z-index: 1000;
+            pointer-events: none;
+            display: none;
+        }
+
+        /* Display sizes */
+        .frame-count {
+            display: inline-block;
+            padding: 3px 6px;
+            background-color: #3498db;
+            color: white;
+            border-radius: 3px;
+            font-size: 0.8em;
+            margin-left: 5px;
+        }
+
+        .duration-display {
+            display: inline-block;
+            padding: 3px 6px;
+            background-color: #2ecc71;
+            color: white;
+            border-radius: 3px;
+            font-size: 0.8em;
+            margin-left: 5px;
+        }
+
+        /* Legend */
+        .legend {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+            margin-right: 5px;
+        }
+
+        .legend-color.gloss {
+            background-color: #e74c3c;
+        }
+
+        .legend-color.sentence {
+            background-color: #2ecc71;
+        }
+
+        /* Animation blending controls */
+        .blend-container {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .blend-title {
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .blend-animations {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .blend-item {
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            background-color: #fff;
+            border: 1px solid #eee;
+            border-radius: 4px;
+        }
+
+        .blend-item.gloss {
+            border-left: 4px solid #e74c3c;
+        }
+
+        .blend-item.sentence {
+            border-left: 4px solid #2ecc71;
+        }
+
+        .blend-name {
+            flex: 1;
+            font-weight: bold;
+        }
+
+        .blend-weight {
+            width: 80px;
+            margin-right: 10px;
+        }
+
+        .blend-remove {
+            padding: 2px 8px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .blend-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .blend-button {
+            padding: 8px 16px;
+            background-color: #8e44ad;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .blend-button:hover {
+            background-color: #7d3c98;
+        }
+    </style>
+
+    <!-- Babylon.js Libraries -->
+    <script src="https://cdn.babylonjs.com/babylon.js"></script>
+    <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+    <script src="SceneAndMeshLoader.js"></script>
+    <script src="initialize.js"></script>
+    <script src="animFetchAndDestroy.js"></script>
+    <script src="retargetAnims.js"></script>
+    <script src="animationBlender.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Dynamic Animation Timeline</h1>
+            <a href="index.html" class="back-button">Back to Home</a>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color gloss"></div>
+                <span>Gloss Animation</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color sentence"></div>
+                <span>Sentence Animation</span>
+            </div>
+        </div>
+
+        <div class="flex-container">
+            <div class="preview-container">
+                <canvas id="renderCanvas"></canvas>
+                <div id="loading-overlay" class="loading-overlay">
+                    <div class="spinner"></div>
+                    <div>Loading 3D Character...</div>
+                </div>
+            </div>
+
+            <div class="control-panel">
+                <div class="control-group">
+                    <h3>Animation Controls</h3>
+                    <div class="controls">
+                        <button id="play-btn">Play</button>
+                        <button id="pause-btn" disabled>Pause</button>
+                        <button id="stop-btn">Stop</button>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label for="folder-select">Animation Folder:</label>
+                    <select id="folder-select">
+                        <option value="glos_glb">Gloss Animations (glb)</option>
+                        <option value="zin_glb">Sentence Animations (glb)</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="scale-select">Timeline Scale:</label>
+                    <select id="scale-select">
+                        <option value="0.5">0.5x (Half Speed)</option>
+                        <option value="1" selected>1x (Normal Speed)</option>
+                        <option value="2">2x (Double Speed)</option>
+                        <option value="5">5x (5x Speed)</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="timeline-duration">Timeline Duration (seconds):</label>
+                    <input type="number" id="timeline-duration" min="5" max="60" value="10" step="1">
+                </div>
+            </div>
+        </div>
+
+        <div class="file-browser">
+            <div class="file-list" id="file-list">
+                <div class="file-item loading">Loading animation files...</div>
+            </div>
+            
+            <div class="timeline-container" id="timeline-container">
+                <div class="timeline-ruler" id="timeline-ruler"></div>
+                <div class="timeline" id="timeline">
+                    <!-- Timeline tracks will be added here dynamically -->
+                    <div class="time-marker" id="time-marker"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="animation-details" id="animation-details">
+            <h3>Animation Details</h3>
+            <p>Select an animation to view details.</p>
+        </div>
+
+        <!-- New Animation Blending Section -->
+        <div class="blend-container">
+            <h3 class="blend-title">Animation Blending</h3>
+            <p>Add animations to the blend list, adjust weights, and play the blended result.</p>
+            
+            <div id="blend-animations" class="blend-animations">
+                <!-- Blend animation items will be added here dynamically -->
+                <div class="blend-empty">No animations added to blend yet. Select animations from the timeline and add them.</div>
+            </div>
+            
+            <div class="blend-actions">
+                <button id="add-to-blend-btn" class="blend-button" disabled>Add Selected to Blend</button>
+                <button id="play-blend-btn" class="blend-button" disabled>Play Blended Animation</button>
+                <button id="clear-blend-btn" class="blend-button">Clear Blend List</button>
+            </div>
+        </div>
+
+        <div class="tooltip" id="tooltip"></div>
+    </div>
+
+    <script>
+        // Global variables
+        let scene, engine, canvas, loadedMesh;
+        let currentAnimationGroup = null;
+        let blendedAnimationGroup = null;
+        let isPlaying = false;
+        let timelineWidth = 0;
+        let timelineDuration = 10; // Default timeline duration in seconds
+        let timelineScale = 1.0;
+        let animationList = [];
+        let selectedAnimationFile = null;
+        let animationPlaybackStartTime = null;
+        let animationFrame = null;
+        let blendAnimations = []; // Array to store animations for blending
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Set up event listeners
+            setupEventListeners();
+            
+            // Initialize 3D scene
+            await initializeScene();
+            
+            // Load the animation file list
+            loadAnimationFiles('glos_glb');
+            
+            // Create the timeline ruler
+            createTimelineRuler();
+        });
+
+        // Set up event listeners for controls
+        function setupEventListeners() {
+            // Folder selection
+            document.getElementById('folder-select').addEventListener('change', function(e) {
+                loadAnimationFiles(e.target.value);
+            });
+            
+            // Timeline scale
+            document.getElementById('scale-select').addEventListener('change', function(e) {
+                timelineScale = parseFloat(e.target.value);
+                updateTimelineVisuals();
+            });
+            
+            // Timeline duration
+            document.getElementById('timeline-duration').addEventListener('change', function(e) {
+                timelineDuration = parseInt(e.target.value);
+                createTimelineRuler();
+                updateTimelineVisuals();
+            });
+            
+            // Play button
+            document.getElementById('play-btn').addEventListener('click', playSelectedAnimation);
+            
+            // Pause button
+            document.getElementById('pause-btn').addEventListener('click', pauseAnimation);
+            
+            // Stop button
+            document.getElementById('stop-btn').addEventListener('click', stopAnimation);
+            
+            // Add to blend button
+            document.getElementById('add-to-blend-btn').addEventListener('click', addSelectedToBlend);
+            
+            // Play blend button
+            document.getElementById('play-blend-btn').addEventListener('click', playBlendedAnimation);
+            
+            // Clear blend button
+            document.getElementById('clear-blend-btn').addEventListener('click', clearBlendList);
+            
+            // Window resize event
+            window.addEventListener('resize', function() {
+                if (engine) {
+                    engine.resize();
+                }
+                updateTimelineDimensions();
+            });
+            
+            // Timeline click/drag events for seeking
+            const timelineContainer = document.getElementById('timeline-container');
+            timelineContainer.addEventListener('click', function(e) {
+                if (e.target === timelineContainer || e.target.id === 'timeline' || e.target.id === 'timeline-ruler') {
+                    const rect = timelineContainer.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const percentage = x / timelineContainer.clientWidth;
+                    seekToTimelinePosition(percentage);
+                }
+            });
+        }
+
+        // Initialize the 3D scene
+        async function initializeScene() {
+            canvas = document.getElementById('renderCanvas');
+            const loadingOverlay = document.getElementById('loading-overlay');
+            
+            try {
+                // Create scene and engine
+                [scene, engine] = await createScene(canvas);
+                
+                // Load the character mesh
+                const modelUrl = "https://signcollect.nl/jari/BabylonSignLab/LoadingAnimation/MeshesAndAnims/glassesGuyNew.glb";
+                console.log("Loading character mesh from:", modelUrl);
+                
+                const result = await BABYLON.SceneLoader.ImportMeshAsync(null, "", modelUrl, scene);
+                
+                // Create an asset object similar to what loadAssetMesh returns
+                loadedMesh = {
+                    fetched: result,
+                    root: result.meshes[0],
+                    skeletons: result.skeletons,
+                    morphTargetManagers: []
+                };
+                
+                // Find all meshes with morphTargetManagers
+                result.meshes.forEach(mesh => {
+                    if (mesh.morphTargetManager) {
+                        loadedMesh.morphTargetManagers.push(mesh.morphTargetManager);
+                    }
+                });
+                
+                // Set up transform node hierarchy
+                var rootTransformNode = new BABYLON.TransformNode("papa");
+                loadedMesh.root.parent = rootTransformNode;
+                loadedMesh.papa = rootTransformNode;
+                
+                var papaTransformNode = new BABYLON.TransformNode("opa");
+                loadedMesh.papa.parent = papaTransformNode;
+                loadedMesh.opa = papaTransformNode;
+                
+                var opaTransformNode = new BABYLON.TransformNode("god");
+                loadedMesh.opa.parent = opaTransformNode;
+                loadedMesh.god = opaTransformNode;
+                
+                // Set up camera
+                var camera = new BABYLON.ArcRotateCamera("camera", 0, Math.PI/2, 2, BABYLON.Vector3.Zero(), scene);
+                camera.attachControl(canvas, true);
+                camera.lowerRadiusLimit = 0.5;
+                camera.upperRadiusLimit = 6;
+                camera.radius = 2.0;
+                
+                // Load the morph target mapping for retargeting
+                await loadMorphTargetMapping();
+                
+                console.log("Character mesh loaded successfully");
+                loadingOverlay.style.display = 'none';
+                
+                // Start the render loop
+                engine.runRenderLoop(function() {
+                    scene.render();
+                });
+                
+                return true;
+            } catch (error) {
+                console.error("Error initializing 3D scene:", error);
+                loadingOverlay.innerHTML = `<div>Error loading 3D character: ${error.message}</div>`;
+                return false;
+            }
+        }
+
+        // Load the morphTarget mapping for retargeting
+        async function loadMorphTargetMapping() {
+            try {
+                const response = await fetch("indexToGlassesGuyMorphs.json");
+                const morphMap = await response.json();
+                window.glassesGuyMorphMap = morphMap;
+                console.log("Morph target mapping loaded:", 
+                    Object.keys(window.glassesGuyMorphMap).length + " entries");
+            } catch (error) {
+                console.error("Error loading morph target mapping:", error);
+            }
+        }
+
+        // Load the animation files list
+        async function loadAnimationFiles(folder) {
+            const fileList = document.getElementById('file-list');
+            fileList.innerHTML = '<div class="file-item loading">Loading animation files...</div>';
+            
+            try {
+                // Fetch the animation files using PHP API
+                const response = await fetch(`listAnimationFiles.php?folder=${folder}`);
+                let files = await response.json();
+                
+                // If the API call fails or returns no files, use our fallback list
+                if (!Array.isArray(files) || files.length === 0) {
+                    if (folder === 'glos_glb') {
+                        files = [
+                            "1_250507_12.glb", "2_250507_13.glb", "3_250507_14.glb",
+                            "alcohol_250507_46.glb", "medicijn_250507_7.glb"
+                        ];
+                    } else if (folder === 'zin_glb') {
+                        files = [
+                            "zin1_250507_5.glb", "zin2_250507_10.glb", "zin3_250507_15.glb"
+                        ];
+                    }
+                }
+                
+                // Sort the files by name
+                files.sort();
+                
+                // Update the global animation list
+                animationList = files.map(file => ({
+                    name: file,
+                    folder: folder,
+                    // We'll estimate the frame count and duration initially,
+                    // they'll be updated after loading the actual animation
+                    frameCount: 60,
+                    duration: 2.0,
+                    loaded: false,
+                    animGroup: null
+                }));
+                
+                // Clear the file list
+                fileList.innerHTML = '';
+                
+                // Add each file to the list
+                animationList.forEach((anim, index) => {
+                    const fileItem = document.createElement('div');
+                    fileItem.className = 'file-item';
+                    fileItem.textContent = anim.name.replace('.glb', '');
+                    fileItem.dataset.index = index;
+                    
+                    fileItem.addEventListener('click', async function() {
+                        // De-select all items
+                        document.querySelectorAll('.file-item').forEach(item => {
+                            item.classList.remove('selected');
+                        });
+                        
+                        // Select this item
+                        fileItem.classList.add('selected');
+                        
+                        // Load the animation
+                        await loadAndAddAnimation(anim, index);
+                    });
+                    
+                    fileList.appendChild(fileItem);
+                });
+                
+                // Create empty timeline tracks
+                createTimelineTracks();
+                
+                console.log(`Loaded ${animationList.length} animation files from ${folder}`);
+            } catch (error) {
+                console.error('Error loading animation files:', error);
+                fileList.innerHTML = `<div class="file-item error">Error loading files: ${error.message}</div>`;
+            }
+        }
+
+        // Create the timeline ruler
+        function createTimelineRuler() {
+            const ruler = document.getElementById('timeline-ruler');
+            ruler.innerHTML = '';
+            
+            // Create one mark per second
+            for (let i = 0; i <= timelineDuration; i++) {
+                const mark = document.createElement('div');
+                mark.className = 'ruler-mark';
+                mark.textContent = i + 's';
+                ruler.appendChild(mark);
+            }
+        }
+
+        // Create timeline tracks for animations
+        function createTimelineTracks() {
+            const timeline = document.getElementById('timeline');
+            // Keep the time marker, remove all other elements
+            timeline.innerHTML = '<div class="time-marker" id="time-marker"></div>';
+            
+            // Create tracks for animations
+            animationList.forEach((anim, index) => {
+                const track = document.createElement('div');
+                track.className = 'timeline-track';
+                track.dataset.index = index;
+                
+                // Add a label for the track
+                const label = document.createElement('div');
+                label.className = 'timeline-label';
+                label.textContent = anim.name.replace('.glb', '');
+                track.appendChild(label);
+                
+                // Add the track to the timeline
+                timeline.appendChild(track);
+            });
+            
+            // Update the timeline dimensions
+            updateTimelineDimensions();
+        }
+
+        // Update the timeline dimensions
+        function updateTimelineDimensions() {
+            const container = document.getElementById('timeline-container');
+            timelineWidth = container.clientWidth - 200; // Accounting for labels
+        }
+
+        // Load and add an animation to the timeline
+        async function loadAndAddAnimation(anim, index) {
+            if (!loadedMesh) {
+                console.error("Character mesh not loaded yet!");
+                return;
+            }
+            
+            const loadingOverlay = document.getElementById('loading-overlay');
+            loadingOverlay.style.display = 'flex';
+            loadingOverlay.innerHTML = `
+                <div class="spinner"></div>
+                <div>Loading animation: ${anim.name}</div>
+            `;
+            
+            try {
+                // If animation is already loaded, just select it
+                if (anim.loaded && anim.animGroup) {
+                    selectAnimation(anim, index);
+                    loadingOverlay.style.display = 'none';
+                    return;
+                }
+                
+                // Load the animation file
+                const animGroup = await loadAnimationFile(anim.name, anim.folder);
+                
+                if (!animGroup) {
+                    throw new Error(`Failed to load animation: ${anim.name}`);
+                }
+                
+                // Update animation data
+                anim.loaded = true;
+                anim.animGroup = animGroup;
+                anim.frameCount = animGroup.to - animGroup.from;
+                anim.duration = anim.frameCount / 30; // Assuming 30 FPS
+                
+                // Add animation block to timeline
+                addAnimationBlockToTimeline(anim, index);
+                
+                // Select the animation
+                selectAnimation(anim, index);
+                
+                console.log(`Loaded animation: ${anim.name}, frames: ${anim.frameCount}, duration: ${anim.duration}s`);
+                loadingOverlay.style.display = 'none';
+            } catch (error) {
+                console.error(`Error loading animation ${anim.name}:`, error);
+                loadingOverlay.innerHTML = `<div>Error loading animation: ${error.message}</div>`;
+                setTimeout(() => {
+                    loadingOverlay.style.display = 'none';
+                }, 3000);
+            }
+        }
+
+        // Load an animation file
+        async function loadAnimationFile(filename, folder) {
+            console.log(`Loading animation: ${folder}/${filename}`);
+            
+            try {
+                // Use the window.animationPlayer if available
+                if (window.animationPlayer && typeof window.animationPlayer.loadAnimation === 'function') {
+                    const animGroup = await window.animationPlayer.loadAnimation(
+                        filename, folder, scene, "glassesGuy", false, true, 1.0
+                    );
+                    
+                    if (animGroup) {
+                        console.log(`Animation loaded via animationPlayer: ${animGroup.name}`);
+                        return animGroup;
+                    }
+                }
+                
+                // Direct loading fallback
+                console.log(`Direct loading of animation: ${folder}/${filename}`);
+                const result = await BABYLON.SceneLoader.ImportAnimationsAsync("", `${folder}/${filename}`, scene);
+                
+                if (result.animationGroups && result.animationGroups.length > 0) {
+                    const originalGroup = result.animationGroups[0];
+                    console.log(`Animation loaded directly: ${originalGroup.name}`);
+                    
+                    // Use our custom retargeting function
+                    const retargetedGroup = retargetAnimWithBlendshapes(loadedMesh, originalGroup, "retargeted_" + filename);
+                    
+                    if (retargetedGroup) {
+                        console.log(`Successfully retargeted animation: ${retargetedGroup.name}`);
+                        return retargetedGroup;
+                    }
+                }
+                
+                throw new Error(`No animation groups found in ${filename}`);
+            } catch (error) {
+                console.error(`Error loading animation ${filename}:`, error);
+                throw error;
+            }
+        }
+
+        // Add an animation block to the timeline
+        function addAnimationBlockToTimeline(anim, index) {
+            // Find the track for this animation
+            const track = document.querySelector(`.timeline-track[data-index="${index}"]`);
+            
+            if (!track) return;
+            
+            // Remove any existing animation blocks
+            const existingBlocks = track.querySelectorAll('.animation-block');
+            existingBlocks.forEach(block => block.remove());
+            
+            // Create the animation block
+            const block = document.createElement('div');
+            block.className = 'animation-block';
+            block.classList.add(anim.folder.startsWith('glos') ? 'gloss' : 'sentence');
+            block.textContent = anim.name.replace('.glb', '');
+            block.dataset.index = index;
+            
+            // Calculate position and width
+            const scaledDuration = anim.duration * timelineScale;
+            const width = (scaledDuration / timelineDuration) * timelineWidth;
+            
+            // Set position and width
+            block.style.left = '200px'; // Starting after labels
+            block.style.width = `${width}px`;
+            
+            // Add tooltip info
+            block.title = `${anim.name}\nFrames: ${anim.frameCount}\nDuration: ${anim.duration.toFixed(1)}s`;
+            
+            // Add click handler
+            block.addEventListener('click', function(e) {
+                e.stopPropagation();
+                selectAnimation(anim, index);
+            });
+            
+            // Add the block to the track
+            track.appendChild(block);
+            
+            // Update the tooltip
+            setupTooltip(block);
+        }
+
+        // Set up tooltip for animation blocks
+        function setupTooltip(element) {
+            const tooltip = document.getElementById('tooltip');
+            
+            element.addEventListener('mouseover', function(e) {
+                tooltip.innerHTML = e.target.title.replace(/\n/g, '<br>');
+                tooltip.style.display = 'block';
+                tooltip.style.left = (e.clientX + 10) + 'px';
+                tooltip.style.top = (e.clientY + 10) + 'px';
+            });
+            
+            element.addEventListener('mousemove', function(e) {
+                tooltip.style.left = (e.clientX + 10) + 'px';
+                tooltip.style.top = (e.clientY + 10) + 'px';
+            });
+            
+            element.addEventListener('mouseout', function() {
+                tooltip.style.display = 'none';
+            });
+        }
+
+        // Select an animation
+        function selectAnimation(anim, index) {
+            // Update selected state for all animation blocks
+            document.querySelectorAll('.animation-block').forEach(block => {
+                block.classList.remove('selected');
+            });
+            
+            // Find and select this block
+            const selectedBlock = document.querySelector(`.animation-block[data-index="${index}"]`);
+            if (selectedBlock) {
+                selectedBlock.classList.add('selected');
+            }
+            
+            // Store reference to the selected animation
+            selectedAnimationFile = anim;
+            
+            // Update animation details panel
+            updateAnimationDetails(anim);
+            
+            // Enable the add to blend button
+            document.getElementById('add-to-blend-btn').disabled = false;
+            
+            // Stop current animation if playing
+            if (isPlaying) {
+                stopAnimation();
+            }
+            
+            // Prepare the animation but don't play yet
+            if (currentAnimationGroup) {
+                currentAnimationGroup.stop();
+            }
+            currentAnimationGroup = anim.animGroup;
+            currentAnimationGroup.goToFrame(0);
+        }
+
+        // Update animation details panel
+        function updateAnimationDetails(anim) {
+            const detailsElement = document.getElementById('animation-details');
+            
+            // Create a formatted details view
+            detailsElement.innerHTML = `
+                <h3>${anim.name}</h3>
+                <p>
+                    Type: ${anim.folder.startsWith('glos') ? 'Gloss' : 'Sentence'} Animation<br>
+                    Frame Count: <span class="frame-count">${anim.frameCount}</span><br>
+                    Duration: <span class="duration-display">${anim.duration.toFixed(1)}s</span><br>
+                    Folder: ${anim.folder}
+                </p>
+            `;
+        }
+
+        // Play the selected animation
+        function playSelectedAnimation() {
+            if (!selectedAnimationFile || !selectedAnimationFile.animGroup) {
+                console.warn("No animation selected!");
+                return;
+            }
+            
+            // Update button states
+            document.getElementById('play-btn').disabled = true;
+            document.getElementById('pause-btn').disabled = false;
+            
+            // Stop any existing animation
+            if (isPlaying) {
+                stopAnimation();
+            }
+            
+            // Play the animation
+            currentAnimationGroup = selectedAnimationFile.animGroup;
+            currentAnimationGroup.play(false);
+            isPlaying = true;
+            
+            // Record start time for timeline marker
+            animationPlaybackStartTime = Date.now();
+            
+            // Start animation loop for updating timeline marker
+            animateTimelineMarker();
+        }
+
+        // Pause the animation
+        function pauseAnimation() {
+            if (!isPlaying || !currentAnimationGroup) return;
+            
+            // Update button states
+            document.getElementById('play-btn').disabled = false;
+            document.getElementById('pause-btn').disabled = true;
+            
+            // Pause the animation
+            currentAnimationGroup.pause();
+            isPlaying = false;
+            
+            // Stop the timeline marker animation
+            if (animationFrame) {
+                cancelAnimationFrame(animationFrame);
+                animationFrame = null;
+            }
+        }
+
+        // Stop the animation
+        function stopAnimation() {
+            if (!currentAnimationGroup) return;
+            
+            // Update button states
+            document.getElementById('play-btn').disabled = false;
+            document.getElementById('pause-btn').disabled = true;
+            
+            // Stop the animation
+            currentAnimationGroup.stop();
+            isPlaying = false;
+            
+            // Reset timeline marker
+            const marker = document.getElementById('time-marker');
+            marker.style.left = '200px';
+            
+            // Stop the timeline marker animation
+            if (animationFrame) {
+                cancelAnimationFrame(animationFrame);
+                animationFrame = null;
+            }
+        }
+
+        // Animate the timeline marker
+        function animateTimelineMarker() {
+            if (!isPlaying || !currentAnimationGroup || !selectedAnimationFile) return;
+            
+            const currentTime = (Date.now() - animationPlaybackStartTime) / 1000;
+            const totalDuration = selectedAnimationFile.duration;
+            
+            // Check if animation is complete
+            if (currentTime >= totalDuration) {
+                stopAnimation();
+                return;
+            }
+            
+            // Update marker position
+            const percentage = currentTime / totalDuration;
+            updateTimelineMarker(percentage);
+            
+            // Request next frame
+            animationFrame = requestAnimationFrame(animateTimelineMarker);
+        }
+
+        // Update the timeline marker position
+        function updateTimelineMarker(percentage) {
+            const marker = document.getElementById('time-marker');
+            const position = 200 + (percentage * timelineWidth * timelineScale);
+            marker.style.left = `${position}px`;
+        }
+
+        // Seek to a position in the timeline
+        function seekToTimelinePosition(percentage) {
+            if (!currentAnimationGroup || !selectedAnimationFile) return;
+            
+            // Calculate the time based on percentage
+            const time = percentage * selectedAnimationFile.duration;
+            
+            // Convert to frame number (assuming 30 fps)
+            const frame = Math.floor(time * 30);
+            
+            // Seek to that frame
+            currentAnimationGroup.goToFrame(frame);
+            
+            // Update timeline marker
+            updateTimelineMarker(percentage);
+            
+            // If playing, update the start time
+            if (isPlaying) {
+                animationPlaybackStartTime = Date.now() - (time * 1000);
+            }
+        }
+
+        // Update the timeline visuals based on scale change
+        function updateTimelineVisuals() {
+            animationList.forEach((anim, index) => {
+                if (anim.loaded) {
+                    addAnimationBlockToTimeline(anim, index);
+                }
+            });
+        }
+
+        // Add selected animation to blend list
+        function addSelectedToBlend() {
+            if (!selectedAnimationFile || !selectedAnimationFile.loaded || !selectedAnimationFile.animGroup) {
+                console.warn("No valid animation selected to add to blend");
+                return;
+            }
+            
+            // Check if animation is already in blend list
+            const existingIndex = blendAnimations.findIndex(
+                item => item.name === selectedAnimationFile.name
+            );
+            
+            if (existingIndex !== -1) {
+                console.warn(`Animation ${selectedAnimationFile.name} is already in the blend list`);
+                return;
+            }
+            
+            // Add to blend animations array
+            blendAnimations.push({
+                name: selectedAnimationFile.name,
+                folder: selectedAnimationFile.folder,
+                animGroup: selectedAnimationFile.animGroup,
+                weight: 1.0 // Default weight
+            });
+            
+            // Update the blend list UI
+            updateBlendList();
+            
+            // Enable play blend button if we have at least 2 animations
+            document.getElementById('play-blend-btn').disabled = blendAnimations.length < 2;
+        }
+        
+        // Update the blend list UI
+        function updateBlendList() {
+            const blendContainer = document.getElementById('blend-animations');
+            
+            // Clear existing content
+            blendContainer.innerHTML = '';
+            
+            if (blendAnimations.length === 0) {
+                blendContainer.innerHTML = '<div class="blend-empty">No animations added to blend yet. Select animations from the timeline and add them.</div>';
+                return;
+            }
+            
+            // Add each animation to the list
+            blendAnimations.forEach((anim, index) => {
+                const blendItem = document.createElement('div');
+                blendItem.className = 'blend-item';
+                blendItem.classList.add(anim.folder.startsWith('glos') ? 'gloss' : 'sentence');
+                
+                // Animation name
+                const nameSpan = document.createElement('span');
+                nameSpan.className = 'blend-name';
+                nameSpan.textContent = anim.name;
+                blendItem.appendChild(nameSpan);
+                
+                // Weight slider
+                const weightInput = document.createElement('input');
+                weightInput.type = 'range';
+                weightInput.className = 'blend-weight';
+                weightInput.min = 0;
+                weightInput.max = 100;
+                weightInput.value = anim.weight * 100;
+                weightInput.addEventListener('input', function() {
+                    anim.weight = parseInt(this.value) / 100;
+                    weightLabel.textContent = anim.weight.toFixed(2);
+                    
+                    // If we have a blended animation and it's playing, update the weights
+                    if (blendedAnimationGroup && isPlaying) {
+                        updateBlendedAnimation();
+                    }
+                });
+                blendItem.appendChild(weightInput);
+                
+                // Weight display
+                const weightLabel = document.createElement('span');
+                weightLabel.className = 'blend-weight-label';
+                weightLabel.textContent = anim.weight.toFixed(2);
+                blendItem.appendChild(weightLabel);
+                
+                // Remove button
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'blend-remove';
+                removeBtn.textContent = 'X';
+                removeBtn.addEventListener('click', function() {
+                    blendAnimations.splice(index, 1);
+                    updateBlendList();
+                    
+                    // Disable play blend button if we have fewer than 2 animations
+                    document.getElementById('play-blend-btn').disabled = blendAnimations.length < 2;
+                    
+                    // If we have a blended animation and it's playing, update it
+                    if (blendedAnimationGroup && isPlaying) {
+                        if (blendAnimations.length < 2) {
+                            stopAnimation();
+                            alert("Not enough animations to blend. Stopping playback.");
+                        } else {
+                            updateBlendedAnimation();
+                        }
+                    }
+                });
+                blendItem.appendChild(removeBtn);
+                
+                blendContainer.appendChild(blendItem);
+            });
+        }
+        
+        // Clear the blend list
+        function clearBlendList() {
+            // If blended animation is playing, stop it
+            if (blendedAnimationGroup && isPlaying) {
+                stopAnimation();
+            }
+            
+            // Clear the array
+            blendAnimations = [];
+            
+            // Update UI
+            updateBlendList();
+            
+            // Disable play blend button
+            document.getElementById('play-blend-btn').disabled = true;
+        }
+        
+        // Play the blended animation
+        async function playBlendedAnimation() {
+            if (blendAnimations.length < 2) {
+                alert("You need at least 2 animations to create a blend.");
+                return;
+            }
+            
+            // Stop any current animation
+            if (isPlaying) {
+                stopAnimation();
+            }
+            
+            try {
+                // Create blended animation
+                await updateBlendedAnimation();
+                
+                // Update button states
+                document.getElementById('play-btn').disabled = true;
+                document.getElementById('pause-btn').disabled = false;
+                
+                // Play the animation
+                blendedAnimationGroup.play(false);
+                isPlaying = true;
+                
+                // Record start time for timeline marker
+                animationPlaybackStartTime = Date.now();
+                
+                // Calculate average duration
+                const avgDuration = blendAnimations.reduce(
+                    (acc, anim) => acc + anim.animGroup.to / 30, 0
+                ) / blendAnimations.length;
+                
+                // Set as current animation group for tracking
+                currentAnimationGroup = blendedAnimationGroup;
+                
+                // Track animation length for the selected animation
+                if (selectedAnimationFile) {
+                    selectedAnimationFile.duration = avgDuration;
+                }
+                
+                // Start animation loop for updating timeline marker
+                animateTimelineMarker();
+            } catch (error) {
+                console.error("Error playing blended animation:", error);
+                alert("Failed to create blended animation. See console for details.");
+            }
+        }
+        
+        // Create or update the blended animation
+        async function updateBlendedAnimation() {
+            if (blendAnimations.length < 2) {
+                console.warn("Not enough animations to blend");
+                return null;
+            }
+            
+            // If using window.animationPlayer.loadAndBlendAnimations
+            if (window.animationPlayer && typeof window.animationPlayer.createBlendedAnimation === 'function') {
+                // Format animations for blending
+                const animationsToBlend = blendAnimations.map(anim => ({
+                    animGroup: anim.animGroup,
+                    weight: anim.weight
+                }));
+                
+                // Create blended animation
+                blendedAnimationGroup = window.animationPlayer.createBlendedAnimation(
+                    "blended_animation", 
+                    scene, 
+                    animationsToBlend,
+                    false,  // Don't auto-play
+                    false   // Don't loop
+                );
+            } else if (window.AnimationBlender) {
+                // Use AnimationBlender directly
+                const animationsToBlend = blendAnimations.map(anim => ({
+                    animGroup: anim.animGroup,
+                    weight: anim.weight
+                }));
+                
+                blendedAnimationGroup = window.AnimationBlender.createBlendedAnimation(
+                    "blended_animation",
+                    scene,
+                    animationsToBlend
+                );
+            } else {
+                console.error("No animation blending functionality available");
+                return null;
+            }
+            
+            console.log("Created blended animation with", blendAnimations.length, "animations");
+            return blendedAnimationGroup;
+        }
+    </script>
+</body>
+</html>

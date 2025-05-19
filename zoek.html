@@ -1,0 +1,791 @@
+<html lang="en"><head><link href="https://embed.doorbell.io/css/default.css?v=1744708166" rel="stylesheet" type="text/css" id="doorbell-css-extra"><link href="https://embed.doorbell.io/css/doorbell.min.css?v=1744708166" rel="stylesheet" type="text/css" id="doorbell-css-document"><base href="/"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><style type="text/css">:root, :host {
+  --fa-font-solid: normal 900 1em/1 "Font Awesome 6 Solid";
+  --fa-font-regular: normal 400 1em/1 "Font Awesome 6 Regular";
+  --fa-font-light: normal 300 1em/1 "Font Awesome 6 Light";
+  --fa-font-thin: normal 100 1em/1 "Font Awesome 6 Thin";
+  --fa-font-duotone: normal 900 1em/1 "Font Awesome 6 Duotone";
+  --fa-font-sharp-solid: normal 900 1em/1 "Font Awesome 6 Sharp";
+  --fa-font-sharp-regular: normal 400 1em/1 "Font Awesome 6 Sharp";
+  --fa-font-sharp-light: normal 300 1em/1 "Font Awesome 6 Sharp";
+  --fa-font-sharp-thin: normal 100 1em/1 "Font Awesome 6 Sharp";
+  --fa-font-brands: normal 400 1em/1 "Font Awesome 6 Brands";
+}
+
+svg:not(:root).svg-inline--fa, svg:not(:host).svg-inline--fa {
+  overflow: visible;
+  box-sizing: content-box;
+}
+
+.svg-inline--fa {
+  display: var(--fa-display, inline-block);
+  height: 1em;
+  overflow: visible;
+  vertical-align: -0.125em;
+}
+.svg-inline--fa.fa-2xs {
+  vertical-align: 0.1em;
+}
+.svg-inline--fa.fa-xs {
+  vertical-align: 0em;
+}
+.svg-inline--fa.fa-sm {
+  vertical-align: -0.0714285705em;
+}
+.svg-inline--fa.fa-lg {
+  vertical-align: -0.2em;
+}
+.svg-inline--fa.fa-xl {
+  vertical-align: -0.25em;
+}
+.svg-inline--fa.fa-2xl {
+  vertical-align: -0.3125em;
+}
+.svg-inline--fa.fa-pull-left {
+  margin-right: var(--fa-pull-margin, 0.3em);
+  width: auto;
+}
+.svg-inline--fa.fa-pull-right {
+  margin-left: var(--fa-pull-margin, 0.3em);
+  width: auto;
+}
+.svg-inline--fa.fa-li {
+  width: var(--fa-li-width, 2em);
+  top: 0.25em;
+}
+.svg-inline--fa.fa-fw {
+  width: var(--fa-fw-width, 1.25em);
+}
+
+.fa-layers svg.svg-inline--fa {
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.fa-layers-counter, .fa-layers-text {
+  display: inline-block;
+  position: absolute;
+  text-align: center;
+}
+
+.fa-layers {
+  display: inline-block;
+  height: 1em;
+  position: relative;
+  text-align: center;
+  vertical-align: -0.125em;
+  width: 1em;
+}
+.fa-layers svg.svg-inline--fa {
+  -webkit-transform-origin: center center;
+          transform-origin: center center;
+}
+
+.fa-layers-text {
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  -webkit-transform-origin: center center;
+          transform-origin: center center;
+}
+
+.fa-layers-counter {
+  background-color: var(--fa-counter-background-color, #ff253a);
+  border-radius: var(--fa-counter-border-radius, 1em);
+  box-sizing: border-box;
+  color: var(--fa-inverse, #fff);
+  line-height: var(--fa-counter-line-height, 1);
+  max-width: var(--fa-counter-max-width, 5em);
+  min-width: var(--fa-counter-min-width, 1.5em);
+  overflow: hidden;
+  padding: var(--fa-counter-padding, 0.25em 0.5em);
+  right: var(--fa-right, 0);
+  text-overflow: ellipsis;
+  top: var(--fa-top, 0);
+  -webkit-transform: scale(var(--fa-counter-scale, 0.25));
+          transform: scale(var(--fa-counter-scale, 0.25));
+  -webkit-transform-origin: top right;
+          transform-origin: top right;
+}
+
+.fa-layers-bottom-right {
+  bottom: var(--fa-bottom, 0);
+  right: var(--fa-right, 0);
+  top: auto;
+  -webkit-transform: scale(var(--fa-layers-scale, 0.25));
+          transform: scale(var(--fa-layers-scale, 0.25));
+  -webkit-transform-origin: bottom right;
+          transform-origin: bottom right;
+}
+
+.fa-layers-bottom-left {
+  bottom: var(--fa-bottom, 0);
+  left: var(--fa-left, 0);
+  right: auto;
+  top: auto;
+  -webkit-transform: scale(var(--fa-layers-scale, 0.25));
+          transform: scale(var(--fa-layers-scale, 0.25));
+  -webkit-transform-origin: bottom left;
+          transform-origin: bottom left;
+}
+
+.fa-layers-top-right {
+  top: var(--fa-top, 0);
+  right: var(--fa-right, 0);
+  -webkit-transform: scale(var(--fa-layers-scale, 0.25));
+          transform: scale(var(--fa-layers-scale, 0.25));
+  -webkit-transform-origin: top right;
+          transform-origin: top right;
+}
+
+.fa-layers-top-left {
+  left: var(--fa-left, 0);
+  right: auto;
+  top: var(--fa-top, 0);
+  -webkit-transform: scale(var(--fa-layers-scale, 0.25));
+          transform: scale(var(--fa-layers-scale, 0.25));
+  -webkit-transform-origin: top left;
+          transform-origin: top left;
+}
+
+.fa-1x {
+  font-size: 1em;
+}
+
+.fa-2x {
+  font-size: 2em;
+}
+
+.fa-3x {
+  font-size: 3em;
+}
+
+.fa-4x {
+  font-size: 4em;
+}
+
+.fa-5x {
+  font-size: 5em;
+}
+
+.fa-6x {
+  font-size: 6em;
+}
+
+.fa-7x {
+  font-size: 7em;
+}
+
+.fa-8x {
+  font-size: 8em;
+}
+
+.fa-9x {
+  font-size: 9em;
+}
+
+.fa-10x {
+  font-size: 10em;
+}
+
+.fa-2xs {
+  font-size: 0.625em;
+  line-height: 0.1em;
+  vertical-align: 0.225em;
+}
+
+.fa-xs {
+  font-size: 0.75em;
+  line-height: 0.0833333337em;
+  vertical-align: 0.125em;
+}
+
+.fa-sm {
+  font-size: 0.875em;
+  line-height: 0.0714285718em;
+  vertical-align: 0.0535714295em;
+}
+
+.fa-lg {
+  font-size: 1.25em;
+  line-height: 0.05em;
+  vertical-align: -0.075em;
+}
+
+.fa-xl {
+  font-size: 1.5em;
+  line-height: 0.0416666682em;
+  vertical-align: -0.125em;
+}
+
+.fa-2xl {
+  font-size: 2em;
+  line-height: 0.03125em;
+  vertical-align: -0.1875em;
+}
+
+.fa-fw {
+  text-align: center;
+  width: 1.25em;
+}
+
+.fa-ul {
+  list-style-type: none;
+  margin-left: var(--fa-li-margin, 2.5em);
+  padding-left: 0;
+}
+.fa-ul > li {
+  position: relative;
+}
+
+.fa-li {
+  left: calc(var(--fa-li-width, 2em) * -1);
+  position: absolute;
+  text-align: center;
+  width: var(--fa-li-width, 2em);
+  line-height: inherit;
+}
+
+.fa-border {
+  border-color: var(--fa-border-color, #eee);
+  border-radius: var(--fa-border-radius, 0.1em);
+  border-style: var(--fa-border-style, solid);
+  border-width: var(--fa-border-width, 0.08em);
+  padding: var(--fa-border-padding, 0.2em 0.25em 0.15em);
+}
+
+.fa-pull-left {
+  float: left;
+  margin-right: var(--fa-pull-margin, 0.3em);
+}
+
+.fa-pull-right {
+  float: right;
+  margin-left: var(--fa-pull-margin, 0.3em);
+}
+
+.fa-beat {
+  -webkit-animation-name: fa-beat;
+          animation-name: fa-beat;
+  -webkit-animation-delay: var(--fa-animation-delay, 0s);
+          animation-delay: var(--fa-animation-delay, 0s);
+  -webkit-animation-direction: var(--fa-animation-direction, normal);
+          animation-direction: var(--fa-animation-direction, normal);
+  -webkit-animation-duration: var(--fa-animation-duration, 1s);
+          animation-duration: var(--fa-animation-duration, 1s);
+  -webkit-animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+          animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+  -webkit-animation-timing-function: var(--fa-animation-timing, ease-in-out);
+          animation-timing-function: var(--fa-animation-timing, ease-in-out);
+}
+
+.fa-bounce {
+  -webkit-animation-name: fa-bounce;
+          animation-name: fa-bounce;
+  -webkit-animation-delay: var(--fa-animation-delay, 0s);
+          animation-delay: var(--fa-animation-delay, 0s);
+  -webkit-animation-direction: var(--fa-animation-direction, normal);
+          animation-direction: var(--fa-animation-direction, normal);
+  -webkit-animation-duration: var(--fa-animation-duration, 1s);
+          animation-duration: var(--fa-animation-duration, 1s);
+  -webkit-animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+          animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+  -webkit-animation-timing-function: var(--fa-animation-timing, cubic-bezier(0.28, 0.84, 0.42, 1));
+          animation-timing-function: var(--fa-animation-timing, cubic-bezier(0.28, 0.84, 0.42, 1));
+}
+
+.fa-fade {
+  -webkit-animation-name: fa-fade;
+          animation-name: fa-fade;
+  -webkit-animation-delay: var(--fa-animation-delay, 0s);
+          animation-delay: var(--fa-animation-delay, 0s);
+  -webkit-animation-direction: var(--fa-animation-direction, normal);
+          animation-direction: var(--fa-animation-direction, normal);
+  -webkit-animation-duration: var(--fa-animation-duration, 1s);
+          animation-duration: var(--fa-animation-duration, 1s);
+  -webkit-animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+          animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+  -webkit-animation-timing-function: var(--fa-animation-timing, cubic-bezier(0.4, 0, 0.6, 1));
+          animation-timing-function: var(--fa-animation-timing, cubic-bezier(0.4, 0, 0.6, 1));
+}
+
+.fa-beat-fade {
+  -webkit-animation-name: fa-beat-fade;
+          animation-name: fa-beat-fade;
+  -webkit-animation-delay: var(--fa-animation-delay, 0s);
+          animation-delay: var(--fa-animation-delay, 0s);
+  -webkit-animation-direction: var(--fa-animation-direction, normal);
+          animation-direction: var(--fa-animation-direction, normal);
+  -webkit-animation-duration: var(--fa-animation-duration, 1s);
+          animation-duration: var(--fa-animation-duration, 1s);
+  -webkit-animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+          animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+  -webkit-animation-timing-function: var(--fa-animation-timing, cubic-bezier(0.4, 0, 0.6, 1));
+          animation-timing-function: var(--fa-animation-timing, cubic-bezier(0.4, 0, 0.6, 1));
+}
+
+.fa-flip {
+  -webkit-animation-name: fa-flip;
+          animation-name: fa-flip;
+  -webkit-animation-delay: var(--fa-animation-delay, 0s);
+          animation-delay: var(--fa-animation-delay, 0s);
+  -webkit-animation-direction: var(--fa-animation-direction, normal);
+          animation-direction: var(--fa-animation-direction, normal);
+  -webkit-animation-duration: var(--fa-animation-duration, 1s);
+          animation-duration: var(--fa-animation-duration, 1s);
+  -webkit-animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+          animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+  -webkit-animation-timing-function: var(--fa-animation-timing, ease-in-out);
+          animation-timing-function: var(--fa-animation-timing, ease-in-out);
+}
+
+.fa-shake {
+  -webkit-animation-name: fa-shake;
+          animation-name: fa-shake;
+  -webkit-animation-delay: var(--fa-animation-delay, 0s);
+          animation-delay: var(--fa-animation-delay, 0s);
+  -webkit-animation-direction: var(--fa-animation-direction, normal);
+          animation-direction: var(--fa-animation-direction, normal);
+  -webkit-animation-duration: var(--fa-animation-duration, 1s);
+          animation-duration: var(--fa-animation-duration, 1s);
+  -webkit-animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+          animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+  -webkit-animation-timing-function: var(--fa-animation-timing, linear);
+          animation-timing-function: var(--fa-animation-timing, linear);
+}
+
+.fa-spin {
+  -webkit-animation-name: fa-spin;
+          animation-name: fa-spin;
+  -webkit-animation-delay: var(--fa-animation-delay, 0s);
+          animation-delay: var(--fa-animation-delay, 0s);
+  -webkit-animation-direction: var(--fa-animation-direction, normal);
+          animation-direction: var(--fa-animation-direction, normal);
+  -webkit-animation-duration: var(--fa-animation-duration, 2s);
+          animation-duration: var(--fa-animation-duration, 2s);
+  -webkit-animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+          animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+  -webkit-animation-timing-function: var(--fa-animation-timing, linear);
+          animation-timing-function: var(--fa-animation-timing, linear);
+}
+
+.fa-spin-reverse {
+  --fa-animation-direction: reverse;
+}
+
+.fa-pulse,
+.fa-spin-pulse {
+  -webkit-animation-name: fa-spin;
+          animation-name: fa-spin;
+  -webkit-animation-direction: var(--fa-animation-direction, normal);
+          animation-direction: var(--fa-animation-direction, normal);
+  -webkit-animation-duration: var(--fa-animation-duration, 1s);
+          animation-duration: var(--fa-animation-duration, 1s);
+  -webkit-animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+          animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+  -webkit-animation-timing-function: var(--fa-animation-timing, steps(8));
+          animation-timing-function: var(--fa-animation-timing, steps(8));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fa-beat,
+.fa-bounce,
+.fa-fade,
+.fa-beat-fade,
+.fa-flip,
+.fa-pulse,
+.fa-shake,
+.fa-spin,
+.fa-spin-pulse {
+    -webkit-animation-delay: -1ms;
+            animation-delay: -1ms;
+    -webkit-animation-duration: 1ms;
+            animation-duration: 1ms;
+    -webkit-animation-iteration-count: 1;
+            animation-iteration-count: 1;
+    -webkit-transition-delay: 0s;
+            transition-delay: 0s;
+    -webkit-transition-duration: 0s;
+            transition-duration: 0s;
+  }
+}
+@-webkit-keyframes fa-beat {
+  0%, 90% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+  45% {
+    -webkit-transform: scale(var(--fa-beat-scale, 1.25));
+            transform: scale(var(--fa-beat-scale, 1.25));
+  }
+}
+@keyframes fa-beat {
+  0%, 90% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+  45% {
+    -webkit-transform: scale(var(--fa-beat-scale, 1.25));
+            transform: scale(var(--fa-beat-scale, 1.25));
+  }
+}
+@-webkit-keyframes fa-bounce {
+  0% {
+    -webkit-transform: scale(1, 1) translateY(0);
+            transform: scale(1, 1) translateY(0);
+  }
+  10% {
+    -webkit-transform: scale(var(--fa-bounce-start-scale-x, 1.1), var(--fa-bounce-start-scale-y, 0.9)) translateY(0);
+            transform: scale(var(--fa-bounce-start-scale-x, 1.1), var(--fa-bounce-start-scale-y, 0.9)) translateY(0);
+  }
+  30% {
+    -webkit-transform: scale(var(--fa-bounce-jump-scale-x, 0.9), var(--fa-bounce-jump-scale-y, 1.1)) translateY(var(--fa-bounce-height, -0.5em));
+            transform: scale(var(--fa-bounce-jump-scale-x, 0.9), var(--fa-bounce-jump-scale-y, 1.1)) translateY(var(--fa-bounce-height, -0.5em));
+  }
+  50% {
+    -webkit-transform: scale(var(--fa-bounce-land-scale-x, 1.05), var(--fa-bounce-land-scale-y, 0.95)) translateY(0);
+            transform: scale(var(--fa-bounce-land-scale-x, 1.05), var(--fa-bounce-land-scale-y, 0.95)) translateY(0);
+  }
+  57% {
+    -webkit-transform: scale(1, 1) translateY(var(--fa-bounce-rebound, -0.125em));
+            transform: scale(1, 1) translateY(var(--fa-bounce-rebound, -0.125em));
+  }
+  64% {
+    -webkit-transform: scale(1, 1) translateY(0);
+            transform: scale(1, 1) translateY(0);
+  }
+  100% {
+    -webkit-transform: scale(1, 1) translateY(0);
+            transform: scale(1, 1) translateY(0);
+  }
+}
+@keyframes fa-bounce {
+  0% {
+    -webkit-transform: scale(1, 1) translateY(0);
+            transform: scale(1, 1) translateY(0);
+  }
+  10% {
+    -webkit-transform: scale(var(--fa-bounce-start-scale-x, 1.1), var(--fa-bounce-start-scale-y, 0.9)) translateY(0);
+            transform: scale(var(--fa-bounce-start-scale-x, 1.1), var(--fa-bounce-start-scale-y, 0.9)) translateY(0);
+  }
+  30% {
+    -webkit-transform: scale(var(--fa-bounce-jump-scale-x, 0.9), var(--fa-bounce-jump-scale-y, 1.1)) translateY(var(--fa-bounce-height, -0.5em));
+            transform: scale(var(--fa-bounce-jump-scale-x, 0.9), var(--fa-bounce-jump-scale-y, 1.1)) translateY(var(--fa-bounce-height, -0.5em));
+  }
+  50% {
+    -webkit-transform: scale(var(--fa-bounce-land-scale-x, 1.05), var(--fa-bounce-land-scale-y, 0.95)) translateY(0);
+            transform: scale(var(--fa-bounce-land-scale-x, 1.05), var(--fa-bounce-land-scale-y, 0.95)) translateY(0);
+  }
+  57% {
+    -webkit-transform: scale(1, 1) translateY(var(--fa-bounce-rebound, -0.125em));
+            transform: scale(1, 1) translateY(var(--fa-bounce-rebound, -0.125em));
+  }
+  64% {
+    -webkit-transform: scale(1, 1) translateY(0);
+            transform: scale(1, 1) translateY(0);
+  }
+  100% {
+    -webkit-transform: scale(1, 1) translateY(0);
+            transform: scale(1, 1) translateY(0);
+  }
+}
+@-webkit-keyframes fa-fade {
+  50% {
+    opacity: var(--fa-fade-opacity, 0.4);
+  }
+}
+@keyframes fa-fade {
+  50% {
+    opacity: var(--fa-fade-opacity, 0.4);
+  }
+}
+@-webkit-keyframes fa-beat-fade {
+  0%, 100% {
+    opacity: var(--fa-beat-fade-opacity, 0.4);
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    -webkit-transform: scale(var(--fa-beat-fade-scale, 1.125));
+            transform: scale(var(--fa-beat-fade-scale, 1.125));
+  }
+}
+@keyframes fa-beat-fade {
+  0%, 100% {
+    opacity: var(--fa-beat-fade-opacity, 0.4);
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    -webkit-transform: scale(var(--fa-beat-fade-scale, 1.125));
+            transform: scale(var(--fa-beat-fade-scale, 1.125));
+  }
+}
+@-webkit-keyframes fa-flip {
+  50% {
+    -webkit-transform: rotate3d(var(--fa-flip-x, 0), var(--fa-flip-y, 1), var(--fa-flip-z, 0), var(--fa-flip-angle, -180deg));
+            transform: rotate3d(var(--fa-flip-x, 0), var(--fa-flip-y, 1), var(--fa-flip-z, 0), var(--fa-flip-angle, -180deg));
+  }
+}
+@keyframes fa-flip {
+  50% {
+    -webkit-transform: rotate3d(var(--fa-flip-x, 0), var(--fa-flip-y, 1), var(--fa-flip-z, 0), var(--fa-flip-angle, -180deg));
+            transform: rotate3d(var(--fa-flip-x, 0), var(--fa-flip-y, 1), var(--fa-flip-z, 0), var(--fa-flip-angle, -180deg));
+  }
+}
+@-webkit-keyframes fa-shake {
+  0% {
+    -webkit-transform: rotate(-15deg);
+            transform: rotate(-15deg);
+  }
+  4% {
+    -webkit-transform: rotate(15deg);
+            transform: rotate(15deg);
+  }
+  8%, 24% {
+    -webkit-transform: rotate(-18deg);
+            transform: rotate(-18deg);
+  }
+  12%, 28% {
+    -webkit-transform: rotate(18deg);
+            transform: rotate(18deg);
+  }
+  16% {
+    -webkit-transform: rotate(-22deg);
+            transform: rotate(-22deg);
+  }
+  20% {
+    -webkit-transform: rotate(22deg);
+            transform: rotate(22deg);
+  }
+  32% {
+    -webkit-transform: rotate(-12deg);
+            transform: rotate(-12deg);
+  }
+  36% {
+    -webkit-transform: rotate(12deg);
+            transform: rotate(12deg);
+  }
+  40%, 100% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+}
+@keyframes fa-shake {
+  0% {
+    -webkit-transform: rotate(-15deg);
+            transform: rotate(-15deg);
+  }
+  4% {
+    -webkit-transform: rotate(15deg);
+            transform: rotate(15deg);
+  }
+  8%, 24% {
+    -webkit-transform: rotate(-18deg);
+            transform: rotate(-18deg);
+  }
+  12%, 28% {
+    -webkit-transform: rotate(18deg);
+            transform: rotate(18deg);
+  }
+  16% {
+    -webkit-transform: rotate(-22deg);
+            transform: rotate(-22deg);
+  }
+  20% {
+    -webkit-transform: rotate(22deg);
+            transform: rotate(22deg);
+  }
+  32% {
+    -webkit-transform: rotate(-12deg);
+            transform: rotate(-12deg);
+  }
+  36% {
+    -webkit-transform: rotate(12deg);
+            transform: rotate(12deg);
+  }
+  40%, 100% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+}
+@-webkit-keyframes fa-spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
+}
+@keyframes fa-spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
+}
+.fa-rotate-90 {
+  -webkit-transform: rotate(90deg);
+          transform: rotate(90deg);
+}
+
+.fa-rotate-180 {
+  -webkit-transform: rotate(180deg);
+          transform: rotate(180deg);
+}
+
+.fa-rotate-270 {
+  -webkit-transform: rotate(270deg);
+          transform: rotate(270deg);
+}
+
+.fa-flip-horizontal {
+  -webkit-transform: scale(-1, 1);
+          transform: scale(-1, 1);
+}
+
+.fa-flip-vertical {
+  -webkit-transform: scale(1, -1);
+          transform: scale(1, -1);
+}
+
+.fa-flip-both,
+.fa-flip-horizontal.fa-flip-vertical {
+  -webkit-transform: scale(-1, -1);
+          transform: scale(-1, -1);
+}
+
+.fa-rotate-by {
+  -webkit-transform: rotate(var(--fa-rotate-angle, 0));
+          transform: rotate(var(--fa-rotate-angle, 0));
+}
+
+.fa-stack {
+  display: inline-block;
+  vertical-align: middle;
+  height: 2em;
+  position: relative;
+  width: 2.5em;
+}
+
+.fa-stack-1x,
+.fa-stack-2x {
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: var(--fa-stack-z-index, auto);
+}
+
+.svg-inline--fa.fa-stack-1x {
+  height: 1em;
+  width: 1.25em;
+}
+.svg-inline--fa.fa-stack-2x {
+  height: 2em;
+  width: 2.5em;
+}
+
+.fa-inverse {
+  color: var(--fa-inverse, #fff);
+}
+
+.sr-only,
+.fa-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.sr-only-focusable:not(:focus),
+.fa-sr-only-focusable:not(:focus) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.svg-inline--fa .fa-primary {
+  fill: var(--fa-primary-color, currentColor);
+  opacity: var(--fa-primary-opacity, 1);
+}
+
+.svg-inline--fa .fa-secondary {
+  fill: var(--fa-secondary-color, currentColor);
+  opacity: var(--fa-secondary-opacity, 0.4);
+}
+
+.svg-inline--fa.fa-swap-opacity .fa-primary {
+  opacity: var(--fa-secondary-opacity, 0.4);
+}
+
+.svg-inline--fa.fa-swap-opacity .fa-secondary {
+  opacity: var(--fa-primary-opacity, 1);
+}
+
+.svg-inline--fa mask .fa-primary,
+.svg-inline--fa mask .fa-secondary {
+  fill: black;
+}
+
+.fad.fa-inverse,
+.fa-duotone.fa-inverse {
+  color: var(--fa-inverse, #fff);
+}</style><link rel="icon" href="favicon.ico"><script defer="defer" src="js/chunk-vendors.3c8459e7.js" type="module"></script><script defer="defer" src="js/app.1c05de03.js" type="module"></script><link href="css/chunk-vendors.2b4f3031.css" rel="stylesheet"><link href="css/app.03cb2dd3.css" rel="stylesheet"><script defer="defer" src="js/chunk-vendors-legacy.3c8459e7.js" nomodule=""></script><script defer="defer" src="js/app-legacy.0feb9ee0.js" nomodule=""></script><title>Woordenboek Vlaamse Gebarentaal</title><style type="text/css">
+html{height:100%
+}
+.bm-burger-button{cursor:pointer;height:30px;left:36px;position:absolute;top:36px;width:36px
+}
+.bm-burger-button.hidden{display:none
+}
+.bm-burger-bars{background-color:#373a47
+}
+.line-style{height:20%;left:0;position:absolute;right:0
+}
+.cross-style{cursor:pointer;position:absolute;right:2px;top:12px
+}
+.bm-cross{background:#bdc3c7
+}
+.bm-cross-button{height:24px;width:24px
+}
+.bm-cross-button.hidden{display:none
+}
+.bm-menu{background-color:#3f3f41;height:100%;left:0;overflow-x:hidden;padding-top:60px;position:fixed;top:0;transition:.5s;width:0;z-index:1000
+}
+.bm-overlay{background:rgba(0,0,0,.3)
+}
+.bm-item-list{color:#b8b7ad;font-size:20px;margin-left:10%
+}
+.bm-item-list>*{display:flex;padding:.7em;text-decoration:none
+}
+.bm-item-list>*>span{color:#fff;font-weight:700;margin-left:10px
+}</style><link href="https://www.googletagmanager.com" rel="preconnect"><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-8XZTQLDK7N&amp;l=dataLayer"></script><script id="doorbellScript" type="text/javascript" async="" src="https://embed.doorbell.io/button/10593?t=1746126163670"></script><script type="text/javascript" async="" src="https://embed.doorbell.io/button/10593/1746124529/init?native_json=1&amp;needs_postmessage=0"></script><link rel="stylesheet" type="text/css" href="css/2110.c8c7eff5.css"></head><body><noscript><strong>We're sorry but Woordenboek Vlaamse Gebarentaal doesn't work properly without JavaScript enabled. Please enable it to continue.</strong></noscript><div id="app" class="h-100"><div class="d-flex flex-column h-100"><div class="flex flex-grow-1"><!----><div><div class="mobile-space d-lg-none position-relative d-flex flex-column"><div class="d-none d-md-flex justify-content-end"><button class="header__link d-flex btn header__button__icon mobile-space__link my-2"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="comment-smile" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="faq-link__icon mr-md-2 svg-inline--fa fa-comment-smile"><path fill="currentColor" d="M256 448c141.4 0 256-93.1 256-208S397.4 32 256 32S0 125.1 0 240c0 45.1 17.7 86.8 47.7 120.9c-1.9 24.5-11.4 46.3-21.4 62.9c-5.5 9.2-11.1 16.6-15.2 21.6c-2.1 2.5-3.7 4.4-4.9 5.7c-.6 .6-1 1.1-1.3 1.4l-.3 .3 0 0 0 0 0 0 0 0c-4.6 4.6-5.9 11.4-3.4 17.4c2.5 6 8.3 9.9 14.8 9.9c28.7 0 57.6-8.9 81.6-19.3c22.9-10 42.4-21.9 54.3-30.6c31.8 11.5 67 17.9 104.1 17.9zM192 144a32 32 0 1 1 0 64 32 32 0 1 1 0-64zm128 0a32 32 0 1 1 0 64 32 32 0 1 1 0-64zM150.5 270.1c9.9-8.8 25-8 33.9 1.9c17.6 19.7 43.1 32 71.6 32s53.9-12.3 71.6-32c8.8-9.9 24-10.7 33.9-1.9s10.7 24 1.9 33.9C337 333.4 298.6 352 256 352s-81-18.6-107.3-48c-8.8-9.9-8-25 1.9-33.9z" class=""></path></svg><span class="d-none d-md-block">Feedback</span></button><a href="https://www.vlaamsegebarentaal.be/methodologie" target="_blank" class="btn methodology-link d-flex mobile-space__link m-2"><svg aria-hidden="true" focusable="false" data-prefix="fal" data-icon="draw-circle" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="methodology-link__icon mr-md-2 svg-inline--fa fa-draw-circle"><path fill="currentColor" d="M256 96a32 32 0 1 0 0-64 32 32 0 1 0 0 64zm58.5-6c-10 22.4-32.4 38-58.5 38s-48.6-15.6-58.5-38C147.4 107.6 107.6 147.4 90 197.5c22.4 10 38 32.4 38 58.5s-15.6 48.6-38 58.5c17.7 50.1 57.4 89.9 107.5 107.5c10-22.4 32.4-38 58.5-38s48.6 15.6 58.5 38c50.1-17.7 89.9-57.4 107.5-107.5c-22.4-10-38-32.4-38-58.5s15.6-48.6 38-58.5C404.4 147.4 364.6 107.6 314.5 90zM454.1 192.3c32.5 3.1 57.9 30.4 57.9 63.7s-25.4 60.7-57.9 63.7c-20.5 63.6-70.7 113.9-134.3 134.3C316.7 486.6 289.3 512 256 512s-60.7-25.4-63.7-57.9C128.7 433.6 78.4 383.3 57.9 319.7C25.4 316.7 0 289.3 0 256s25.4-60.7 57.9-63.7C78.4 128.7 128.7 78.4 192.3 57.9C195.3 25.4 222.7 0 256 0s60.7 25.4 63.7 57.9c63.6 20.5 113.9 70.7 134.3 134.3zM256 480a32 32 0 1 0 0-64 32 32 0 1 0 0 64zM96 256a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm352 32a32 32 0 1 0 0-64 32 32 0 1 0 0 64z" class=""></path></svg><span class="d-none d-md-block">Methodologie</span></a><a href="https://www.vlaamsegebarentaal.be/faq" target="_blank" class="btn faq-link d-flex mobile-space__link m-2"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="circle-question" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="faq-link__icon mr-md-2 svg-inline--fa fa-circle-question"><path fill="currentColor" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM169.8 165.3c7.9-22.3 29.1-37.3 52.8-37.3h58.3c34.9 0 63.1 28.3 63.1 63.1c0 22.6-12.1 43.5-31.7 54.8L280 264.4c-.2 13-10.9 23.6-24 23.6c-13.3 0-24-10.7-24-24V250.5c0-8.6 4.6-16.5 12.1-20.8l44.3-25.4c4.7-2.7 7.6-7.7 7.6-13.1c0-8.4-6.8-15.1-15.1-15.1H222.6c-3.4 0-6.4 2.1-7.5 5.3l-.4 1.2c-4.4 12.5-18.2 19-30.6 14.6s-19-18.2-14.6-30.6l.4-1.2zM224 352a32 32 0 1 1 64 0 32 32 0 1 1 -64 0z" class=""></path></svg><span class="d-none d-md-block">Help</span></a><button class="btn d-flex align-items-center mobile-space__link m-2" require-admin-display="flex" style="display: none !important"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="arrow-right-from-bracket" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="mr-md-2 svg-inline--fa fa-arrow-right-from-bracket mr-3"><path fill="currentColor" d="M502.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L402.7 224 192 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l210.7 0-73.4 73.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l128-128zM160 96c17.7 0 32-14.3 32-32s-14.3-32-32-32L96 32C43 32 0 75 0 128L0 384c0 53 43 96 96 96l64 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-64 0c-17.7 0-32-14.3-32-32l0-256c0-17.7 14.3-32 32-32l64 0z" class=""></path></svg><span class="d-md-block d-block">Uitloggen</span></button></div><div class="position-absolute mobile-space__text align-self-center">Woordenboek Vlaamse Gebarentaal</div></div><div><div nooverlay="" class="vgtc-side-menu d-md-none"><div><div class="bm-menu"><nav class="bm-item-list"><div class="vgtc-side-menu__content d-flex flex-column justify-content-between h-100"><div class="row no-gutters mr-n4"><div class="col-xl col-md-6 mt-1 mb-1"><div class="search-option-card px-3 px-md-0 d-flex align-items-center justify-content-around flex-grow-1 mr-4 menu-item"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="hand" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="ml-1 mr-3 mr-md-1 text-large search-option-card__icon svg-inline--fa fa-hand"><path fill="currentColor" d="M288 32c0-17.7-14.3-32-32-32s-32 14.3-32 32V240c0 8.8-7.2 16-16 16s-16-7.2-16-16V64c0-17.7-14.3-32-32-32s-32 14.3-32 32V336c0 1.5 0 3.1 .1 4.6L67.6 283c-16-15.2-41.3-14.6-56.6 1.4s-14.6 41.3 1.4 56.6L124.8 448c43.1 41.1 100.4 64 160 64H304c97.2 0 176-78.8 176-176V128c0-17.7-14.3-32-32-32s-32 14.3-32 32V240c0 8.8-7.2 16-16 16s-16-7.2-16-16V64c0-17.7-14.3-32-32-32s-32 14.3-32 32V240c0 8.8-7.2 16-16 16s-16-7.2-16-16V32z" class=""></path></svg><span class="text-normal-small text-normal-small--wide">Handvorm <!----></span><div class="ml-1 mr-1 d-none d-md-block search-option-card__active-indicator--inactive__arrow"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="chevron-right" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" class="svg-inline--fa fa-chevron-right"><path fill="currentColor" d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" class=""></path></svg></div><div class="ml-1 mr-1 icon-dark icon-bolder d-md-none ml-auto"><svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="magnifying-glass" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-magnifying-glass"><path fill="currentColor" d="M368 208A160 160 0 1 0 48 208a160 160 0 1 0 320 0zM337.1 371.1C301.7 399.2 256.8 416 208 416C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208c0 48.8-16.8 93.7-44.9 129.1L505 471c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0L337.1 371.1z" class=""></path></svg></div></div></div><div class="col-xl col-md-6 mt-1 mb-1"><div class="search-option-card px-3 px-md-0 d-flex align-items-center justify-content-around flex-grow-1 mr-4 menu-item"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="user" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="ml-1 mr-3 mr-md-1 text-large search-option-card__icon svg-inline--fa fa-user"><path fill="currentColor" d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304H178.3z" class=""></path></svg><span class="text-normal-small text-normal-small--wide">Locatie <!----></span><div class="ml-1 mr-1 d-none d-md-block search-option-card__active-indicator--inactive__arrow"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="chevron-right" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" class="svg-inline--fa fa-chevron-right"><path fill="currentColor" d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" class=""></path></svg></div><div class="ml-1 mr-1 icon-dark icon-bolder d-md-none ml-auto"><svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="magnifying-glass" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-magnifying-glass"><path fill="currentColor" d="M368 208A160 160 0 1 0 48 208a160 160 0 1 0 320 0zM337.1 371.1C301.7 399.2 256.8 416 208 416C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208c0 48.8-16.8 93.7-44.9 129.1L505 471c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0L337.1 371.1z" class=""></path></svg></div></div></div><div class="col-xl col-md-6 mt-1 mb-1"><div class="search-option-card px-3 px-md-0 d-flex align-items-center justify-content-around flex-grow-1 mr-4 menu-item"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="table-cells-large" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="ml-1 mr-3 mr-md-1 text-large search-option-card__icon svg-inline--fa fa-table-cells-large"><path fill="currentColor" d="M448 96V224H288V96H448zm0 192V416H288V288H448zM224 224H64V96H224V224zM64 288H224V416H64V288zM64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64z" class=""></path></svg><span class="text-normal-small text-normal-small--wide">Categorie <!----></span><div class="ml-1 mr-1 d-none d-md-block search-option-card__active-indicator--inactive__arrow"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="chevron-right" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" class="svg-inline--fa fa-chevron-right"><path fill="currentColor" d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" class=""></path></svg></div><div class="ml-1 mr-1 icon-dark icon-bolder d-md-none ml-auto"><svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="magnifying-glass" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-magnifying-glass"><path fill="currentColor" d="M368 208A160 160 0 1 0 48 208a160 160 0 1 0 320 0zM337.1 371.1C301.7 399.2 256.8 416 208 416C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208c0 48.8-16.8 93.7-44.9 129.1L505 471c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0L337.1 371.1z" class=""></path></svg></div></div></div><div class="col-xl col-md-6 mt-1 mb-1"><div class="search-option-card px-3 px-md-0 d-flex align-items-center justify-content-around flex-grow-1 mr-4 menu-item"><svg viewBox="0 0 500 412" xmlns="http://www.w3.org/2000/svg" class="vgtc-svg-icon fa svg-search-type-icon ml-1 mr-3 mr-md-1 text-large search-option-card__icon vgtc-svg-icon--fill"><g id="high-fidelity-research" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g id="Artboard" transform="translate(-6 -114)" stroke="currentColor" stroke-width="20"><g id="Belgium" transform="translate(14 121.5)"><g id="map" transform="translate(0 .5)"><path d="M251.726.005a4.036 4.036 0 00-2.32.665L233.65 11.058a3.947 3.947 0 00-1.638 4.357l2.783 9.9-15.944-1.904c-1.912-.226-3.716.927-4.296 2.746l-4.663 14.62-43.883 16.294-5.346-9.93a4.008 4.008 0 00-3.172-2.08l-28.874-2.6a4.044 4.044 0 00-1.68.208l-13.36 4.627-5.063-20.037a3.977 3.977 0 00-2.28-2.67 4.042 4.042 0 00-3.528.153L2.084 79.313A3.947 3.947 0 00.372 84.46l33.254 71.032c.889 1.897 3.114 2.784 5.083 2.027l15.513-5.968 24.337-6.021 20.597 52.179c.692 1.754 2.536 2.784 4.411 2.464l19.126-3.286 10.273 3.38 9.862 29.303a4.002 4.002 0 003.697 2.714l31.7.852 31.341 11.636-6.522 43.6a3.954 3.954 0 002.037 4.066l28.874 15.587a4.042 4.042 0 003.277.25l34.125-12.125a3.993 3.993 0 002.227-1.955L287.9 265.86l3.739.925-6.334 34.45c-.07.377-.083.763-.042 1.144l3.498 32.048c.24 2.171 2.207 3.743 4.4 3.514l15.23-1.58 37.497 23.916 23.16 33.972c1.186 1.744 3.541 2.268 5.367 1.195l51.624-30.31a3.97 3.97 0 001.845-2.456c.26-1.03.09-2.12-.469-3.025l-20.817-33.795 24.535-58.293 26.469-2.381a4.012 4.012 0 003.044-1.854c.664-1.056.79-2.36.338-3.522l-3.078-7.892 14.253-7.06a3.976 3.976 0 002.059-2.465l9.631-33.785a3.948 3.948 0 00-1.733-4.44l-13.76-8.506-8.811-7.393 4.82-10.242a3.93 3.93 0 00-.02-3.4l-11.365-23.386a4 4 0 00-2.878-2.184l-49.554-9.14-5.136-11.438 7.163-8.496c.377-.448.65-.974.798-1.539L415.62 71.66a3.933 3.933 0 00-.544-3.191 4.01 4.01 0 00-2.765-1.728l-22.456-3.181-11.301-21.577a4.02 4.02 0 00-4.412-2.049l-28.852 6.187-3.246-9.628c-.674-1.995-2.803-3.122-4.852-2.569l-6.344 1.716-13.465-29.001a3.995 3.995 0 00-2.548-2.159 4.04 4.04 0 00-3.313.516l-15.713 10.377-1.723-11.968a3.977 3.977 0 00-2.697-3.2 4.035 4.035 0 00-4.098.954l-12.016 11.906-17.058.676-2.71-10.731a3.997 3.997 0 00-3.78-3.005z" id="Belgium"></path></g></g></g></g></svg><span class="text-normal-small text-normal-small--wide">Regio <!----></span><div class="ml-1 mr-1 d-none d-md-block search-option-card__active-indicator--inactive__arrow"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="chevron-right" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" class="svg-inline--fa fa-chevron-right"><path fill="currentColor" d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" class=""></path></svg></div><div class="ml-1 mr-1 icon-dark icon-bolder d-md-none ml-auto"><svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="magnifying-glass" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-magnifying-glass"><path fill="currentColor" d="M368 208A160 160 0 1 0 48 208a160 160 0 1 0 320 0zM337.1 371.1C301.7 399.2 256.8 416 208 416C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208c0 48.8-16.8 93.7-44.9 129.1L505 471c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0L337.1 371.1z" class=""></path></svg></div></div></div><div class="col-xl col-md-6 mt-1 mb-1"><div class="search-option-card px-3 px-md-0 d-flex align-items-center justify-content-around flex-grow-1 mr-4 menu-item"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="tag" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="ml-1 mr-3 mr-md-1 text-large search-option-card__icon svg-inline--fa fa-tag"><path fill="currentColor" d="M0 80V229.5c0 17 6.7 33.3 18.7 45.3l176 176c25 25 65.5 25 90.5 0L418.7 317.3c25-25 25-65.5 0-90.5l-176-176c-12-12-28.3-18.7-45.3-18.7H48C21.5 32 0 53.5 0 80zm112 32a32 32 0 1 1 0 64 32 32 0 1 1 0-64z" class=""></path></svg><span class="text-normal-small text-normal-small--wide">Label <!----></span><div class="ml-1 mr-1 d-none d-md-block search-option-card__active-indicator--inactive__arrow"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="chevron-right" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" class="svg-inline--fa fa-chevron-right"><path fill="currentColor" d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" class=""></path></svg></div><div class="ml-1 mr-1 icon-dark icon-bolder d-md-none ml-auto"><svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="magnifying-glass" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-magnifying-glass"><path fill="currentColor" d="M368 208A160 160 0 1 0 48 208a160 160 0 1 0 320 0zM337.1 371.1C301.7 399.2 256.8 416 208 416C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208c0 48.8-16.8 93.7-44.9 129.1L505 471c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0L337.1 371.1z" class=""></path></svg></div></div></div></div><div class="d-flex flex-column"><div class="menu-item"><button class="btn d-flex align-items-center vgtc-side-menu__item mx-2" require-admin-display="flex" style="display: none !important"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="arrow-right-from-bracket" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="mr-md-2 svg-inline--fa fa-arrow-right-from-bracket mr-3"><path fill="currentColor" d="M502.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L402.7 224 192 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l210.7 0-73.4 73.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l128-128zM160 96c17.7 0 32-14.3 32-32s-14.3-32-32-32L96 32C43 32 0 75 0 128L0 384c0 53 43 96 96 96l64 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-64 0c-17.7 0-32-14.3-32-32l0-256c0-17.7 14.3-32 32-32l64 0z" class=""></path></svg><span class="d-md-block d-block">Uitloggen</span></button></div><div class="menu-item"><div class="vgtc-side-menu__item mx-3 d-flex align-items-center"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="comment-smile" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="ml-1 mr-3 text-large svg-inline--fa fa-comment-smile"><path fill="currentColor" d="M256 448c141.4 0 256-93.1 256-208S397.4 32 256 32S0 125.1 0 240c0 45.1 17.7 86.8 47.7 120.9c-1.9 24.5-11.4 46.3-21.4 62.9c-5.5 9.2-11.1 16.6-15.2 21.6c-2.1 2.5-3.7 4.4-4.9 5.7c-.6 .6-1 1.1-1.3 1.4l-.3 .3 0 0 0 0 0 0 0 0c-4.6 4.6-5.9 11.4-3.4 17.4c2.5 6 8.3 9.9 14.8 9.9c28.7 0 57.6-8.9 81.6-19.3c22.9-10 42.4-21.9 54.3-30.6c31.8 11.5 67 17.9 104.1 17.9zM192 144a32 32 0 1 1 0 64 32 32 0 1 1 0-64zm128 0a32 32 0 1 1 0 64 32 32 0 1 1 0-64zM150.5 270.1c9.9-8.8 25-8 33.9 1.9c17.6 19.7 43.1 32 71.6 32s53.9-12.3 71.6-32c8.8-9.9 24-10.7 33.9-1.9s10.7 24 1.9 33.9C337 333.4 298.6 352 256 352s-81-18.6-107.3-48c-8.8-9.9-8-25 1.9-33.9z" class=""></path></svg><span class="text-normal-small text-normal-small--wide"> Feedback </span></div></div><div class="menu-item"><a href="https://www.vlaamsegebarentaal.be/methodologie" target="_blank" class="vgtc-side-menu__item mx-3 d-flex align-items-center"><svg aria-hidden="true" focusable="false" data-prefix="fal" data-icon="draw-circle" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="vgtc-side-menu__help__icon ml-1 mr-3 text-large svg-inline--fa fa-draw-circle"><path fill="currentColor" d="M256 96a32 32 0 1 0 0-64 32 32 0 1 0 0 64zm58.5-6c-10 22.4-32.4 38-58.5 38s-48.6-15.6-58.5-38C147.4 107.6 107.6 147.4 90 197.5c22.4 10 38 32.4 38 58.5s-15.6 48.6-38 58.5c17.7 50.1 57.4 89.9 107.5 107.5c10-22.4 32.4-38 58.5-38s48.6 15.6 58.5 38c50.1-17.7 89.9-57.4 107.5-107.5c-22.4-10-38-32.4-38-58.5s15.6-48.6 38-58.5C404.4 147.4 364.6 107.6 314.5 90zM454.1 192.3c32.5 3.1 57.9 30.4 57.9 63.7s-25.4 60.7-57.9 63.7c-20.5 63.6-70.7 113.9-134.3 134.3C316.7 486.6 289.3 512 256 512s-60.7-25.4-63.7-57.9C128.7 433.6 78.4 383.3 57.9 319.7C25.4 316.7 0 289.3 0 256s25.4-60.7 57.9-63.7C78.4 128.7 128.7 78.4 192.3 57.9C195.3 25.4 222.7 0 256 0s60.7 25.4 63.7 57.9c63.6 20.5 113.9 70.7 134.3 134.3zM256 480a32 32 0 1 0 0-64 32 32 0 1 0 0 64zM96 256a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm352 32a32 32 0 1 0 0-64 32 32 0 1 0 0 64z" class=""></path></svg><span class="text-normal-small text-normal-small--wide"> Methodologie </span></a></div><div class="menu-item"><a href="https://www.vlaamsegebarentaal.be/faq" target="_blank" class="vgtc-side-menu__item mx-3 d-flex align-items-center"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="circle-question" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="vgtc-side-menu__help__icon ml-1 mr-3 text-large svg-inline--fa fa-circle-question"><path fill="currentColor" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM169.8 165.3c7.9-22.3 29.1-37.3 52.8-37.3h58.3c34.9 0 63.1 28.3 63.1 63.1c0 22.6-12.1 43.5-31.7 54.8L280 264.4c-.2 13-10.9 23.6-24 23.6c-13.3 0-24-10.7-24-24V250.5c0-8.6 4.6-16.5 12.1-20.8l44.3-25.4c4.7-2.7 7.6-7.7 7.6-13.1c0-8.4-6.8-15.1-15.1-15.1H222.6c-3.4 0-6.4 2.1-7.5 5.3l-.4 1.2c-4.4 12.5-18.2 19-30.6 14.6s-19-18.2-14.6-30.6l.4-1.2zM224 352a32 32 0 1 1 64 0 32 32 0 1 1 -64 0z" class=""></path></svg><span class="text-normal-small text-normal-small--wide"> Help </span></a></div><div class="menu-item"><a href="/info" class="vgtc-side-menu__item mx-3 d-flex align-items-center"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="envelope" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="ml-1 mr-3 text-large svg-inline--fa fa-envelope"><path fill="currentColor" d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48H48zM0 176V384c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V176L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z" class=""></path></svg><span class="text-normal-small text-normal-small--wide"> Contacteer VGTc </span></a></div></div></div></nav><span class="bm-cross-button cross-style"><span class="bm-cross" style="position: absolute; width: 3px; height: 14px; transform: rotate(-45deg);"></span><span class="bm-cross" style="position: absolute; width: 3px; height: 14px; transform: rotate(45deg);"></span></span></div><div class="bm-burger-button hidden"><span class="bm-burger-bars line-style" style="top: 0%;"></span><span class="bm-burger-bars line-style" style="top: 40%;"></span><span class="bm-burger-bars line-style" style="top: 80%;"></span></div></div></div><nav class="navbar vgtc-hero justify-content-center align-items-stretch sticky-top navbar-light navbar-expand"><div class="vgtc-hero__content d-flex flex-column flex-grow-1 justify-content-between pb-lg-4 pb-2 pt-2"><div class="d-none d-lg-block"><div class="d-flex d-lg-block"><div class="d-flex d-lg-none header__link header__link--back text-underline px-3"><a href="/search" class="d-flex gloss-detail__header__back align-items-center router-link-exact-active router-link-active" aria-current="page"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="arrow-left" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="mr-2 ml svg-inline--fa fa-arrow-left"><path fill="currentColor" d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" class=""></path></svg><span class="d-none d-md-block">terug naar zoeken</span><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="magnifying-glass" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="ml-1 svg-inline--fa fa-magnifying-glass"><path fill="currentColor" d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" class=""></path></svg></a></div><div class="d-flex justify-content-between align-items-start ml-auto"><a href="/" class="d-none d-lg-flex router-link-active"><div class="vgtc-logo"><svg version="1.1" id="Laag_1" xmlns="http://www.w3.org/2000/svg" x="0" y="0" viewBox="0 0 887.25 524.25" xml:space="preserve" class="vgtc-svg-icon"><path d="M208.16 70.88v8.53c-5.69.57-10.74 3.13-15.14 7.68-4.41 4.55-8.61 11.95-12.58 22.18l-69.96 183.44h-7.25l-78.5-188.99c-4.27-9.67-8.39-16.06-12.37-19.2-3.99-3.13-8.11-4.69-12.37-4.69v-8.96c14.78 1.14 27.3 1.71 37.54 1.71 21.9 0 40.38-.57 55.46-1.71v8.96c-10.52 0-18.2.79-23.04 2.35-4.84 1.57-7.25 5.62-7.25 12.16 0 3.99 1.56 10.24 4.69 18.77l52.47 129.69 46.93-123.29c3.13-8.53 4.69-15.21 4.69-20.05 0-6.54-2.49-11.31-7.47-14.29-4.98-2.99-13.01-4.91-24.1-5.76v-8.53c14.78.85 26.73 1.28 35.83 1.28 12.51 0 23.32-.43 32.42-1.28zM397.36 104.16c-3.56-3.41-5.33-8.39-5.33-14.93 0-5.69 1.42-12.22 4.27-19.62-7.4 3.13-13.22 6.61-17.49 10.45-4.27 3.84-8.11 8.61-11.52 14.29 6.54 9.96 9.81 22.61 9.81 37.97 0 22.47-6.83 39.32-20.48 50.55-13.65 11.24-31.72 16.85-54.18 16.85h-.43c-9.39 5.41-16.5 10.38-21.33 14.93-4.84 4.55-7.25 9.67-7.25 15.36 0 9.11 6.83 13.65 20.48 13.65h53.33c19.34 0 35.33 4.2 47.99 12.58 12.65 8.39 18.98 20.98 18.98 37.75 0 13.65-4.41 26.3-13.22 37.97-8.82 11.66-21.76 21.04-38.82 28.16-17.06 7.11-37.69 10.67-61.86 10.67-24.74 0-45.43-3.77-62.07-11.3-16.64-7.54-24.96-18.7-24.96-33.49 0-9.67 3.91-18.06 11.73-25.17 7.82-7.11 18.7-12.65 32.63-16.64l2.56 6.83c-6.26 1.99-11.24 5.97-14.93 11.94-3.7 5.97-5.55 12.65-5.55 20.05 0 13.08 5.9 23.1 17.7 30.08 11.8 6.97 27.66 10.45 47.57 10.45 21.9 0 40.67-4.2 56.31-12.58 15.64-8.39 23.46-21.4 23.46-39.03 0-10.24-3.63-18.2-10.88-23.89-7.25-5.69-20.12-8.53-38.61-8.53H303.7c-16.78 0-30.22-2.13-40.31-6.4-10.1-4.27-15.14-12.8-15.14-25.6 0-8.81 3.2-17.2 9.6-25.17 6.4-7.96 16.99-15.78 31.78-23.46-18.77-1.99-33.77-8.53-45.01-19.62-11.24-11.09-16.85-26.73-16.85-46.93 0-22.46 6.83-39.31 20.48-50.55 13.65-11.23 31.71-16.85 54.18-16.85 26.73 0 46.5 7.4 59.3 22.18 5.4-7.68 12.22-14 20.48-18.98 8.25-4.97 16.49-7.47 24.74-7.47 7.39 0 13.36 2.13 17.92 6.4 4.55 4.27 6.83 10.38 6.83 18.34 0 7.96-2.21 13.94-6.61 17.92-4.41 3.99-9.32 5.97-14.72 5.97-5.12-.01-9.46-1.72-13.01-5.13zm-69.11 74.44c5.83-8.96 8.75-24.38 8.75-46.29 0-21.9-2.92-37.33-8.75-46.29s-14.44-13.44-25.81-13.44c-11.38 0-19.98 4.48-25.81 13.44-5.83 8.96-8.75 24.39-8.75 46.29s2.91 37.33 8.75 46.29c5.83 8.96 14.43 13.44 25.81 13.44 11.37 0 19.98-4.48 25.81-13.44zM515.74 71.31h63.14v8.53h-63.14v165.1c0 12.8 2.35 22.04 7.04 27.73 4.69 5.69 11.45 8.53 20.26 8.53 8.81 0 16.35-3.55 22.61-10.67 6.25-7.11 11.52-18.77 15.78-34.98l8.53 2.13c-7.11 39.25-25.6 58.87-55.46 58.87-9.67 0-17.64-1.14-23.89-3.41-6.26-2.28-11.8-5.83-16.64-10.67-6.26-6.25-10.6-13.93-13.01-23.04-2.42-9.1-3.63-21.33-3.63-36.69V79.84H436.4v-8.53h40.95V6.04c15.92-.57 28.72-2.56 38.39-5.97v71.24zM732.39 67.47c9.39 2.28 17.2 5.41 23.46 9.39 7.39 4.55 13.15 10.31 17.28 17.28 4.12 6.97 6.19 14.58 6.19 22.82 0 9.96-3.13 18.13-9.39 24.53-6.26 6.4-14.36 9.6-24.32 9.6s-17.92-2.84-23.89-8.53c-5.97-5.69-8.96-13.37-8.96-23.04 0-8.53 2.7-15.92 8.11-22.18 5.4-6.25 12.08-10.52 20.05-12.8-2.28-3.13-5.76-5.61-10.45-7.47-4.69-1.85-9.75-2.77-15.14-2.77-17.06 0-30.36 9.32-39.89 27.94-9.53 18.63-14.29 43.02-14.29 73.16 0 30.44 5.4 52.33 16.21 65.7 10.81 13.37 24.32 20.05 40.53 20.05 9.67 0 19.41-2.56 29.22-7.68s18.7-14.08 26.66-26.88l7.25 2.56c-5.69 18.49-15.64 34.34-29.86 47.57-14.22 13.22-32.57 19.84-55.03 19.84-29.29 0-53.19-9.67-71.67-29.01-18.49-19.34-27.73-48.06-27.73-86.17 0-25.02 4.55-46.35 13.65-63.99 9.1-17.63 21.61-30.93 37.54-39.89 15.92-8.96 34.13-13.44 54.61-13.44 10.52 0 20.47 1.14 29.86 3.41zM877 239.6c6.54 5.83 9.81 13.87 9.81 24.1s-3.27 18.28-9.81 24.1c-6.55 5.83-15.36 8.75-26.45 8.75s-19.91-2.92-26.45-8.75c-6.55-5.83-9.81-13.87-9.81-24.1s3.27-18.27 9.81-24.1c6.54-5.83 15.36-8.75 26.45-8.75 11.1.01 19.91 2.93 26.45 8.75z" class="st0"></path><g><path d="M454.76 405.97l-11.35-34.59h5.8l5.5 17.1 3.32 12.04h.2l3.37-12.04 5.5-17.1h5.65l-11.5 34.59h-6.49zM487.82 405.97v-34.59h5.6v29.64h14.08v4.96h-19.68zM544.76 405.97l-3.12-9.37H528.7l-3.02 9.37h-5.7l11.79-34.59h7.04l11.79 34.59h-5.84zm-9.47-29.44h-.25l-5.01 15.27h10.21l-4.95-15.27zM587.48 405.97l-3.12-9.37h-12.94l-3.02 9.37h-5.7l11.8-34.59h7.04l11.8 34.59h-5.86zm-9.47-29.44h-.25l-5.01 15.27h10.21l-4.95-15.27zM608.59 371.37h6.64l9.27 17.59h.3l9.27-17.59h6.34v34.59h-5.35V379.5h-.25l-2.73 5.6-7.58 13.83-7.58-13.83-2.73-5.6h-.25v26.46h-5.35v-34.59zM656.51 400.71l3.87-3.62c2.43 2.97 5.3 4.51 9.07 4.51 4.41 0 6.69-2.18 6.69-5.5 0-2.68-1.39-4.21-5.4-5.01l-3.07-.54c-6.69-1.24-10.11-4.36-10.11-9.86 0-6.15 4.76-9.91 12.09-9.91 5.2 0 9.02 1.88 11.7 5.3l-3.92 3.47c-1.78-2.33-4.26-3.82-8.08-3.82-3.96 0-6.24 1.64-6.24 4.66 0 2.87 1.78 4.11 5.5 4.86l3.07.64c6.89 1.34 10.01 4.41 10.01 9.91 0 6.44-4.61 10.75-12.54 10.75-5.8.01-9.76-2.27-12.64-5.84z" class="st0"></path></g><g><path d="M469.03 459.21h-.2c-.69 3.32-4.06 5.85-9.32 5.85-8.23 0-14.27-6.29-14.27-17.89 0-11.55 6.05-17.89 15.12-17.89 6.2 0 10.51 2.92 12.89 7.78l-4.56 2.68c-1.34-3.22-4.11-5.45-8.33-5.45-5.45 0-9.12 3.72-9.12 10.06V450c0 6.34 3.67 10.06 9.12 10.06 4.36 0 8.18-2.23 8.18-6.54v-2.68h-7.14v-4.81h12.54v18.44h-4.91v-5.26zM491.63 464.47v-34.59h22.15v4.96h-16.55v9.61h15.02v4.96h-15.02v10.11h16.55v4.96h-22.15zM530.93 429.87h15.31c5.7 0 9.22 3.52 9.22 8.92 0 5.2-3.17 7.09-6 7.33v.3c2.82.1 7.24 2.28 7.24 8.08 0 5.6-3.82 9.96-8.92 9.96h-16.85v-34.59zm5.6 14.62h8.67c2.73 0 4.36-1.49 4.36-4.11v-1.59c0-2.63-1.64-4.11-4.36-4.11h-8.67v9.81zm0 15.17h9.61c2.88 0 4.66-1.59 4.66-4.41v-1.68c0-2.83-1.78-4.41-4.66-4.41h-9.61v10.5zM595.06 464.47l-3.12-9.37H579l-3.02 9.37h-5.7l11.8-34.59h7.04l11.8 34.59h-5.86zm-9.46-29.44h-.25l-5.01 15.27h10.21l-4.95-15.27zM621.77 464.47h-5.6v-34.59h14.92c6.2 0 10.01 4.01 10.01 10.41 0 4.91-2.33 8.33-6.74 9.62l7.48 14.57h-6.25l-6.94-13.98h-6.89v13.97zm8.92-18.69c2.83 0 4.51-1.54 4.51-4.31v-2.38c0-2.78-1.68-4.31-4.51-4.31h-8.92v11h8.92zM658.5 464.47v-34.59h22.15v4.96H664.1v9.61h15.02v4.96H664.1v10.11h16.55v4.96H658.5zM707.11 445.33L703.3 438h-.15v26.46h-5.35v-34.59h6.25l11.3 19.13 3.82 7.33h.15v-26.47h5.35v34.59h-6.25l-11.31-19.12zM750.33 434.83h-10.31v-4.96h26.22v4.96h-10.31v29.64h-5.6v-29.64zM803.16 464.47l-3.12-9.37H787.1l-3.02 9.37h-5.7l11.79-34.59h7.04L809 464.47h-5.84zm-9.47-29.44h-.25l-5.01 15.27h10.21l-4.95-15.27zM845.88 464.47l-3.12-9.37h-12.93l-3.02 9.37h-5.7l11.79-34.59h7.04l11.79 34.59h-5.85zm-9.47-29.44h-.25l-5.01 15.27h10.21l-4.95-15.27zM866.99 464.47v-34.59h5.6v29.64h14.08v4.96h-19.68z" class="st0"></path></g><g><path d="M445.24 505.67c0-11.6 5.5-17.89 14.52-17.89 6 0 10.01 2.68 12.34 7.83l-4.71 2.58c-1.19-3.27-3.62-5.4-7.63-5.4-5.3 0-8.57 3.87-8.57 10.26v5.25c0 6.39 3.27 10.26 8.57 10.26 4.11 0 6.74-2.38 7.98-5.75l4.51 2.73c-2.33 5-6.49 8.03-12.49 8.03-9.01-.01-14.52-6.3-14.52-17.9zM488.11 522.97v-34.59h22.15v4.96h-16.55v9.61h15.02v4.96h-15.02v10.11h16.55v4.96h-22.15zM536.73 503.83l-3.82-7.33h-.15v26.46h-5.35v-34.59h6.25l11.3 19.13 3.82 7.33h.15v-26.47h5.35v34.59h-6.25l-11.3-19.12zM579.95 493.33h-10.31v-4.96h26.22v4.96h-10.31v29.64h-5.6v-29.64zM616.77 522.97h-5.6v-34.59h14.92c6.2 0 10.01 4.01 10.01 10.41 0 4.91-2.33 8.33-6.74 9.62l7.48 14.57h-6.24L623.66 509h-6.89v13.97zm8.92-18.69c2.83 0 4.51-1.54 4.51-4.31v-2.38c0-2.78-1.69-4.31-4.51-4.31h-8.92v11h8.92zM658.79 488.37v21.31c0 5.85 2.03 8.87 7.43 8.87s7.43-3.02 7.43-8.87v-21.31h5.5v20.42c0 10.11-3.47 14.77-12.94 14.77s-12.94-4.66-12.94-14.77v-20.42h5.52zM697.4 488.37h6.64l9.27 17.59h.3l9.27-17.59h6.34v34.59h-5.35V496.5h-.25l-2.73 5.6-7.58 13.83-7.58-13.83-2.73-5.6h-.25v26.46h-5.35v-34.59z" class="st0"></path></g></svg><!----><!----><!----></div></a><div class="d-flex flex-wrap justify-content-end"><button class="header__link d-flex btn header__button__icon"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="comment-smile" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="faq-link__icon mr-md-2 svg-inline--fa fa-comment-smile"><path fill="currentColor" d="M256 448c141.4 0 256-93.1 256-208S397.4 32 256 32S0 125.1 0 240c0 45.1 17.7 86.8 47.7 120.9c-1.9 24.5-11.4 46.3-21.4 62.9c-5.5 9.2-11.1 16.6-15.2 21.6c-2.1 2.5-3.7 4.4-4.9 5.7c-.6 .6-1 1.1-1.3 1.4l-.3 .3 0 0 0 0 0 0 0 0c-4.6 4.6-5.9 11.4-3.4 17.4c2.5 6 8.3 9.9 14.8 9.9c28.7 0 57.6-8.9 81.6-19.3c22.9-10 42.4-21.9 54.3-30.6c31.8 11.5 67 17.9 104.1 17.9zM192 144a32 32 0 1 1 0 64 32 32 0 1 1 0-64zm128 0a32 32 0 1 1 0 64 32 32 0 1 1 0-64zM150.5 270.1c9.9-8.8 25-8 33.9 1.9c17.6 19.7 43.1 32 71.6 32s53.9-12.3 71.6-32c8.8-9.9 24-10.7 33.9-1.9s10.7 24 1.9 33.9C337 333.4 298.6 352 256 352s-81-18.6-107.3-48c-8.8-9.9-8-25 1.9-33.9z" class=""></path></svg><span class="d-none d-md-block">Feedback</span></button><a href="https://www.vlaamsegebarentaal.be/methodologie" target="_blank" class="btn methodology-link d-flex header__link"><svg aria-hidden="true" focusable="false" data-prefix="fal" data-icon="draw-circle" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="methodology-link__icon mr-md-2 svg-inline--fa fa-draw-circle"><path fill="currentColor" d="M256 96a32 32 0 1 0 0-64 32 32 0 1 0 0 64zm58.5-6c-10 22.4-32.4 38-58.5 38s-48.6-15.6-58.5-38C147.4 107.6 107.6 147.4 90 197.5c22.4 10 38 32.4 38 58.5s-15.6 48.6-38 58.5c17.7 50.1 57.4 89.9 107.5 107.5c10-22.4 32.4-38 58.5-38s48.6 15.6 58.5 38c50.1-17.7 89.9-57.4 107.5-107.5c-22.4-10-38-32.4-38-58.5s15.6-48.6 38-58.5C404.4 147.4 364.6 107.6 314.5 90zM454.1 192.3c32.5 3.1 57.9 30.4 57.9 63.7s-25.4 60.7-57.9 63.7c-20.5 63.6-70.7 113.9-134.3 134.3C316.7 486.6 289.3 512 256 512s-60.7-25.4-63.7-57.9C128.7 433.6 78.4 383.3 57.9 319.7C25.4 316.7 0 289.3 0 256s25.4-60.7 57.9-63.7C78.4 128.7 128.7 78.4 192.3 57.9C195.3 25.4 222.7 0 256 0s60.7 25.4 63.7 57.9c63.6 20.5 113.9 70.7 134.3 134.3zM256 480a32 32 0 1 0 0-64 32 32 0 1 0 0 64zM96 256a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm352 32a32 32 0 1 0 0-64 32 32 0 1 0 0 64z" class=""></path></svg><span class="d-none d-md-block">Methodologie</span></a><a href="https://www.vlaamsegebarentaal.be/faq" target="_blank" class="btn faq-link d-flex header__link"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="circle-question" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="faq-link__icon mr-md-2 svg-inline--fa fa-circle-question"><path fill="currentColor" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM169.8 165.3c7.9-22.3 29.1-37.3 52.8-37.3h58.3c34.9 0 63.1 28.3 63.1 63.1c0 22.6-12.1 43.5-31.7 54.8L280 264.4c-.2 13-10.9 23.6-24 23.6c-13.3 0-24-10.7-24-24V250.5c0-8.6 4.6-16.5 12.1-20.8l44.3-25.4c4.7-2.7 7.6-7.7 7.6-13.1c0-8.4-6.8-15.1-15.1-15.1H222.6c-3.4 0-6.4 2.1-7.5 5.3l-.4 1.2c-4.4 12.5-18.2 19-30.6 14.6s-19-18.2-14.6-30.6l.4-1.2zM224 352a32 32 0 1 1 64 0 32 32 0 1 1 -64 0z" class=""></path></svg><span class="d-none d-md-block">Help</span></a><button class="btn d-flex align-items-center header__link" require-admin-display="flex" style="display: none !important"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="arrow-right-from-bracket" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="mr-md-2 svg-inline--fa fa-arrow-right-from-bracket"><path fill="currentColor" d="M502.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L402.7 224 192 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l210.7 0-73.4 73.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l128-128zM160 96c17.7 0 32-14.3 32-32s-14.3-32-32-32L96 32C43 32 0 75 0 128L0 384c0 53 43 96 96 96l64 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-64 0c-17.7 0-32-14.3-32-32l0-256c0-17.7 14.3-32 32-32l64 0z" class=""></path></svg><span class="d-md-block d-none">Uitloggen</span></button></div></div></div><!----></div><div class="vgtc-hero__content__text d-none d-lg-block"><div class="vgtc-hero__content__text__languages">Woordenboek Vlaamse Gebarentaal</div></div><div class="d-flex flex-row"><button class="menu-button d-md-none"><span class="menu-button__icon-bar"></span><span class="menu-button__icon-bar"></span><span class="menu-button__icon-bar"></span></button><div class="flex-grow-1 pr-2 pr-sm-0"><div class="d-flex text-white justify-content-end mb-1 mr-2"><span class="mr-2">Zoek in combinaties</span><div class="custom-control custom-switch"><input type="checkbox" name="check-button" class="custom-control-input" value="true" id="__BVID__46"><label class="custom-control-label" for="__BVID__46"></label></div></div><div class="vgtc-searchbar align-self-stretch d-flex"><div class="d-none d-sm-block"><div class="vgtc-searchbar__input-prefix d-flex justify-content-center"><span class="align-self-center">T</span></div></div><div data-v-274f1e68="" id="typeahead-15487" role="combobox" aria-haspopup="listbox" aria-owns="result-list-15487" aria-expanded="false" class="flex-grow-1"><div data-v-274f1e68="" class=""><!----><input data-v-274f1e68="" id="typeahead-input-15487" type="text" role="searchbox" aria-multiline="false" aria-autocomplete="list" aria-controls="result-list-15487" aria-activedescendant="selected-option-15487" placeholder="Zoek op woorden, letters, cijfers of thema's en onderwerpen" aria-label="Zoek op woorden, letters, cijfers of thema's en onderwerpen" class="vgtc-searchbar__input"><!----></div><div data-v-274f1e68="" class="list-group shadow vbt-autcomplete-list" id="result-list-15487" role="listbox" style="display: none; width: 930px;"></div></div><div class="vgtc-searchbar__input-suffix d-flex justify-content-center"><svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="magnifying-glass" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="align-self-center svg-inline--fa fa-magnifying-glass"><path fill="currentColor" d="M368 208A160 160 0 1 0 48 208a160 160 0 1 0 320 0zM337.1 371.1C301.7 399.2 256.8 416 208 416C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208c0 48.8-16.8 93.7-44.9 129.1L505 471c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0L337.1 371.1z" class=""></path></svg></div></div></div></div></div></nav></div><div class="container pt-3 pt-md-4 pb-5"><div class="pt-1"><div class="ml-2 d-flex align-items-center search-header__label"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="magnifying-glass" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="mr-2 mb-2 svg-inline--fa fa-magnifying-glass"><path fill="currentColor" d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" class=""></path></svg><div class="ml-2 mb-2">Zoek op</div></div><div class="row no-gutters mr-n4 d-none d-md-flex"><div class="col-xl col-md-6 mt-1 mb-1"><div class="search-option-card px-3 px-md-0 d-flex align-items-center justify-content-around flex-grow-1 mr-4 menu-item"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="hand" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="ml-1 mr-3 mr-md-1 text-large search-option-card__icon svg-inline--fa fa-hand"><path fill="currentColor" d="M288 32c0-17.7-14.3-32-32-32s-32 14.3-32 32V240c0 8.8-7.2 16-16 16s-16-7.2-16-16V64c0-17.7-14.3-32-32-32s-32 14.3-32 32V336c0 1.5 0 3.1 .1 4.6L67.6 283c-16-15.2-41.3-14.6-56.6 1.4s-14.6 41.3 1.4 56.6L124.8 448c43.1 41.1 100.4 64 160 64H304c97.2 0 176-78.8 176-176V128c0-17.7-14.3-32-32-32s-32 14.3-32 32V240c0 8.8-7.2 16-16 16s-16-7.2-16-16V64c0-17.7-14.3-32-32-32s-32 14.3-32 32V240c0 8.8-7.2 16-16 16s-16-7.2-16-16V32z" class=""></path></svg><span class="text-normal-small text-normal-small--wide">Handvorm <!----></span><div class="ml-1 mr-1 d-none d-md-block search-option-card__active-indicator--inactive__arrow"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="chevron-right" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" class="svg-inline--fa fa-chevron-right"><path fill="currentColor" d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" class=""></path></svg></div><div class="ml-1 mr-1 icon-dark icon-bolder d-md-none ml-auto"><svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="magnifying-glass" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-magnifying-glass"><path fill="currentColor" d="M368 208A160 160 0 1 0 48 208a160 160 0 1 0 320 0zM337.1 371.1C301.7 399.2 256.8 416 208 416C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208c0 48.8-16.8 93.7-44.9 129.1L505 471c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0L337.1 371.1z" class=""></path></svg></div></div></div><div class="col-xl col-md-6 mt-1 mb-1"><div class="search-option-card px-3 px-md-0 d-flex align-items-center justify-content-around flex-grow-1 mr-4 menu-item"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="user" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="ml-1 mr-3 mr-md-1 text-large search-option-card__icon svg-inline--fa fa-user"><path fill="currentColor" d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304H178.3z" class=""></path></svg><span class="text-normal-small text-normal-small--wide">Locatie <!----></span><div class="ml-1 mr-1 d-none d-md-block search-option-card__active-indicator--inactive__arrow"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="chevron-right" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" class="svg-inline--fa fa-chevron-right"><path fill="currentColor" d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" class=""></path></svg></div><div class="ml-1 mr-1 icon-dark icon-bolder d-md-none ml-auto"><svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="magnifying-glass" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-magnifying-glass"><path fill="currentColor" d="M368 208A160 160 0 1 0 48 208a160 160 0 1 0 320 0zM337.1 371.1C301.7 399.2 256.8 416 208 416C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208c0 48.8-16.8 93.7-44.9 129.1L505 471c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0L337.1 371.1z" class=""></path></svg></div></div></div><div class="col-xl col-md-6 mt-1 mb-1"><div class="search-option-card px-3 px-md-0 d-flex align-items-center justify-content-around flex-grow-1 mr-4 menu-item"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="table-cells-large" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="ml-1 mr-3 mr-md-1 text-large search-option-card__icon svg-inline--fa fa-table-cells-large"><path fill="currentColor" d="M448 96V224H288V96H448zm0 192V416H288V288H448zM224 224H64V96H224V224zM64 288H224V416H64V288zM64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64z" class=""></path></svg><span class="text-normal-small text-normal-small--wide">Categorie <!----></span><div class="ml-1 mr-1 d-none d-md-block search-option-card__active-indicator--inactive__arrow"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="chevron-right" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" class="svg-inline--fa fa-chevron-right"><path fill="currentColor" d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" class=""></path></svg></div><div class="ml-1 mr-1 icon-dark icon-bolder d-md-none ml-auto"><svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="magnifying-glass" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-magnifying-glass"><path fill="currentColor" d="M368 208A160 160 0 1 0 48 208a160 160 0 1 0 320 0zM337.1 371.1C301.7 399.2 256.8 416 208 416C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208c0 48.8-16.8 93.7-44.9 129.1L505 471c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0L337.1 371.1z" class=""></path></svg></div></div></div><div class="col-xl col-md-6 mt-1 mb-1"><div class="search-option-card px-3 px-md-0 d-flex align-items-center justify-content-around flex-grow-1 mr-4 menu-item"><svg viewBox="0 0 500 412" xmlns="http://www.w3.org/2000/svg" class="vgtc-svg-icon fa svg-search-type-icon ml-1 mr-3 mr-md-1 text-large search-option-card__icon vgtc-svg-icon--fill"><g id="high-fidelity-research" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g id="Artboard" transform="translate(-6 -114)" stroke="currentColor" stroke-width="20"><g id="Belgium" transform="translate(14 121.5)"><g id="map" transform="translate(0 .5)"><path d="M251.726.005a4.036 4.036 0 00-2.32.665L233.65 11.058a3.947 3.947 0 00-1.638 4.357l2.783 9.9-15.944-1.904c-1.912-.226-3.716.927-4.296 2.746l-4.663 14.62-43.883 16.294-5.346-9.93a4.008 4.008 0 00-3.172-2.08l-28.874-2.6a4.044 4.044 0 00-1.68.208l-13.36 4.627-5.063-20.037a3.977 3.977 0 00-2.28-2.67 4.042 4.042 0 00-3.528.153L2.084 79.313A3.947 3.947 0 00.372 84.46l33.254 71.032c.889 1.897 3.114 2.784 5.083 2.027l15.513-5.968 24.337-6.021 20.597 52.179c.692 1.754 2.536 2.784 4.411 2.464l19.126-3.286 10.273 3.38 9.862 29.303a4.002 4.002 0 003.697 2.714l31.7.852 31.341 11.636-6.522 43.6a3.954 3.954 0 002.037 4.066l28.874 15.587a4.042 4.042 0 003.277.25l34.125-12.125a3.993 3.993 0 002.227-1.955L287.9 265.86l3.739.925-6.334 34.45c-.07.377-.083.763-.042 1.144l3.498 32.048c.24 2.171 2.207 3.743 4.4 3.514l15.23-1.58 37.497 23.916 23.16 33.972c1.186 1.744 3.541 2.268 5.367 1.195l51.624-30.31a3.97 3.97 0 001.845-2.456c.26-1.03.09-2.12-.469-3.025l-20.817-33.795 24.535-58.293 26.469-2.381a4.012 4.012 0 003.044-1.854c.664-1.056.79-2.36.338-3.522l-3.078-7.892 14.253-7.06a3.976 3.976 0 002.059-2.465l9.631-33.785a3.948 3.948 0 00-1.733-4.44l-13.76-8.506-8.811-7.393 4.82-10.242a3.93 3.93 0 00-.02-3.4l-11.365-23.386a4 4 0 00-2.878-2.184l-49.554-9.14-5.136-11.438 7.163-8.496c.377-.448.65-.974.798-1.539L415.62 71.66a3.933 3.933 0 00-.544-3.191 4.01 4.01 0 00-2.765-1.728l-22.456-3.181-11.301-21.577a4.02 4.02 0 00-4.412-2.049l-28.852 6.187-3.246-9.628c-.674-1.995-2.803-3.122-4.852-2.569l-6.344 1.716-13.465-29.001a3.995 3.995 0 00-2.548-2.159 4.04 4.04 0 00-3.313.516l-15.713 10.377-1.723-11.968a3.977 3.977 0 00-2.697-3.2 4.035 4.035 0 00-4.098.954l-12.016 11.906-17.058.676-2.71-10.731a3.997 3.997 0 00-3.78-3.005z" id="Belgium"></path></g></g></g></g></svg><span class="text-normal-small text-normal-small--wide">Regio <!----></span><div class="ml-1 mr-1 d-none d-md-block search-option-card__active-indicator--inactive__arrow"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="chevron-right" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" class="svg-inline--fa fa-chevron-right"><path fill="currentColor" d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" class=""></path></svg></div><div class="ml-1 mr-1 icon-dark icon-bolder d-md-none ml-auto"><svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="magnifying-glass" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-magnifying-glass"><path fill="currentColor" d="M368 208A160 160 0 1 0 48 208a160 160 0 1 0 320 0zM337.1 371.1C301.7 399.2 256.8 416 208 416C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208c0 48.8-16.8 93.7-44.9 129.1L505 471c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0L337.1 371.1z" class=""></path></svg></div></div></div><div class="col-xl col-md-6 mt-1 mb-1"><div class="search-option-card px-3 px-md-0 d-flex align-items-center justify-content-around flex-grow-1 mr-4 menu-item"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="tag" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="ml-1 mr-3 mr-md-1 text-large search-option-card__icon svg-inline--fa fa-tag"><path fill="currentColor" d="M0 80V229.5c0 17 6.7 33.3 18.7 45.3l176 176c25 25 65.5 25 90.5 0L418.7 317.3c25-25 25-65.5 0-90.5l-176-176c-12-12-28.3-18.7-45.3-18.7H48C21.5 32 0 53.5 0 80zm112 32a32 32 0 1 1 0 64 32 32 0 1 1 0-64z" class=""></path></svg><span class="text-normal-small text-normal-small--wide">Label <!----></span><div class="ml-1 mr-1 d-none d-md-block search-option-card__active-indicator--inactive__arrow"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="chevron-right" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" class="svg-inline--fa fa-chevron-right"><path fill="currentColor" d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" class=""></path></svg></div><div class="ml-1 mr-1 icon-dark icon-bolder d-md-none ml-auto"><svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="magnifying-glass" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-magnifying-glass"><path fill="currentColor" d="M368 208A160 160 0 1 0 48 208a160 160 0 1 0 320 0zM337.1 371.1C301.7 399.2 256.8 416 208 416C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208c0 48.8-16.8 93.7-44.9 129.1L505 471c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0L337.1 371.1z" class=""></path></svg></div></div></div></div><!----></div><div data-v-771b33b6="" class="empty-state pt-0 row align-items-stretch mt-4 mx-0"><div data-v-771b33b6="" class="col-md-6"><div data-v-771b33b6="" class="px-3 py-3"><div data-v-771b33b6="" class="empty-state__sign-ot-week__header"><svg data-v-771b33b6="" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="hands" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" class="empty-state__sign-ot-week__header__icon mr-2 svg-inline--fa fa-hands"><path data-v-771b33b6="" fill="currentColor" d="M544 160l-.1 72.6c-.1 52.2-24 101-64 133.1c.1-1.9 .1-3.8 .1-5.7v-8c0-71.8-37-138.6-97.9-176.7l-60.2-37.6c-8.6-5.4-17.9-8.4-27.3-9.4L248.7 48.8c-6.6-11.5-2.7-26.2 8.8-32.8s26.2-2.7 32.8 8.8l78 135.1c3.3 5.7 10.7 7.7 16.4 4.4s7.7-10.7 4.4-16.4l-62-107.4c-6.6-11.5-2.7-26.2 8.8-32.8S362 5 368.6 16.5l68 117.8 0 0 0 0 43.3 75L480 160c0-17.7 14.4-32 32-32s32 14.4 32 32zM243.9 88.5L268.5 131c-13.9 4.5-26.4 13.7-34.7 27c-.9 1.4-1.7 2.9-2.5 4.4l-28.9-50c-6.6-11.5-2.7-26.2 8.8-32.8s26.2-2.7 32.8 8.8zm-46.4 63.7l26.8 46.4c.6 6 2.1 11.8 4.3 17.4H224 210.7l0 0H179l-23-39.8c-6.6-11.5-2.7-26.2 8.8-32.8s26.2-2.7 32.8 8.8zM260.9 175c9.4-15 29.1-19.5 44.1-10.2l60.2 37.6C416.7 234.7 448 291.2 448 352v8c0 83.9-68.1 152-152 152H120c-13.3 0-24-10.7-24-24s10.7-24 24-24h92c6.6 0 12-5.4 12-12s-5.4-12-12-12H88c-13.3 0-24-10.7-24-24s10.7-24 24-24H212c6.6 0 12-5.4 12-12s-5.4-12-12-12H56c-13.3 0-24-10.7-24-24s10.7-24 24-24H212c6.6 0 12-5.4 12-12s-5.4-12-12-12H88c-13.3 0-24-10.7-24-24s10.7-24 24-24H224l0 0 0 0h93.2L271 219.1c-15-9.4-19.5-29.1-10.2-44.1z" class=""></path></svg><span data-v-771b33b6="" class="empty-state__sign-ot-week__header__text">Gebaar van de week</span></div><div data-v-771b33b6="" class="divider divider--light my-1"></div><!----><div data-v-771b33b6="" class="search-result d-flex flex-column justify-content-start mt-4 mx-xl-5 px-lg-5"><span class="search-result__region d-flex align-items-end flex-grow-1"><svg viewBox="0 0 995 819" xmlns="http://www.w3.org/2000/svg" class="search-result__region__icon"><g fill="none" fill-rule="evenodd" class="handover"><g class="Puppets-brackets"><g transform="translate(3 3)" class="Belgium_puppet"><path d="M514.375.01a8.218 8.218 0 00-4.743 1.366l-32.194 21.327a8.121 8.121 0 00-3.348 8.945l5.688 20.323-32.58-3.907c-3.908-.464-7.595 1.903-8.778 5.636l-9.53 30.016-89.669 33.452-10.924-20.387a8.188 8.188 0 00-6.482-4.27l-59-5.337a8.227 8.227 0 00-3.434.427l-27.3 9.5-10.345-41.138a8.154 8.154 0 00-4.659-5.482 8.225 8.225 0 00-7.21.316L4.26 162.832C.478 164.89-1.051 169.51.76 173.4l67.95 145.83c1.817 3.895 6.363 5.717 10.388 4.163l31.7-12.254 49.728-12.36 42.087 107.124c1.416 3.602 5.183 5.717 9.015 5.06l39.082-6.746 20.99 6.938 20.154 60.16a8.181 8.181 0 007.554 5.571l64.774 1.75 64.043 23.89-13.328 89.512a8.13 8.13 0 004.164 8.347l59 32.001a8.225 8.225 0 006.696.513l69.731-24.892a8.172 8.172 0 004.55-4.014l29.253-58.174 7.64 1.9-12.941 70.727a8.1 8.1 0 00-.086 2.348l7.147 65.795c.489 4.458 4.509 7.684 8.993 7.216l31.12-3.245 76.62 49.1 47.325 69.745c2.424 3.58 7.235 4.658 10.967 2.455l105.487-62.23a8.147 8.147 0 003.771-5.04 8.105 8.105 0 00-.959-6.21l-42.538-69.382 50.136-119.678 54.085-4.888a8.192 8.192 0 006.22-3.806 8.105 8.105 0 00.69-7.231l-6.288-16.204 29.124-14.495a8.153 8.153 0 004.207-5.06l19.681-69.36a8.123 8.123 0 00-3.541-9.115l-28.116-17.463-18.007-15.179 9.851-21.028a8.103 8.103 0 00-.043-6.98l-23.222-48.013a8.18 8.18 0 00-5.88-4.483l-101.26-18.765-10.495-23.483 14.638-17.441c.77-.921 1.327-2 1.63-3.16l25.026-96.045a8.106 8.106 0 00-1.112-6.552 8.19 8.19 0 00-5.649-3.546l-45.886-6.532-23.094-44.298c-1.703-3.267-5.399-4.991-9.014-4.205l-58.957 12.702-6.632-19.769c-1.377-4.094-5.727-6.408-9.915-5.273L676.05 73.17l-27.515-59.54a8.174 8.174 0 00-5.207-4.432 8.223 8.223 0 00-6.77 1.059l-32.107 21.305-3.52-24.572a8.154 8.154 0 00-5.511-6.57 8.217 8.217 0 00-8.375 1.96l-24.553 24.443-34.854 1.388L522.1 6.179c-.89-3.55-4.05-6.073-7.726-6.17z" fill="#F3F3F5" id="Belgium" stroke="#797272" stroke-width="25"></path><g transform="translate(0 49)"><path d="M207.78 265.271c1.895-2.556 13.783-18.063 35.662-46.521l-23.464-33.66c-1.302-2.424 5.136-60.852 2.387-61.1L215.2 84.453l17.523-36.962C225.894 16.328 220.886.747 217.701.747 212.92.747 4.626 113.396.362 119.013c-2.84 3.74 71.865 156.838 74.914 156.838 2.033 0 14.796-4.945 38.29-14.834l47.515-11.316c30.56 11.154 46.125 16.344 46.699 15.57z" id="rectangle" fill="#aebde0" class="West-Vlaanderen selectable" style="opacity: 1;"></path><path d="M207.78 265.271c1.895-2.556 13.783-18.063 35.662-46.521l-23.464-33.66c-1.302-2.424 5.136-60.852 2.387-61.1L215.2 84.453l17.523-36.962C225.894 16.328 220.886.747 217.701.747 212.92.747 4.626 113.396.362 119.013c-2.84 3.74 71.865 156.838 74.914 156.838 2.033 0 14.796-4.945 38.29-14.834l47.515-11.316c30.56 11.154 46.125 16.344 46.699 15.57z" id="bracket" stroke="#4362AD" stroke-width="16" class="West-Vlaanderen_region-outline" style="stroke-opacity: 1;"></path></g><g transform="translate(206 51)"><path d="M79.229 268c-54.379 0-80.62-1.28-78.722-3.837 1.896-2.559 13.792-18.078 35.687-46.557l-23.48-33.684c-1.303-2.426 5.139-60.898 2.388-61.145l-7.17-39.569 17.535-36.99 27.974-13.43 61.932 8.825 17.44 24.741 89.84-33.566C230.472 9.284 234.38-1.45 234.38.588c1.261 3.179 7.468 32.815 18.621 88.908l-38.71 22.338 15.117 26.116-41.262 83.348-29.516 36.929-59.498-15.204L79.23 268z" id="rectangle" fill="#aebde0" class="Oost-Vlaanderen selectable" style="opacity: 1;"></path><path d="M79.229 268c-54.379 0-80.62-1.28-78.722-3.837 1.896-2.559 13.792-18.078 35.687-46.557l-23.48-33.684c-1.303-2.426 5.139-60.898 2.388-61.145l-7.17-39.569 17.535-36.99 27.974-13.43 61.932 8.825 17.44 24.741 89.84-33.566C230.472 9.284 234.38-1.45 234.38.588c1.261 3.179 7.468 32.815 18.621 88.908l-38.71 22.338 15.117 26.116-41.262 83.348-29.516 36.929-59.498-15.204L79.23 268z" id="bracket" stroke="#4362AD" stroke-width="16" class="Oost-Vlaanderen_region-outline" style="stroke-opacity: 1;"></path></g><g transform="translate(418 1)"><path d="M95.835.01a8.25 8.25 0 00-4.746 1.36L58.877 22.614a8.072 8.072 0 00-3.35 8.91l5.69 20.244-32.598-3.892c-3.91-.462-4.49.173-5.675 3.892l17.663 88.25C13.846 152.118.466 159.51.466 162.195c0 2.685 19.47 12.581 58.411 29.69l134.858-8.515c59.984-30.483 91.117-47.555 93.397-51.216 3.42-5.491-9.535-27.376-12.208-33.24.942-1.982 4.599-3.762 10.97-5.34l-5.398-18.947c-1.377-4.078-5.73-6.383-9.92-5.252l-12.972 3.508-27.53-59.307a8.169 8.169 0 00-5.21-4.414 8.259 8.259 0 00-6.773 1.055l-32.126 21.222-3.522-24.476c-.44-3.04-2.574-5.573-5.515-6.545a8.248 8.248 0 00-8.38 1.952l-24.567 24.348-34.875 1.382-5.54-21.945c-.89-3.535-4.052-6.05-7.731-6.145z" id="rectangle" fill="#aebde0" class="Antwerpen selectable" style="opacity: 1;"></path><path d="M95.835.01a8.25 8.25 0 00-4.746 1.36L58.877 22.614a8.072 8.072 0 00-3.35 8.91l5.69 20.244-32.598-3.892c-3.91-.462-4.49.173-5.675 3.892l17.663 88.25C13.846 152.118.466 159.51.466 162.195c0 2.685 19.47 12.581 58.411 29.69l134.858-8.515c59.984-30.483 91.117-47.555 93.397-51.216 3.42-5.491-9.535-27.376-12.208-33.24.942-1.982 4.599-3.762 10.97-5.34l-5.398-18.947c-1.377-4.078-5.73-6.383-9.92-5.252l-12.972 3.508-27.53-59.307a8.169 8.169 0 00-5.21-4.414 8.259 8.259 0 00-6.773 1.055l-32.126 21.222-3.522-24.476c-.44-3.04-2.574-5.573-5.515-6.545a8.248 8.248 0 00-8.38 1.952l-24.567 24.348-34.875 1.382-5.54-21.945c-.89-3.535-4.052-6.05-7.731-6.145z" id="bracket" stroke="#4362AD" stroke-width="16" class="Antwerpen_region-outline" style="stroke-opacity: 1;"></path></g><g transform="translate(611 81)"><path d="M93.758 49.377C92.33 54.078 61.078 72.091 0 103.415l20.1 13.174c16.768-5.217 25.91-7.826 27.429-7.826 1.518 0 .014 9.526-4.513 28.579l-12.954 12.146 10.019 12.574c15.57-4.749 23.356-6.432 23.356-5.05 0 7.524-18.372 77.85-15.908 80.084 2.236 2.028 54.324-11.27 61.019-11.27 2.458 3.732 5.643 8.778 9.555 15.138l29.018-3.868 23.834-30.947h34.335l-10.447-23.485 14.57-17.443c.767-.92 1.322-2 1.624-3.16l24.91-96.052a8.139 8.139 0 00-1.107-6.552 8.149 8.149 0 00-5.623-3.547l-45.675-6.533-22.988-44.3A8.15 8.15 0 00151.581.87L92.895 13.573c-8.15.826-12.224 2.647-12.224 5.464 0 4.226 15.229 23.288 13.087 30.34z" id="limburg" fill="#aebde0" class="Limburg selectable" style="opacity: 1;"></path><path d="M93.758 49.377C92.33 54.078 61.078 72.091 0 103.415l20.1 13.174c16.768-5.217 25.91-7.826 27.429-7.826 1.518 0 .014 9.526-4.513 28.579l-12.954 12.146 10.019 12.574c15.57-4.749 23.356-6.432 23.356-5.05 0 7.524-18.372 77.85-15.908 80.084 2.236 2.028 54.324-11.27 61.019-11.27 2.458 3.732 5.643 8.778 9.555 15.138l29.018-3.868 23.834-30.947h34.335l-10.447-23.485 14.57-17.443c.767-.92 1.322-2 1.624-3.16l24.91-96.052a8.139 8.139 0 00-1.107-6.552 8.149 8.149 0 00-5.623-3.547l-45.675-6.533-22.988-44.3A8.15 8.15 0 00151.581.87L92.895 13.573c-8.15.826-12.224 2.647-12.224 5.464 0 4.226 15.229 23.288 13.087 30.34z" id="bracket" stroke="#4362AD" stroke-width="16" class="Limburg_region-outline" style="stroke-opacity: 1;"></path></g><g transform="translate(346 167)"><path d="M264.758 17.255l20.23 13.17c16.874-5.216 26.075-7.824 27.603-7.824 1.529 0 .015 9.524-4.54 28.571l-13.038 12.143 10.083 12.57c15.67-4.746 23.506-6.43 23.506-5.048 0 7.523-18.49 77.83-16.01 80.064 0 0-7.305 2.034-21.918 6.098l-18.742-29.028-21.231 6.306-27.295-18.287c-24.448-1.57-37.116-1.69-38.006-.358-3.085 4.96 13.989 25.526 4.311 24.923-9.312-.58-23.815-.58-43.509 0l-54.381 19.332-29.908-16.827-29.503 16.827c-17.133.008-26.805-.165-29.016-.52-6.182-.208-1.734-5.643 13.343-16.307l29.838-38.758 41.257-83.05C86.215 16.727 82.422 9.83 76.453.56c-3.704-2.548 14.05 5.72 53.262 24.808l135.043-8.113z" id="rectangle" fill="#aebde0" class="Vlaams-Brabant selectable" style="opacity: 1;"></path><path d="M264.758 17.255l20.23 13.17c16.874-5.216 26.075-7.824 27.603-7.824 1.529 0 .015 9.524-4.54 28.571l-13.038 12.143 10.083 12.57c15.67-4.746 23.506-6.43 23.506-5.048 0 7.523-18.49 77.83-16.01 80.064 0 0-7.305 2.034-21.918 6.098l-18.742-29.028-21.231 6.306-27.295-18.287c-24.448-1.57-37.116-1.69-38.006-.358-3.085 4.96 13.989 25.526 4.311 24.923-9.312-.58-23.815-.58-43.509 0l-54.381 19.332-29.908-16.827-29.503 16.827c-17.133.008-26.805-.165-29.016-.52-6.182-.208-1.734-5.643 13.343-16.307l29.838-38.758 41.257-83.05C86.215 16.727 82.422 9.83 76.453.56c-3.704-2.548 14.05 5.72 53.262 24.808l135.043-8.113z" id="bracket" stroke="#4362AD" stroke-width="16" class="Vlaams-Brabant_region-outline" style="stroke-opacity: 1;"></path></g></g></g></g></svg><span class="ml-2">Vlaanderen</span></span><div class="mt-1"><div class="video-player d-flex flex-column search-result__video"><div class="video-player__container"><video muted="muted" src="https://vlaamsegebarentaal.be/signbank/dictionary/protected_media/glossvideo/BR/BRANDSLANG-A-1940.mp4" playsinline="" class="video-player__video"></video><!----><!----></div><div class="video-player__controls mt-2 d-flex justify-content-between align-items-center mb-1"><div><button class="video-player__controls__button ml-1"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="play" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" class="svg-inline--fa fa-play"><path fill="currentColor" d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z" class=""></path></svg></button><button class="video-player__controls__button"><svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="turtle" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" class="svg-inline--fa fa-turtle"><path fill="currentColor" d="M336 240V208c0-70.7-57.3-128-128-128S80 137.3 80 208v32H336zm48-32v41.2c0 21.4-17.4 38.8-38.8 38.8H70.8C49.4 288 32 270.6 32 249.2V208c0-97.2 78.8-176 176-176s176 78.8 176 176zm96 80c-8.3 0-16.3-1.6-23.6-4.5C440.3 328 400.4 361 352 367v1 72c0 22.1-17.9 40-40 40H264c-22.1 0-40-17.9-40-40V368H192v72c0 22.1-17.9 40-40 40H104c-22.1 0-40-17.9-40-40V368H24c-13.3 0-24-10.7-24-24s10.7-24 24-24H64h48 32 48 32 48 32 32c44.2 0 80-35.8 80-80V224 192 176c0-35.3 28.7-64 64-64c53 0 96 43 96 96v16c0 35.3-28.7 64-64 64H480zM272 368v64h32V368H272zm-160 0v64h32V368H112zM496 224a16 16 0 1 0 0-32 16 16 0 1 0 0 32z" class=""></path></svg></button><button class="video-player__controls__button"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="repeat" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-repeat"><path fill="currentColor" d="M0 224c0 17.7 14.3 32 32 32s32-14.3 32-32c0-53 43-96 96-96H320v32c0 12.9 7.8 24.6 19.8 29.6s25.7 2.2 34.9-6.9l64-64c12.5-12.5 12.5-32.8 0-45.3l-64-64c-9.2-9.2-22.9-11.9-34.9-6.9S320 19.1 320 32V64H160C71.6 64 0 135.6 0 224zm512 64c0-17.7-14.3-32-32-32s-32 14.3-32 32c0 53-43 96-96 96H192V352c0-12.9-7.8-24.6-19.8-29.6s-25.7-2.2-34.9 6.9l-64 64c-12.5 12.5-12.5 32.8 0 45.3l64 64c9.2 9.2 22.9 11.9 34.9 6.9s19.8-16.6 19.8-29.6V448H352c88.4 0 160-71.6 160-160z" class=""></path></svg></button></div><div><a href="https://woordenboek.vlaamsegebarentaal.be/api/video?url=https://vlaamsegebarentaal.be/signbank/dictionary/protected_media/glossvideo/BR/BRANDSLANG-A-1940.mp4" download="BRANDSLANG-VLA.mp4"><button class="video-player__controls__button"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="cloud-arrow-down" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" class="svg-inline--fa fa-cloud-arrow-down"><path fill="currentColor" d="M144 480C64.5 480 0 415.5 0 336c0-62.8 40.2-116.2 96.2-135.9c-.1-2.7-.2-5.4-.2-8.1c0-88.4 71.6-160 160-160c59.3 0 111 32.2 138.7 80.2C409.9 102 428.3 96 448 96c53 0 96 43 96 96c0 12.2-2.3 23.8-6.4 34.6C596 238.4 640 290.1 640 352c0 70.7-57.3 128-128 128H144zm79-167l80 80c9.4 9.4 24.6 9.4 33.9 0l80-80c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-39 39V184c0-13.3-10.7-24-24-24s-24 10.7-24 24V318.1l-39-39c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9z" class=""></path></svg></button></a><button class="video-player__controls__button"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="expand" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="svg-inline--fa fa-expand"><path fill="currentColor" d="M32 32C14.3 32 0 46.3 0 64v96c0 17.7 14.3 32 32 32s32-14.3 32-32V96h64c17.7 0 32-14.3 32-32s-14.3-32-32-32H32zM64 352c0-17.7-14.3-32-32-32s-32 14.3-32 32v96c0 17.7 14.3 32 32 32h96c17.7 0 32-14.3 32-32s-14.3-32-32-32H64V352zM320 32c-17.7 0-32 14.3-32 32s14.3 32 32 32h64v64c0 17.7 14.3 32 32 32s32-14.3 32-32V64c0-17.7-14.3-32-32-32H320zM448 352c0-17.7-14.3-32-32-32s-32 14.3-32 32v64H320c-17.7 0-32 14.3-32 32s14.3 32 32 32h96c17.7 0 32-14.3 32-32V352z" class=""></path></svg></button></div></div></div><div></div><div class="search-result__info mt-2 d-flex justify-content-between align-items-start"><span>waterslang, brandslang</span><a href="/gloss/BRANDSLANG?sid=1940" class="btn btn-sm search-result__info__button flex-shrink-0 d-flex align-items-center"><svg aria-hidden="true" focusable="false" data-prefix="fal" data-icon="book" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="mr-2 svg-inline--fa fa-book"><path fill="currentColor" d="M64 0C28.7 0 0 28.7 0 64L0 448l0 0c0 35.3 28.7 64 64 64H432c8.8 0 16-7.2 16-16s-7.2-16-16-16H416V413.3c18.6-6.6 32-24.4 32-45.3V48c0-26.5-21.5-48-48-48H64zM384 416v64H64c-17.7 0-32-14.3-32-32s14.3-32 32-32H384zM64 384c-11.7 0-22.6 3.1-32 8.6L32 64c0-17.7 14.3-32 32-32H96V384H64zm64 0V32H400c8.8 0 16 7.2 16 16V368c0 8.8-7.2 16-16 16H128zm48-240c0 8.8 7.2 16 16 16H352c8.8 0 16-7.2 16-16s-7.2-16-16-16H192c-8.8 0-16 7.2-16 16zm0 96c0 8.8 7.2 16 16 16H352c8.8 0 16-7.2 16-16s-7.2-16-16-16H192c-8.8 0-16 7.2-16 16z" class=""></path></svg><span>Toon detail</span></a></div></div></div></div></div><div data-v-771b33b6="" class="col-md-6 empty-state__call-to-action d-flex flex-column justify-content-center align-items-center py-5"><span data-v-771b33b6="" class="empty-state__call-to-action__text px-5 text-medium text-bold"> Help jij mee onze nieuwe zoekfunctie te verbeteren? </span><svg data-v-771b33b6="" viewBox="0 0 2200 2655" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" class="icon-sign-buddy mt-4"><g fill="currentColor" fill-rule="nonzero"><path d="M1030.85 1118.6c7.985-4.778 15.084-17.798 15.084-27.665 0-12.559-11.061-30.966-31.173-51.878-34.382-35.754-70.393-51.979-115.142-51.882-40.979.087-80.443 18.82-111.739 53.045-29.834 32.621-36.492 53.329-22.823 71 14.492 18.735 33.994 13.98 53.985-13.158 21.912-29.749 48.647-43.862 83.09-43.862 35.449 0 60.03 13.1 83.326 44.409 18.359 24.674 29.422 29.544 45.392 19.991zM1571.64 1118.6c7.985-4.778 15.083-17.798 15.083-27.665 0-12.559-11.06-30.966-31.172-51.878-34.383-35.754-70.394-51.979-115.142-51.882-40.979.087-80.443 18.82-111.74 53.045-29.834 32.621-36.491 53.329-22.823 71 14.492 18.735 33.995 13.98 53.985-13.158 21.913-29.749 48.648-43.862 83.091-43.862 35.449 0 60.03 13.1 83.325 44.409 18.359 24.674 29.422 29.544 45.393 19.991zM967.754 1444.82c-12.604 6.916-23.808 25.762-23.808 40.046 0 18.179 17.458 44.824 49.204 75.095 54.271 51.755 111.113 75.242 181.746 75.1 64.683-.125 126.975-27.241 176.375-76.783 47.091-47.221 57.6-77.196 36.025-102.775-22.875-27.121-53.659-20.237-85.213 19.046-34.587 43.062-76.787 63.491-131.154 63.491-55.954 0-94.754-18.962-131.525-64.283-28.979-35.717-46.441-42.766-71.65-28.937z"></path><path d="M1122.52 6.608c-107.142 30.775-157.38 147.084-106.988 247.7 15.604 31.163 47.067 61.579 80.4 77.734l23.017 11.158v57.538H915.378c-219.05 0-237.417 1.387-300 22.662-67.858 23.071-144.096 72.733-190.6 124.163-22.213 24.57-57.662 77.383-74.579 111.112-16.133 32.158-38.688 103.175-46.009 144.842-4.454 25.35-6.274 66.862-6.274 143.054v107.341s4.929 145.613 1.683 291.479c-.991 44.55.433 135.909.848 191.242.227 30.246-127.043 66.52-136.856 135.334-.436 3.056-19.842-2.596-37.3-3.571-28.175-1.575-34.8-.484-56.15 9.246-28.575 13.021-43.825 26.541-59.188 52.462l-11.05 18.65v533.333l14.083 37.5c7.755 20.634 14.179 41.246 14.288 45.834.108 4.587-4.884 52.379-11.113 106.346-6.225 53.971-11.666 111.483-12.1 127.979-.725 27.379.121 30.883 9.842 40.675 19.433 19.575 58.608 17.85 72.129-3.175 3.534-5.496 10.821-43.85 17.234-90.675 6.087-44.446 11.741-81.779 12.5-82.542.77-.771 9.324 3.609 19.245 9.854 53.834 33.896 92.463 42.955 186.905 43.825 75.795.7 107.154-3.829 148.812-21.479 9.521-4.033 18.271-6.133 19.246-4.621.975 1.521 5.096 30.955 9.104 65.079 7.6 64.684 14.187 89.709 23.633 89.776 344.442 2.399 1545.61 1.324 1551.98-1.388 9.92-4.233 18.8-20.879 15.608-29.258-1.142-2.992-9.263-8.679-17.596-12.321-36.762-16.075-180.158-52.146-302.775-76.163a132251.97 132251.97 0 01-89.087-17.47c-12.58-2.48-18.834-9.921-58.371-69.442-57.196-86.113-68.963-95.45-122.779-97.433l-37.304-1.38 2.579-53.571c.843-17.488 1.811-30.774 3.287-42.251 2.142-16.65 5.352-29.494 10.8-45.844l11.509-34.521 60.316-2.571c62.304-2.654 94.467-8.529 149.604-27.325 115.08-39.229 206.855-114.508 266.871-218.917 42.734-74.333 62.354-143.254 65.759-230.95l2.291-59.129-.792-573.012V942.404c0-123.412-4.041-158.846-25.341-222.221-44.146-131.35-141.771-239.529-257.596-285.446-81.637-32.362-74.208-31.583-315.875-33.062l-217.854-1.333v-31.15c0-22.225 1.479-31.15 5.158-31.15 10.733 0 47.617-22.646 66.271-40.684 86.596-83.75 63.492-224.971-45.638-278.933-27.549-13.625-34.92-15.412-67.062-16.296-21.033-.579-44.067 1.292-55.158 4.479zm81.746 98.442c41.666 20.137 54.6 73.796 27.079 112.354-13.863 19.417-49.7 35.021-72.317 31.492-59.921-9.358-87.008-74.288-51.875-124.346 18.625-26.542 63.779-35.608 97.113-19.5zm487.695 408.604c38.496 14.334 51.692 21.288 88.492 46.625 72.612 49.988 127.354 132.521 149.221 224.984 6.45 27.287 7.283 69.841 8.717 446.824 1.029 270.238.074 433.68-2.721 465.08-7.53 84.52-33.213 154.5-78.809 214.683-54.841 72.392-124.025 118.921-213.312 143.467l-35.317 9.704-384.921 1.391-384.921 1.388 2.642-9.525c8.363-30.142 5.888-60.317-7.554-92.062-2.867-6.776 15.629-7.142 358.088-7.142 392.858 0 378.745.766 436.508-23.746 94.466-40.096 165.946-122.288 195.729-225.063l9.429-32.541V857.087l-11.604-32.937c-38.313-108.729-118.925-183.612-226.888-210.762-34.045-8.563-40.079-8.663-435.316-7.326-445.633 1.509-416.113-.358-480.554 30.38-76.171 36.325-136.988 108.345-166.896 197.629-7.229 21.583-7.784 46.629-8.9 402.579l-1.188 379.563-20.637-3.792c-21.567-3.967-45.238.087-67.063 11.483-10.762 5.621-11.191 5.404-13.658-6.896-4.525-22.596-2.954-774.604 1.683-803.971 19.117-121.029 94.692-228.016 196.896-278.733 23.413-11.616 55.1-23.966 69.842-27.217 22.554-4.974 106.35-5.82 510.317-5.158l483.333.792 29.362 10.933zm-75 209.809c52.167 25.625 89.671 68.149 108.4 122.908 7.504 21.937 7.871 41.867 7.871 425.2v402.183l-10.833 29.763c-14.3 39.283-45.442 85.479-71.704 106.366-11.667 9.279-35.717 23.917-52.78 32.125l-31.349 15.08-389.484 1.187c-378.967 1.158-390.221.967-416.862-7.167-34.129-10.421-81.396-43.07-104.517-72.196-23.408-29.483-44.05-74.604-49.2-107.541-2.662-17.017-4.292-164.284-4.412-398.808-.205-405.159-.021-408.721 23.429-458.334 20.775-43.946 76.366-91.246 121.604-103.475 15.146-4.092 109.721-5.079 427.975-4.462l408.529.795 33.333 16.376zm-1290.87 953.52c9.524 8.675 9.524 8.675 9.524 147.563 0 171.825 1.18 176.192 47.617 176.192 15.875 0 21.704-2.225 31.746-12.105l12.304-12.104v-126.983c0-146.029-1.396-140.475 35.317-140.475 19.046 0 23.471 1.558 30.954 10.912 8.454 10.571 8.729 15.475 8.729 155.955v145.037l-17.858 15.288c-37.463 32.079-50.396 37.058-102.779 39.583-46.825 2.254-47.321 2.387-59.125 15.762-8.367 9.484-11.905 17.859-11.905 28.175 0 17.463 9.425 37.25 20.634 43.321 4.366 2.363 33.929 4.3 65.675 4.3h57.737l35.317-24.108c41.271-28.171 112.854-81.746 146.033-109.296 21.242-17.637 26.788-20.092 51.388-22.746 15.079-1.629 35.225-1.629 44.446 0 14.683 2.592 16.633 4.208 15.079 12.5-.984 5.242-46.571 76.588-101.429 158.729-112.634 168.65-133.117 192.996-181.705 215.95-47.837 22.6-76.983 28.542-140.874 28.73-50.792.145-59.634-.976-89.684-11.346-18.25-6.304-42.308-17.23-53.171-24.15-40.883-26.05-71.696-71.088-82.033-119.9-3.471-16.396-4.475-91.863-3.483-262.5l1.387-239.484 15.475-3.162c20.638-4.217 44.984 3.975 51.871 17.45 3.767 7.371 5.329 36.308 5.471 101.387l.2 91.071 12.3 12.304c17.158 17.154 44.05 17.038 63.491-.283l13.492-12.021 1.192-145.037c.4-48.679.698-81.072 1.261-102.988 1.061-41.33 3.066-45.404 8.476-51.179 14.73-15.733 39.867-15.883 56.93-.342zm329.962 230.5c7.142 4.175 12.808 8.513 12.696 9.721-.108 1.213-15.475 9.513-34.525 18.65-19.046 9.142-35.65 17.175-37.3 18.058-1.633.871-2.975-20.237-2.975-46.824v-48.413l24.604 20.633c13.492 11.317 30.425 24.042 37.5 28.175zm193.808 267.859c11.755 22.921 18.83 60.316 21.546 113.887l2.7 53.175H847.52c-14.684 0-33.517 1.942-42.063 4.338-25.6 7.175-55.066 38.916-96.183 103.6l-38.342 60.316-31.35 7.538c-17.062 4.104-35.325 8.446-40.079 9.525-8.204 1.862-9.029-.796-13.692-44.046l-4.958-46.033 20.2-22.621c21.25-23.788 44.658-57.538 123.317-177.775l48.545-74.209h35.317c34.921 0 35.388.138 41.629 12.305zm536.546-9.842c1.321 1.275-1.425 13.808-6.15 28.096-6.383 19.3-9.033 41.266-10.517 87.3l-1.983 61.508H968.949v-49.208c0-45.238-6.883-88.179-18.959-118.254-2.604-6.484 1.896-7.263 48.721-8.475 98.413-2.542 385.325-3.255 387.696-.967zm158.534 326.108c17.733 26.984 32.341 50.463 32.341 51.984 0 1.529-182.937 2.779-406.35 2.779-223.412 0-406.35-.892-406.35-1.984 0-2.483 44.504-75.795 54.929-90.475l8.167-11.508h684.921l32.342 49.204z"></path></g></svg><button data-v-771b33b6="" class="mt-4 help-btn vgtc-button box-shadow-none"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="thumbs-up" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="mr-2 svg-inline--fa fa-thumbs-up"><path fill="currentColor" d="M313.4 32.9c26 5.2 42.9 30.5 37.7 56.5l-2.3 11.4c-5.3 26.7-15.1 52.1-28.8 75.2H464c26.5 0 48 21.5 48 48c0 18.5-10.5 34.6-25.9 42.6C497 275.4 504 288.9 504 304c0 23.4-16.8 42.9-38.9 47.1c4.4 7.3 6.9 15.8 6.9 24.9c0 21.3-13.9 39.4-33.1 45.6c.7 3.3 1.1 6.8 1.1 10.4c0 26.5-21.5 48-48 48H294.5c-19 0-37.5-5.6-53.3-16.1l-38.5-25.7C176 420.4 160 390.4 160 358.3V320 272 247.1c0-29.2 13.3-56.7 36-75l7.4-5.9c26.5-21.2 44.6-51 51.2-84.2l2.3-11.4c5.2-26 30.5-42.9 56.5-37.7zM32 192H96c17.7 0 32 14.3 32 32V448c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32V224c0-17.7 14.3-32 32-32z" class=""></path></svg><span>Ik help mee</span></button></div></div><!----><!----></div><!----></div></div><div class="footer pt-5 flex-shrink-0 d-none d-md-flex"><div class="container d-flex justify-content-around align-items-baseline"><div class="d-flex flex-grow-1 justify-content-between h-100"><div class="d-flex flex-column"><div class="vgtc-logo mt-n2"><svg version="1.1" id="Laag_1" xmlns="http://www.w3.org/2000/svg" x="0" y="0" viewBox="0 0 887.25 524.25" xml:space="preserve" class="vgtc-svg-icon"><path d="M208.16 70.88v8.53c-5.69.57-10.74 3.13-15.14 7.68-4.41 4.55-8.61 11.95-12.58 22.18l-69.96 183.44h-7.25l-78.5-188.99c-4.27-9.67-8.39-16.06-12.37-19.2-3.99-3.13-8.11-4.69-12.37-4.69v-8.96c14.78 1.14 27.3 1.71 37.54 1.71 21.9 0 40.38-.57 55.46-1.71v8.96c-10.52 0-18.2.79-23.04 2.35-4.84 1.57-7.25 5.62-7.25 12.16 0 3.99 1.56 10.24 4.69 18.77l52.47 129.69 46.93-123.29c3.13-8.53 4.69-15.21 4.69-20.05 0-6.54-2.49-11.31-7.47-14.29-4.98-2.99-13.01-4.91-24.1-5.76v-8.53c14.78.85 26.73 1.28 35.83 1.28 12.51 0 23.32-.43 32.42-1.28zM397.36 104.16c-3.56-3.41-5.33-8.39-5.33-14.93 0-5.69 1.42-12.22 4.27-19.62-7.4 3.13-13.22 6.61-17.49 10.45-4.27 3.84-8.11 8.61-11.52 14.29 6.54 9.96 9.81 22.61 9.81 37.97 0 22.47-6.83 39.32-20.48 50.55-13.65 11.24-31.72 16.85-54.18 16.85h-.43c-9.39 5.41-16.5 10.38-21.33 14.93-4.84 4.55-7.25 9.67-7.25 15.36 0 9.11 6.83 13.65 20.48 13.65h53.33c19.34 0 35.33 4.2 47.99 12.58 12.65 8.39 18.98 20.98 18.98 37.75 0 13.65-4.41 26.3-13.22 37.97-8.82 11.66-21.76 21.04-38.82 28.16-17.06 7.11-37.69 10.67-61.86 10.67-24.74 0-45.43-3.77-62.07-11.3-16.64-7.54-24.96-18.7-24.96-33.49 0-9.67 3.91-18.06 11.73-25.17 7.82-7.11 18.7-12.65 32.63-16.64l2.56 6.83c-6.26 1.99-11.24 5.97-14.93 11.94-3.7 5.97-5.55 12.65-5.55 20.05 0 13.08 5.9 23.1 17.7 30.08 11.8 6.97 27.66 10.45 47.57 10.45 21.9 0 40.67-4.2 56.31-12.58 15.64-8.39 23.46-21.4 23.46-39.03 0-10.24-3.63-18.2-10.88-23.89-7.25-5.69-20.12-8.53-38.61-8.53H303.7c-16.78 0-30.22-2.13-40.31-6.4-10.1-4.27-15.14-12.8-15.14-25.6 0-8.81 3.2-17.2 9.6-25.17 6.4-7.96 16.99-15.78 31.78-23.46-18.77-1.99-33.77-8.53-45.01-19.62-11.24-11.09-16.85-26.73-16.85-46.93 0-22.46 6.83-39.31 20.48-50.55 13.65-11.23 31.71-16.85 54.18-16.85 26.73 0 46.5 7.4 59.3 22.18 5.4-7.68 12.22-14 20.48-18.98 8.25-4.97 16.49-7.47 24.74-7.47 7.39 0 13.36 2.13 17.92 6.4 4.55 4.27 6.83 10.38 6.83 18.34 0 7.96-2.21 13.94-6.61 17.92-4.41 3.99-9.32 5.97-14.72 5.97-5.12-.01-9.46-1.72-13.01-5.13zm-69.11 74.44c5.83-8.96 8.75-24.38 8.75-46.29 0-21.9-2.92-37.33-8.75-46.29s-14.44-13.44-25.81-13.44c-11.38 0-19.98 4.48-25.81 13.44-5.83 8.96-8.75 24.39-8.75 46.29s2.91 37.33 8.75 46.29c5.83 8.96 14.43 13.44 25.81 13.44 11.37 0 19.98-4.48 25.81-13.44zM515.74 71.31h63.14v8.53h-63.14v165.1c0 12.8 2.35 22.04 7.04 27.73 4.69 5.69 11.45 8.53 20.26 8.53 8.81 0 16.35-3.55 22.61-10.67 6.25-7.11 11.52-18.77 15.78-34.98l8.53 2.13c-7.11 39.25-25.6 58.87-55.46 58.87-9.67 0-17.64-1.14-23.89-3.41-6.26-2.28-11.8-5.83-16.64-10.67-6.26-6.25-10.6-13.93-13.01-23.04-2.42-9.1-3.63-21.33-3.63-36.69V79.84H436.4v-8.53h40.95V6.04c15.92-.57 28.72-2.56 38.39-5.97v71.24zM732.39 67.47c9.39 2.28 17.2 5.41 23.46 9.39 7.39 4.55 13.15 10.31 17.28 17.28 4.12 6.97 6.19 14.58 6.19 22.82 0 9.96-3.13 18.13-9.39 24.53-6.26 6.4-14.36 9.6-24.32 9.6s-17.92-2.84-23.89-8.53c-5.97-5.69-8.96-13.37-8.96-23.04 0-8.53 2.7-15.92 8.11-22.18 5.4-6.25 12.08-10.52 20.05-12.8-2.28-3.13-5.76-5.61-10.45-7.47-4.69-1.85-9.75-2.77-15.14-2.77-17.06 0-30.36 9.32-39.89 27.94-9.53 18.63-14.29 43.02-14.29 73.16 0 30.44 5.4 52.33 16.21 65.7 10.81 13.37 24.32 20.05 40.53 20.05 9.67 0 19.41-2.56 29.22-7.68s18.7-14.08 26.66-26.88l7.25 2.56c-5.69 18.49-15.64 34.34-29.86 47.57-14.22 13.22-32.57 19.84-55.03 19.84-29.29 0-53.19-9.67-71.67-29.01-18.49-19.34-27.73-48.06-27.73-86.17 0-25.02 4.55-46.35 13.65-63.99 9.1-17.63 21.61-30.93 37.54-39.89 15.92-8.96 34.13-13.44 54.61-13.44 10.52 0 20.47 1.14 29.86 3.41zM877 239.6c6.54 5.83 9.81 13.87 9.81 24.1s-3.27 18.28-9.81 24.1c-6.55 5.83-15.36 8.75-26.45 8.75s-19.91-2.92-26.45-8.75c-6.55-5.83-9.81-13.87-9.81-24.1s3.27-18.27 9.81-24.1c6.54-5.83 15.36-8.75 26.45-8.75 11.1.01 19.91 2.93 26.45 8.75z" class="st0"></path><g><path d="M454.76 405.97l-11.35-34.59h5.8l5.5 17.1 3.32 12.04h.2l3.37-12.04 5.5-17.1h5.65l-11.5 34.59h-6.49zM487.82 405.97v-34.59h5.6v29.64h14.08v4.96h-19.68zM544.76 405.97l-3.12-9.37H528.7l-3.02 9.37h-5.7l11.79-34.59h7.04l11.79 34.59h-5.84zm-9.47-29.44h-.25l-5.01 15.27h10.21l-4.95-15.27zM587.48 405.97l-3.12-9.37h-12.94l-3.02 9.37h-5.7l11.8-34.59h7.04l11.8 34.59h-5.86zm-9.47-29.44h-.25l-5.01 15.27h10.21l-4.95-15.27zM608.59 371.37h6.64l9.27 17.59h.3l9.27-17.59h6.34v34.59h-5.35V379.5h-.25l-2.73 5.6-7.58 13.83-7.58-13.83-2.73-5.6h-.25v26.46h-5.35v-34.59zM656.51 400.71l3.87-3.62c2.43 2.97 5.3 4.51 9.07 4.51 4.41 0 6.69-2.18 6.69-5.5 0-2.68-1.39-4.21-5.4-5.01l-3.07-.54c-6.69-1.24-10.11-4.36-10.11-9.86 0-6.15 4.76-9.91 12.09-9.91 5.2 0 9.02 1.88 11.7 5.3l-3.92 3.47c-1.78-2.33-4.26-3.82-8.08-3.82-3.96 0-6.24 1.64-6.24 4.66 0 2.87 1.78 4.11 5.5 4.86l3.07.64c6.89 1.34 10.01 4.41 10.01 9.91 0 6.44-4.61 10.75-12.54 10.75-5.8.01-9.76-2.27-12.64-5.84z" class="st0"></path></g><g><path d="M469.03 459.21h-.2c-.69 3.32-4.06 5.85-9.32 5.85-8.23 0-14.27-6.29-14.27-17.89 0-11.55 6.05-17.89 15.12-17.89 6.2 0 10.51 2.92 12.89 7.78l-4.56 2.68c-1.34-3.22-4.11-5.45-8.33-5.45-5.45 0-9.12 3.72-9.12 10.06V450c0 6.34 3.67 10.06 9.12 10.06 4.36 0 8.18-2.23 8.18-6.54v-2.68h-7.14v-4.81h12.54v18.44h-4.91v-5.26zM491.63 464.47v-34.59h22.15v4.96h-16.55v9.61h15.02v4.96h-15.02v10.11h16.55v4.96h-22.15zM530.93 429.87h15.31c5.7 0 9.22 3.52 9.22 8.92 0 5.2-3.17 7.09-6 7.33v.3c2.82.1 7.24 2.28 7.24 8.08 0 5.6-3.82 9.96-8.92 9.96h-16.85v-34.59zm5.6 14.62h8.67c2.73 0 4.36-1.49 4.36-4.11v-1.59c0-2.63-1.64-4.11-4.36-4.11h-8.67v9.81zm0 15.17h9.61c2.88 0 4.66-1.59 4.66-4.41v-1.68c0-2.83-1.78-4.41-4.66-4.41h-9.61v10.5zM595.06 464.47l-3.12-9.37H579l-3.02 9.37h-5.7l11.8-34.59h7.04l11.8 34.59h-5.86zm-9.46-29.44h-.25l-5.01 15.27h10.21l-4.95-15.27zM621.77 464.47h-5.6v-34.59h14.92c6.2 0 10.01 4.01 10.01 10.41 0 4.91-2.33 8.33-6.74 9.62l7.48 14.57h-6.25l-6.94-13.98h-6.89v13.97zm8.92-18.69c2.83 0 4.51-1.54 4.51-4.31v-2.38c0-2.78-1.68-4.31-4.51-4.31h-8.92v11h8.92zM658.5 464.47v-34.59h22.15v4.96H664.1v9.61h15.02v4.96H664.1v10.11h16.55v4.96H658.5zM707.11 445.33L703.3 438h-.15v26.46h-5.35v-34.59h6.25l11.3 19.13 3.82 7.33h.15v-26.47h5.35v34.59h-6.25l-11.31-19.12zM750.33 434.83h-10.31v-4.96h26.22v4.96h-10.31v29.64h-5.6v-29.64zM803.16 464.47l-3.12-9.37H787.1l-3.02 9.37h-5.7l11.79-34.59h7.04L809 464.47h-5.84zm-9.47-29.44h-.25l-5.01 15.27h10.21l-4.95-15.27zM845.88 464.47l-3.12-9.37h-12.93l-3.02 9.37h-5.7l11.79-34.59h7.04l11.79 34.59h-5.85zm-9.47-29.44h-.25l-5.01 15.27h10.21l-4.95-15.27zM866.99 464.47v-34.59h5.6v29.64h14.08v4.96h-19.68z" class="st0"></path></g><g><path d="M445.24 505.67c0-11.6 5.5-17.89 14.52-17.89 6 0 10.01 2.68 12.34 7.83l-4.71 2.58c-1.19-3.27-3.62-5.4-7.63-5.4-5.3 0-8.57 3.87-8.57 10.26v5.25c0 6.39 3.27 10.26 8.57 10.26 4.11 0 6.74-2.38 7.98-5.75l4.51 2.73c-2.33 5-6.49 8.03-12.49 8.03-9.01-.01-14.52-6.3-14.52-17.9zM488.11 522.97v-34.59h22.15v4.96h-16.55v9.61h15.02v4.96h-15.02v10.11h16.55v4.96h-22.15zM536.73 503.83l-3.82-7.33h-.15v26.46h-5.35v-34.59h6.25l11.3 19.13 3.82 7.33h.15v-26.47h5.35v34.59h-6.25l-11.3-19.12zM579.95 493.33h-10.31v-4.96h26.22v4.96h-10.31v29.64h-5.6v-29.64zM616.77 522.97h-5.6v-34.59h14.92c6.2 0 10.01 4.01 10.01 10.41 0 4.91-2.33 8.33-6.74 9.62l7.48 14.57h-6.24L623.66 509h-6.89v13.97zm8.92-18.69c2.83 0 4.51-1.54 4.51-4.31v-2.38c0-2.78-1.69-4.31-4.51-4.31h-8.92v11h8.92zM658.79 488.37v21.31c0 5.85 2.03 8.87 7.43 8.87s7.43-3.02 7.43-8.87v-21.31h5.5v20.42c0 10.11-3.47 14.77-12.94 14.77s-12.94-4.66-12.94-14.77v-20.42h5.52zM697.4 488.37h6.64l9.27 17.59h.3l9.27-17.59h6.34v34.59h-5.35V496.5h-.25l-2.73 5.6-7.58 13.83-7.58-13.83-2.73-5.6h-.25v26.46h-5.35v-34.59z" class="st0"></path></g></svg><!----><!----><!----></div></div><div class="d-flex flex-column ml-md-3"><div class="footer__text--links d-flex flex-row mb-2"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="envelope" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-envelope"><path fill="currentColor" d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48H48zM0 176V384c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V176L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z" class=""></path></svg><a href="mailto:info@vgtc.be" class="pl-2">info@vgtc.be</a></div><div class="footer__text--links text-underline d-flex flex-row pt-2"><svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="globe" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-globe"><path fill="currentColor" d="M256 464c7.4 0 27-7.2 47.6-48.4c8.8-17.7 16.4-39.2 22-63.6H186.4c5.6 24.4 13.2 45.9 22 63.6C229 456.8 248.6 464 256 464zM178.5 304h155c1.6-15.3 2.5-31.4 2.5-48s-.9-32.7-2.5-48h-155c-1.6 15.3-2.5 31.4-2.5 48s.9 32.7 2.5 48zm7.9-144H325.6c-5.6-24.4-13.2-45.9-22-63.6C283 55.2 263.4 48 256 48s-27 7.2-47.6 48.4c-8.8 17.7-16.4 39.2-22 63.6zm195.3 48c1.5 15.5 2.2 31.6 2.2 48s-.8 32.5-2.2 48h76.7c3.6-15.4 5.6-31.5 5.6-48s-1.9-32.6-5.6-48H381.8zm58.8-48c-21.4-41.1-56.1-74.1-98.4-93.4c14.1 25.6 25.3 57.5 32.6 93.4h65.9zm-303.3 0c7.3-35.9 18.5-67.7 32.6-93.4c-42.3 19.3-77 52.3-98.4 93.4h65.9zM53.6 208c-3.6 15.4-5.6 31.5-5.6 48s1.9 32.6 5.6 48h76.7c-1.5-15.5-2.2-31.6-2.2-48s.8-32.5 2.2-48H53.6zM342.1 445.4c42.3-19.3 77-52.3 98.4-93.4H374.7c-7.3 35.9-18.5 67.7-32.6 93.4zm-172.2 0c-14.1-25.6-25.3-57.5-32.6-93.4H71.4c21.4 41.1 56.1 74.1 98.4 93.4zM256 512A256 256 0 1 1 256 0a256 256 0 1 1 0 512z" class=""></path></svg><div class="d-flex flex-column pl-2"><a href="https://www.vgtc.be" target="_blank">www.vgtc.be</a><a href="https://www.vgtc.be/contact" target="_blank" class="pt-2">www.vgtc.be/contact</a></div></div></div><div class="footer__social-media d-flex flex-column h-100 justify-content-between"><div class="d-flex justify-content-end"><a href="https://www.facebook.com/VGTCentrum/" target="_blank"><svg aria-hidden="true" focusable="false" data-prefix="fab" data-icon="square-facebook" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="fa-2x mx-3 svg-inline--fa fa-square-facebook"><path fill="currentColor" d="M64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64h98.2V334.2H109.4V256h52.8V222.3c0-87.1 39.4-127.5 125-127.5c16.2 0 44.2 3.2 55.7 6.4V172c-6-.6-16.5-1-29.6-1c-42 0-58.2 15.9-58.2 57.2V256h83.6l-14.4 78.2H255V480H384c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64z" class=""></path></svg></a><a href="https://twitter.com/VGTCentrum" target="_blank"><svg aria-hidden="true" focusable="false" data-prefix="fab" data-icon="square-twitter" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="fa-2x mx-3 svg-inline--fa fa-square-twitter"><path fill="currentColor" d="M64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64zM351.3 199.3v0c0 86.7-66 186.6-186.6 186.6c-37.2 0-71.7-10.8-100.7-29.4c5.3 .6 10.4 .8 15.8 .8c30.7 0 58.9-10.4 81.4-28c-28.8-.6-53-19.5-61.3-45.5c10.1 1.5 19.2 1.5 29.6-1.2c-30-6.1-52.5-32.5-52.5-64.4v-.8c8.7 4.9 18.9 7.9 29.6 8.3c-9-6-16.4-14.1-21.5-23.6s-7.8-20.2-7.7-31c0-12.2 3.2-23.4 8.9-33.1c32.3 39.8 80.8 65.8 135.2 68.6c-9.3-44.5 24-80.6 64-80.6c18.9 0 35.9 7.9 47.9 20.7c14.8-2.8 29-8.3 41.6-15.8c-4.9 15.2-15.2 28-28.8 36.1c13.2-1.4 26-5.1 37.8-10.2c-8.9 13.1-20.1 24.7-32.9 34c.2 2.8 .2 5.7 .2 8.5z" class=""></path></svg></a><a href="https://www.linkedin.com/company/vlaams-gebarentaalcentrum?trk=top_nav_home" target="_blank"><svg aria-hidden="true" focusable="false" data-prefix="fab" data-icon="linkedin" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="fa-2x mx-3 svg-inline--fa fa-linkedin"><path fill="currentColor" d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z" class=""></path></svg></a><a href="https://www.instagram.com/vgtcentrum/" target="_blank"><svg aria-hidden="true" focusable="false" data-prefix="fab" data-icon="instagram" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="fa-2x ml-3 svg-inline--fa fa-instagram"><path fill="currentColor" d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z" class=""></path></svg></a></div><div class="d-flex align-self-end mb-3"><a href="https://www.ae.be" target="_blank" class="d-flex align-items-center footer__social-media__ae"><svg id="ae_logo" data-name="ae logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1064.812 687.163" class="vgtc-svg-icon mt-n1 mr-n1"><defs></defs><g id="ae"><path d="M799.39 297.977H644.336a89.354 89.354 0 00-4.338 81.486h163.677a89.1 89.1 0 00-4.285-81.486M776.403 414.071a89.711 89.711 0 01-136.405-34.607h-85.33a169.675 169.675 0 009.908 30.919c26.227 60.937 86.848 103.72 157.287 103.72a171.448 171.448 0 00127.064-56.49 172.474 172.474 0 006.045-7.11z" class="cls-1"></path><path d="M644.336 297.977h-87.592a170.66 170.66 0 00-6.034 44.838v.265a171.02 171.02 0 003.958 36.383h85.33a89.346 89.346 0 014.338-81.486M811.532 342.947a89.493 89.493 0 01-7.858 36.517h85.38a170.334 170.334 0 00-2.07-81.487H799.39a89.095 89.095 0 0112.142 44.97" class="cls-2"></path><path d="M342.947 253.277a89.83 89.83 0 0189.669 89.604V197.238a169.679 169.679 0 00-89.462-25.44h-.413c-94.281.112-170.949 76.842-170.949 171.149 0 94.376 76.78 171.157 171.155 171.157a169.74 169.74 0 0089.669-25.447V343.013a89.67 89.67 0 11-89.669-89.736M432.616 197.238a171.186 171.186 0 0181.485 145.643V171.797h-81.485zM432.616 488.657v26.715h81.485v-172.36a171.189 171.189 0 01-81.485 145.645" class="cls-1"></path><path d="M432.616 197.238v291.419a171.19 171.19 0 0081.485-145.645v-.131a171.186 171.186 0 00-81.485-145.643" class="cls-2"></path><path d="M875.216 267.055c-28.025-56.396-86.223-95.264-153.353-95.264-67.13 0-125.328 38.868-153.352 95.264a169.802 169.802 0 00-11.767 30.921h87.592a90.332 90.332 0 0129.854-30.921 89.367 89.367 0 0195.346 0 90.331 90.331 0 0129.855 30.921h87.591a169.943 169.943 0 00-11.766-30.921" class="cls-1"></path></g></svg><div class="footer__social-media__ae__year ml-1">2024.</div></a></div></div></div></div></div><!----><div class="cookie-banner p-3 p-sm-4 d-flex flex-column flex-md-row align-items-center"><div class="d-flex align-items-center"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" id="Capa_1" x="0" y="0" viewBox="0 0 512 512" xml:space="preserve" class="cookie-banner__cookie d-none d-sm-block mr-3 flex-grow-0 flex-shrink-0"><path d="M177.212 167.78a7.5 7.5 0 00-7.5 7.5v14.259a7.5 7.5 0 0015 .001v-14.26a7.5 7.5 0 00-7.5-7.5zM334.788 167.78a7.5 7.5 0 00-7.5 7.5v14.259a7.5 7.5 0 0015 .001v-14.26a7.5 7.5 0 00-7.5-7.5zM284.827 183.86a7.5 7.5 0 00-10.583.711c-4.448 5.088-11.098 8.007-18.245 8.007-7.148 0-13.798-2.918-18.246-8.007a7.5 7.5 0 10-11.294 9.872c7.297 8.347 18.064 13.135 29.54 13.135s22.243-4.788 29.539-13.135a7.5 7.5 0 00-.711-10.583zM135.257 360.903c-11.346 0-20.576 8.045-20.576 17.935-.001 9.89 9.23 17.935 20.576 17.935s20.576-8.045 20.576-17.935c-.001-9.89-9.23-17.935-20.576-17.935zm0 20.871c-3.459 0-5.576-1.9-5.576-2.935 0-1.035 2.117-2.935 5.576-2.935s5.576 1.9 5.576 2.935c-.001 1.035-2.118 2.935-5.576 2.935zM224.085 371.339c-12.934 0-23.457 9.077-23.457 20.233 0 11.157 10.523 20.234 23.457 20.234s23.457-9.077 23.457-20.234c.001-11.156-10.522-20.233-23.457-20.233zm0 25.467c-4.84 0-8.457-2.763-8.457-5.234 0-2.47 3.617-5.233 8.457-5.233 4.84 0 8.457 2.763 8.457 5.233.001 2.471-3.616 5.234-8.457 5.234zM271.957 414.517c-12.934 0-23.457 9.077-23.457 20.233 0 11.157 10.523 20.234 23.457 20.234 12.934 0 23.457-9.077 23.457-20.234-.001-11.156-10.524-20.233-23.457-20.233zm0 25.467c-4.84 0-8.457-2.763-8.457-5.234 0-2.47 3.617-5.233 8.457-5.233 4.84 0 8.457 2.763 8.457 5.233-.001 2.471-3.618 5.234-8.457 5.234zM370.468 401.783c-12.934 0-23.457 9.077-23.457 20.234 0 11.157 10.523 20.233 23.457 20.233 12.934 0 23.457-9.077 23.457-20.233.001-11.157-10.522-20.234-23.457-20.234zm0 25.467c-4.84 0-8.457-2.763-8.457-5.233 0-2.471 3.617-5.234 8.457-5.234 4.84 0 8.457 2.763 8.457 5.234.001 2.47-3.616 5.233-8.457 5.233zM281.473 354.071c-11.346 0-20.576 8.045-20.576 17.935 0 9.89 9.23 17.935 20.576 17.935s20.576-8.045 20.576-17.935c0-9.89-9.23-17.935-20.576-17.935zm0 20.871c-3.459 0-5.576-1.9-5.576-2.935 0-1.035 2.117-2.935 5.576-2.935 3.459 0 5.576 1.9 5.576 2.935 0 1.035-2.117 2.935-5.576 2.935zM166.241 259.177c-11.346 0-20.576 8.045-20.576 17.935 0 9.89 9.23 17.935 20.576 17.935s20.576-8.045 20.576-17.935c0-9.89-9.23-17.935-20.576-17.935zm0 20.871c-3.459 0-5.576-1.9-5.576-2.935 0-1.035 2.117-2.935 5.576-2.935s5.576 1.9 5.576 2.935c0 1.035-2.117 2.935-5.576 2.935zM224.085 274.734c-11.346 0-20.576 8.045-20.576 17.935 0 9.889 9.23 17.935 20.576 17.935s20.576-8.045 20.576-17.935c0-9.89-9.23-17.935-20.576-17.935zm0 20.87c-3.459 0-5.576-1.9-5.576-2.935 0-1.035 2.117-2.935 5.576-2.935s5.576 1.9 5.576 2.935c0 1.035-2.117 2.935-5.576 2.935zM319.827 269.612c-11.346 0-20.576 8.045-20.576 17.935s9.23 17.935 20.576 17.935 20.576-8.045 20.576-17.935c0-9.889-9.23-17.935-20.576-17.935zm0 20.871c-3.459 0-5.576-1.9-5.576-2.935 0-1.035 2.117-2.935 5.576-2.935 3.459 0 5.576 1.9 5.576 2.935 0 1.035-2.117 2.935-5.576 2.935z" data-original="#000000" data-old_color="#000000" fill="#FFF" class="active-path"></path><path d="M407.015 110.465V92.786c0-12.065-8.076-22.274-19.104-25.521v-7.987c0-16.054-13.061-29.114-29.114-29.114h-71.406v-8.343C287.392 9.789 277.603 0 265.571 0h-19.142c-12.032 0-21.821 9.789-21.821 21.821v8.343h-71.406c-16.054 0-29.114 13.061-29.114 29.114v7.987c-11.028 3.247-19.104 13.455-19.104 25.521v17.708a126.621 126.621 0 00-26.542 29.966 7.501 7.501 0 0012.66 8.046 111.701 111.701 0 0123.993-26.935h281.811c26.022 21.125 41.484 53.472 41.484 87.048V451.06c0 25.332-20.609 45.94-45.94 45.94H119.551c-25.332 0-45.94-20.608-45.94-45.94V208.619c0-11.137 1.664-22.203 4.946-32.891a7.5 7.5 0 00-4.968-9.371 7.498 7.498 0 00-9.371 4.968 126.925 126.925 0 00-5.607 37.294V451.06c0 33.603 27.338 60.94 60.94 60.94h272.897c33.603 0 60.94-27.337 60.94-60.94V208.619c.001-37.783-17.269-74.193-46.373-98.154zM239.607 21.821A6.83 6.83 0 01246.429 15h19.142a6.829 6.829 0 016.821 6.821v8.343h-32.785v-8.343zm-100.52 37.457c0-7.783 6.332-14.114 14.114-14.114h205.596c7.783 0 14.114 6.332 14.114 14.114v6.904H139.087v-6.904zm252.93 47.293H119.983V92.786c0-6.398 5.206-11.604 11.604-11.604h248.825c6.398 0 11.604 5.206 11.604 11.604v13.785z" data-original="#000000" data-old_color="#000000" fill="#FFF" class="active-path"></path><path d="M421.219 362.019a39.885 39.885 0 01-4.594-7.957c-3.313-7.663-8.341-14.375-14.54-19.723.049-.544.112-1.092.144-1.629a39.897 39.897 0 011.596-9.049c4.924-16.495 1.733-34.592-8.536-48.408a39.885 39.885 0 01-4.594-7.957c-6.831-15.801-20.908-27.612-37.655-31.596a39.927 39.927 0 01-8.635-3.143c-15.388-7.712-33.765-7.713-49.154 0a39.971 39.971 0 01-8.634 3.143c-12.207 2.903-23.009 10.004-30.613 19.769-7.6-9.763-18.39-16.86-30.62-19.769a39.88 39.88 0 01-8.634-3.143c-15.39-7.713-33.766-7.712-49.154 0a39.927 39.927 0 01-8.635 3.143c-16.747 3.984-30.824 15.795-37.654 31.596a39.897 39.897 0 01-4.595 7.958c-10.269 13.817-13.459 31.913-8.536 48.407a39.905 39.905 0 011.596 9.05c.032.537.095 1.085.144 1.628-6.2 5.349-11.228 12.061-14.541 19.723a39.897 39.897 0 01-4.595 7.958c-10.269 13.817-13.459 31.913-8.536 48.408a39.907 39.907 0 011.596 9.049c1.015 17.184 10.202 33.098 24.577 42.569a39.901 39.901 0 017.039 5.906c10.384 10.988 24.963 17.173 39.944 17.172 5.186 0 10.239-.965 15.435-.36 14.394 1.668 28.975-2.575 40.277-11.459 11.3 8.891 25.848 13.13 40.293 11.459 5.198-.605 10.248.36 15.435.36 12.331 0 24.386-4.2 34.058-11.811 11.301 8.878 25.876 13.118 40.266 11.45a39.878 39.878 0 019.188 0c2.083.242 4.168.36 6.247.36 14.979 0 29.561-6.185 39.944-17.172a39.901 39.901 0 017.039-5.906c14.375-9.471 23.563-25.385 24.577-42.569a39.907 39.907 0 011.596-9.049c4.924-16.495 1.733-34.591-8.536-48.408zM290.087 250.293a54.978 54.978 0 0011.883-4.325c11.182-5.604 24.532-5.604 35.713 0a54.978 54.978 0 0011.883 4.325c12.167 2.895 22.395 11.476 27.358 22.955a54.898 54.898 0 006.323 10.953c7.46 10.038 9.779 23.186 6.202 35.17a54.607 54.607 0 00-1.445 6.094 53.758 53.758 0 00-2.782-1.101c-4.952-1.822-10.133-2.656-14.888-5.04-15.39-7.713-33.766-7.713-49.155 0-5.62 2.817-12.021 3.693-17.812 6.222-.769.336-2.422 1.118-2.489 1.151-.587-.292-1.187-.554-1.783-.825a54.183 54.183 0 00-6.824-2.581c-3.993-1.198-7.935-2.084-11.694-3.968a54.155 54.155 0 00-2.99-1.384l-.042-.02c.017-.091.027-.183.043-.274a54.51 54.51 0 00.832-9.035 55.374 55.374 0 00-4.7-22.872c-2.442-5.532-6.297-10.04-9.142-15.31-.081-.149-.163-.297-.241-.447 5.376-9.826 14.792-17.081 25.75-19.688zm-161.336 33.908a54.972 54.972 0 006.324-10.953c4.962-11.479 15.189-20.061 27.358-22.956a55.017 55.017 0 0011.883-4.325c11.181-5.603 24.532-5.604 35.713 0a54.925 54.925 0 0011.883 4.325c12.065 2.87 22.215 11.335 27.224 22.669l.011.03c.049.109.1.217.16.343 3.201 6.661 8.151 12.358 11.004 19.162a40.328 40.328 0 012.674 21.472 54.704 54.704 0 00-28.427 3.914 55.123 55.123 0 00-3.135 1.441c-3.975 1.988-8.36 2.911-12.606 4.269a54.908 54.908 0 00-7.695 3.104c-.072-.036-.146-.066-.219-.101a55.32 55.32 0 00-11.45-4.13c-3.988-.949-7.732-2.861-11.553-4.498a54.98 54.98 0 00-21.658-4.429c-8.441 0-16.883 1.928-24.577 5.785-3.887 1.948-8.014 2.824-12.127 4.109a54.761 54.761 0 00-5.543 2.032 55.16 55.16 0 00-1.445-6.094c-3.577-11.984-1.26-25.131 6.201-35.169zm43.813 185.663a55.034 55.034 0 00-12.647 0c-12.422 1.443-24.969-3.124-33.559-12.214a54.927 54.927 0 00-9.688-8.129c-10.444-6.881-17.119-18.443-17.856-30.928a54.945 54.945 0 00-2.196-12.455c-3.577-11.984-1.258-25.132 6.202-35.17a54.992 54.992 0 006.324-10.952c3.714-8.593 10.379-15.561 18.598-19.737l.169-.083c6.544-3.272 13.903-4.169 20.474-7.462 8.003-4.011 17.115-5.135 25.75-3.404a39.563 39.563 0 019.962 3.403 54.884 54.884 0 0011.884 4.326c.183.043.361.105.543.151a54.251 54.251 0 00-8.404 10.97c-2.658 4.564-4.409 9.573-7.581 13.84-10.269 13.816-13.459 31.913-8.536 48.408a39.907 39.907 0 011.596 9.049c1.015 17.184 10.202 33.098 24.577 42.569.517.341 1.021.702 1.521 1.067-7.87 5.379-17.563 7.863-27.133 6.751zm133.008-20.345a54.753 54.753 0 00-9.648 8.088l-.074.072c-.117.114-.234.229-.348.347l-.02.022c-8.579 8.819-20.925 13.237-33.159 11.815a54.81 54.81 0 00-12.647 0c-12.234 1.421-24.579-2.997-33.157-11.813l-.022-.025c-3.063-3.165-6.386-6.08-10.068-8.505-10.444-6.881-17.119-18.443-17.856-30.928a54.945 54.945 0 00-2.196-12.455c-3.577-11.984-1.258-25.132 6.202-35.17a54.923 54.923 0 006.324-10.953c4.879-11.283 15.382-20.105 27.357-22.956 5.647-1.344 10.545-4.089 15.944-6.075 9.311-3.424 19.807-3.22 28.981.547 2.609 1.072 5.092 2.402 7.733 3.408 8.614 3.28 18.064 5.455 24.973 11.956a39.792 39.792 0 019.208 13.119 55.072 55.072 0 006.323 10.953c7.46 10.038 9.779 23.186 6.202 35.17a54.935 54.935 0 00-2.196 12.455c-.738 12.484-7.414 24.046-17.856 30.928zm109.808-43.382a54.935 54.935 0 00-2.196 12.455c-.737 12.484-7.413 24.046-17.856 30.928a54.927 54.927 0 00-9.688 8.129c-8.59 9.09-21.136 13.658-33.559 12.214-4.221-.489-8.425-.422-12.647 0-9.571 1.111-19.261-1.371-27.133-6.751a39.908 39.908 0 011.521-1.067c14.375-9.471 23.563-25.385 24.577-42.569a39.907 39.907 0 011.596-9.049 54.678 54.678 0 002.171-18.922c-.635-10.543-4.288-20.85-10.706-29.486a39.885 39.885 0 01-4.594-7.957 54.873 54.873 0 00-11.391-16.852c.182-.046.36-.107.542-.151a54.934 54.934 0 0011.884-4.325c11.181-5.604 24.532-5.604 35.713 0 6.469 3.242 13.962 4.191 20.482 7.467l.157.077c8.221 4.176 14.887 11.144 18.602 19.737a54.89 54.89 0 006.323 10.952c7.46 10.038 9.779 23.186 6.202 35.17z" data-original="#000000" data-old_color="#000000" fill="#FFF" class="active-path"></path></svg><span>Om de gebruikservaring voor het Woordenboek Vlaamse Gebarentaal te verbeteren maakt deze website gebruik van cookies. Je kan ons helpen door akkoord te gaan met het gebruik van cookies. Meer informatie over de cookies die we gebruiken vind je in onze <a place="policy" href="https://www.vgtc.be/privacy" target="_blank" class="cookie-banner__link">privacy policy</a></span></div><div class="d-flex justify-content-end justify-content-md-start flex-md-column justify-content-lg-end flex-lg-row mt-3 mt-md-0"><div><button class="vgtc-button cookie-banner__button ml-md-3"><svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="check" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="mr-2 fa-lg svg-inline--fa fa-check"><path fill="currentColor" d="M441 103c9.4 9.4 9.4 24.6 0 33.9L177 401c-9.4 9.4-24.6 9.4-33.9 0L7 265c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l119 119L407 103c9.4-9.4 24.6-9.4 33.9 0z" class=""></path></svg> Ja, ik ga akkoord </button></div><div><button class="vgtc-button cookie-banner__button cookie-banner__button--refuse ml-3 mt-md-3 mt-lg-0"><svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" class="mr-2 fa-lg svg-inline--fa fa-xmark"><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z" class=""></path></svg> Nee, liever niet </button></div></div></div></div></div><div id="doorbell-background" class="" style="display: none;"></div><div id="doorbell" role="dialog" aria-labelledby="doorbell-title" tabindex="-1" aria-hidden="true" style="display: none;"><div id="doorbell-container" role="dialog" aria-labelledby="doorbell-title"><button id="doorbell-close" title="Close" class="close" aria-label="Close"><span>×</span></button><form id="doorbell-form" class="">                <fieldset>                    <legend id="doorbell-title">Feedback</legend>                    <div id="doorbell-success" class="alert alert-success" style="display: none;"></div>                    
+<textarea placeholder="Send us your comments or suggestions..." aria-label="Send us your comments or suggestions..." class="form-control" name="message" id="doorbell-feedback" required="required"></textarea>
+<input type="email" id="doorbell-email" aria-label="Your email address" class="form-control" placeholder="Your email address" name="email" value="">
+
+
+                                        <div class="buttons"><button class="btn btn-primary" id="doorbell-submit-button">Send</button></div>                </fieldset>                <a href="https://doorbell.io/?utm_source=feedback_form&amp;utm_medium=web_sdk&amp;utm_campaign=application_10593" target="_blank" rel="noopener noreferrer" id="doorbell-powered-by">Powered by Doorbell.io</a>                            </form></div></div></body></html>

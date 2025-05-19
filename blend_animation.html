@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animation Blending Demo</title>
+    <style>
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        #renderCanvas {
+            width: 100%;
+            height: 100%;
+            touch-action: none;
+        }
+        #controls {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            z-index: 100;
+        }
+        .slider-container {
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+        }
+        .slider-container label {
+            width: 150px;
+            display: inline-block;
+        }
+        input[type="range"] {
+            width: 200px;
+        }
+        .value-display {
+            margin-left: 10px;
+            width: 40px;
+            text-align: right;
+        }
+        button {
+            margin: 5px;
+            padding: 8px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #3e8e41;
+        }
+        button.active {
+            background-color: #2E7D32;
+        }
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            color: white;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div id="loading" class="loading">Loading animations...</div>
+    
+    <div id="controls">
+        <h3>Animation Blending Controls</h3>
+        
+        <div>
+            <button id="animation1Btn" class="active">Animation 1: die_pil_die_VERVOER</button>
+            <button id="animation2Btn">Animation 2: motor_rijden</button>
+            <button id="animation3Btn">Animation 3: VERVOER_magniet</button>
+        </div>
+        
+        <div class="slider-container">
+            <label for="blend1">Animation 1 Weight:</label>
+            <input type="range" id="blend1" min="0" max="1" step="0.01" value="1">
+            <span id="blend1Value" class="value-display">1.00</span>
+        </div>
+        
+        <div class="slider-container">
+            <label for="blend2">Animation 2 Weight:</label>
+            <input type="range" id="blend2" min="0" max="1" step="0.01" value="0">
+            <span id="blend2Value" class="value-display">0.00</span>
+        </div>
+        
+        <div class="slider-container">
+            <label for="blend3">Animation 3 Weight:</label>
+            <input type="range" id="blend3" min="0" max="1" step="0.01" value="0">
+            <span id="blend3Value" class="value-display">0.00</span>
+        </div>
+        
+        <div class="slider-container">
+            <label for="blendSpeed">Blending Speed:</label>
+            <input type="range" id="blendSpeed" min="0.01" max="1" step="0.01" value="0.1">
+            <span id="blendSpeedValue" class="value-display">0.10</span>
+        </div>
+        
+        <div>
+            <button id="playBtn">Play</button>
+            <button id="pauseBtn">Pause</button>
+            <button id="stopBtn">Stop</button>
+            <button id="resetBtn">Reset Weights</button>
+        </div>
+    </div>
+    
+    <canvas id="renderCanvas"></canvas>
+
+    <!-- Babylon.js -->
+    <script src="https://cdn.babylonjs.com/babylon.js"></script>
+    <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+    <script src="https://cdn.babylonjs.com/inspector/babylon.inspector.bundle.js"></script>
+    
+    <!-- Our Scripts -->
+    <script src="SceneAndMeshLoader.js"></script>
+    <script src="retargetAnims.js"></script>
+    <script src="initialize.js"></script>
+    <script src="animFetchAndDestroy.js"></script>
+    <script src="morphTargetDebugger.js"></script>
+    
+    <script>
+        // Main Application Script
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Constants
+            const ANIMATION_FOLDER = "die_pil_die_VERVOER";
+            const ANIMATION_FILES = [
+"FITNESS-C_orig.glb",
+"testSkate6.glb",
+            ];
+            
+            // Debug flags
+            const DEBUG_ENABLED = true;
+            const SHOW_SKELETON = true;
+            
+            // Global variables
+            let scene, engine, canvas, targetMesh;
+            let animationGroups = [];
+            let blendedAnimation = null;
+            let isPlaying = false;
+            
+            // Debugging utilities
+            const debugLog = {
+                mesh: function(mesh, detailed = false) {
+                    if (!DEBUG_ENABLED) return;
+                    
+                    console.group(`🔍 Mesh: ${mesh.name}`);
+                    console.log('ID:', mesh.id);
+                    console.log('Position:', mesh.position);
+                    console.log('Rotation:', mesh.rotation);
+                    console.log('Scaling:', mesh.scaling);
+                    console.log('Is Enabled:', mesh.isEnabled());
+                    console.log('Is Visible:', mesh.isVisible);
+                    console.log('Has Skeleton:', mesh.skeleton ? true : false);
+                    
+                    if (mesh.skeleton) {
+                        console.log('Skeleton Name:', mesh.skeleton.name);
+                        console.log('Bone Count:', mesh.skeleton.bones.length);
+                    }
+                    
+                    if (mesh.morphTargetManager) {
+                        console.log('Morph Target Count:', mesh.morphTargetManager.numTargets);
+                    }
+                    
+                    if (detailed && mesh.skeleton) {
+                        this.skeleton(mesh.skeleton);
+                    }
+                    
+                    console.groupEnd();
+                },
+                
+                skeleton: function(skeleton) {
+                    if (!DEBUG_ENABLED) return;
+                    
+                    console.group(`🦴 Skeleton: ${skeleton.name}`);
+                    console.log('Bone Count:', skeleton.bones.length);
+                    
+                    skeleton.bones.forEach((bone, index) => {
+                        console.group(`Bone ${index}: ${bone.name}`);
+                        console.log('Index:', bone._index);
+                        console.log('Parent:', bone.getParent() ? bone.getParent().name : 'None');
+                        console.log('Position:', bone.position);
+                        console.log('Rotation:', bone.rotation);
+                        console.log('Linked TransformNode:', bone._linkedTransformNode ? bone._linkedTransformNode.name : 'None');
+                        console.groupEnd();
+                    });
+                    
+                    console.groupEnd();
+                },
+                
+                animation: function(animationGroup) {
+                    if (!DEBUG_ENABLED) return;
+                    
+                    console.group(`🎬 Animation Group: ${animationGroup.name}`);
+                    console.log('From Frame:', animationGroup.from);
+                    console.log('To Frame:', animationGroup.to);
+                    console.log('Targeted Animations:', animationGroup.targetedAnimations.length);
+                    
+                    animationGroup.targetedAnimations.forEach((targetedAnim, index) => {
+                        console.group(`Targeted Animation ${index}`);
+                        console.log('Target Name:', targetedAnim.target.name || 'Unnamed');
+                        console.log('Target Type:', targetedAnim.target.getClassName ? targetedAnim.target.getClassName() : typeof targetedAnim.target);
+                        console.log('Animation Name:', targetedAnim.animation.name);
+                        console.log('Target Property:', targetedAnim.animation.targetProperty);
+                        console.log('Target Path:', targetedAnim.animation.targetPropertyPath);
+                        console.log('Key Frames:', targetedAnim.animation.getKeys().length);
+                        console.groupEnd();
+                    });
+                    
+                    console.groupEnd();
+                },
+                
+                asset: function(asset) {
+                    if (!DEBUG_ENABLED) return;
+                    
+                    console.group('🔧 Asset Information');
+                    console.log('Meshes:', asset.fetched.meshes.length);
+                    console.log('Skeletons:', asset.fetched.skeletons.length);
+                    console.log('Animation Groups:', asset.fetched.animationGroups.length);
+                    console.log('Transform Nodes:', asset.fetched.transformNodes.length);
+                    
+                    asset.fetched.meshes.forEach((mesh, index) => {
+                        this.mesh(mesh, false);
+                    });
+                    
+                    asset.fetched.skeletons.forEach((skeleton, index) => {
+                        this.skeleton(skeleton);
+                    });
+                    
+                    asset.fetched.animationGroups.forEach((animGroup, index) => {
+                        this.animation(animGroup);
+                    });
+                    
+                    console.groupEnd();
+                }
+            };
+            
+            // Initialize the scene
+            async function initScene() {
+                canvas = document.getElementById("renderCanvas");
+                
+                // Create engine with antialias and stencil enabled
+                engine = new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true });
+                
+                // Create scene
+                scene = new BABYLON.Scene(engine);
+                scene.clearColor = new BABYLON.Color4(0.2, 0.2, 0.3, 1.0);
+                
+                // Create camera
+                const camera = new BABYLON.ArcRotateCamera("Camera", 0, Math.PI / 2, 5, new BABYLON.Vector3(0, 1, 0), scene);
+                camera.attachControl(canvas, true);
+                camera.lowerRadiusLimit = 2;
+                camera.upperRadiusLimit = 10;
+                
+                // Create lights
+                const hemisphericLight = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
+                hemisphericLight.intensity = 0.7;
+                
+                const directionalLight = new BABYLON.DirectionalLight("dirLight", new BABYLON.Vector3(-1, -2, -1), scene);
+                directionalLight.intensity = 0.5;
+                
+                // Load character mesh
+                console.log("Loading target mesh...");
+                try {
+                    // Ensure URL is properly formatted as a string and handle potential errors
+                    const meshURL = "https://signcollect.nl/jari/BabylonSignLab/LoadingAnimation/MeshesAndAnims/glassesGuyNew.glb";
+                    console.log("Attempting to load mesh from URL:", meshURL);
+                    targetMesh = await loadAssetMesh(scene, meshURL, false);
+                    
+                    if (!targetMesh) {
+                        throw new Error("Target mesh loaded as null");
+                    }
+                    
+                    console.log("Target mesh loaded successfully!");
+                    debugLog.asset(targetMesh);
+                    
+                    // Position the character
+                    if (targetMesh.root) {
+                        targetMesh.root.position = new BABYLON.Vector3(0, 0, 0);
+                        console.log("Root position set to origin");
+                    }
+                    
+                    // Show skeleton for debugging if enabled
+                    if (SHOW_SKELETON && targetMesh.skeletons && targetMesh.skeletons.length > 0) {
+                        targetMesh.skeletons.forEach(skeleton => {
+                            skeleton.checkCollisions = false;
+                            try {
+                                const skeletonMesh = targetMesh.fetched.meshes.find(m => m.skeleton === skeleton);
+                                if (skeletonMesh) {
+                                    // Fix the skeleton viewer initialization - use proper options object
+                                    const skeletonViewer = new BABYLON.Debug.SkeletonViewer(
+                                        skeleton,
+                                        skeletonMesh,
+                                        scene,
+                                        {
+                                            displayMode: BABYLON.Debug.SkeletonViewer.DISPLAY_SPHERE,
+                                            sphereBaseSize: 0.01,
+                                            sphereScaleUnit: 3.0,
+                                            useAllBones: true
+                                        }
+                                    );
+                                    skeletonViewer.isEnabled = true;
+                                    console.log(`Skeleton viewer enabled for ${skeleton.name}`);
+                                } else {
+                                    console.warn(`Could not find mesh for skeleton ${skeleton.name}`);
+                                }
+                            } catch (skeletonError) {
+                                console.error(`Error creating skeleton viewer:`, skeletonError);
+                            }
+                        });
+                    }
+                } catch (meshError) {
+                    console.error("Failed to load target mesh:", meshError);
+                    document.getElementById("loading").textContent = "Error loading mesh: " + meshError.message;
+                    return false;
+                }
+                
+                // Load animations
+                await loadAnimations();
+                
+                // Register render loop
+                engine.runRenderLoop(() => {
+                    scene.render();
+                });
+                
+                // Handle window resize
+                window.addEventListener('resize', function() {
+                    engine.resize();
+                });
+                
+                // Debug: Enable inspector if in debug mode
+                if (DEBUG_ENABLED) {
+                    scene.debugLayer.show({
+                        embedMode: true,
+                        overlay: true
+                    });
+                    console.log("Debug layer enabled");
+                }
+                
+                return true;
+            }
+            
+            // Load animations from files
+            async function loadAnimations() {
+                try {
+                    console.log(`Starting to load ${ANIMATION_FILES.length} animations...`);
+                    
+                    // Create morph target mapping to help with retargeting
+                    console.log("Creating morph target mapping to assist with retargeting...");
+                    // Use the debugging tool to show all available morph targets in the target mesh
+                    if (window.MorphTargetDebugger) {
+                        window.MorphTargetDebugger.listAllMorphTargets(targetMesh);
+                    }
+                    
+                    // Load each animation file and store the animation groups
+                    for (let i = 0; i < ANIMATION_FILES.length; i++) {
+                        const filename = ANIMATION_FILES[i];
+                        console.log(`Loading animation file ${i+1}/${ANIMATION_FILES.length}: ${filename}`);
+                        
+                        // Fix: Use properly formatted string path
+                        const folderPath = `../slat2025/${ANIMATION_FOLDER}/`;
+                        
+                        // Use ImportMeshAsync with a promise-based approach that also ensures proper scaling
+                        const result = await new Promise((resolve, reject) => {
+                            try {
+                                // Fix: Ensure all path parameters are strings
+                                BABYLON.SceneLoader.ImportMesh("", folderPath, filename, scene, (meshes, particleSystems, skeletons, animationGroupsFromFile) => { // Renamed parameter
+                                    console.log(`Animation file ${filename} loaded:`, {
+                                        meshes: meshes.length,
+                                        skeletons: skeletons.length,
+                                        animationGroups: animationGroupsFromFile.length
+                                    });
+                                    
+                                    // Log imported meshes details
+                                    meshes.forEach((mesh, idx) => {
+                                        console.log(`Imported mesh ${idx}: ${mesh.name}, has skeleton: ${mesh.skeleton ? true : false}`);
+                                        // Ensure nothing carries over a stray scale
+                                        mesh.scaling = BABYLON.Vector3.One();
+                                    });
+                                    
+                                    // Log imported skeletons
+                                    skeletons.forEach((skeleton, idx) => {
+                                        console.log(`Imported skeleton ${idx}: ${skeleton.name}, bones: ${skeleton.bones.length}`);
+                                        debugLog.skeleton(skeleton);
+                                    });
+                                    
+                                    // Log imported animation groups from this specific file
+                                    animationGroupsFromFile.forEach((ag, idx) => {
+                                        console.log(`Imported animation group ${idx} from file ${filename}: ${ag.name}, From: ${ag.from}, To: ${ag.to}`);
+                                        debugLog.animation(ag); // This will log detailed info including from/to frames
+                                    });
+                                    
+                                    resolve({meshes, particleSystems, skeletons, animationGroups: animationGroupsFromFile}); // Resolve with groups from this file
+                                }, null, (scene, message, exception) => {
+                                    console.error(`Error loading ${filename}:`, message, exception);
+                                    reject(new Error(`Failed to load ${filename}: ${message}`));
+                                });
+                            } catch (error) {
+                                console.error(`Exception during ImportMesh for ${filename}:`, error);
+                                reject(error);
+                            }
+                        });
+                        
+                        // Use animationGroups directly from the loaded result object
+                        const loadedAnimGroupsFromFile = result.animationGroups;
+                        
+                        if (loadedAnimGroupsFromFile && loadedAnimGroupsFromFile.length > 0) {
+                            console.log(`Processing ${loadedAnimGroupsFromFile.length} animation groups from file ${filename}`);
+                            
+                            for (const sourceAnimGroup of loadedAnimGroupsFromFile) { // Iterate over all groups from the current file
+                                console.log(`Source Animation Group: ${sourceAnimGroup.name}, From: ${sourceAnimGroup.from}, To: ${sourceAnimGroup.to}, Targets: ${sourceAnimGroup.targetedAnimations.length}`);
+                                
+                                // Verify animation group has targeted animations
+                                if (!sourceAnimGroup.targetedAnimations || sourceAnimGroup.targetedAnimations.length === 0) {
+                                    console.warn(`Animation group ${sourceAnimGroup.name} has no targeted animations! Skipping.`);
+                                    continue;
+                                }
+                                
+                                // Log targeted animations before retargeting (already done by debugLog.animation if needed)
+                                // console.log(`Before retargeting - Animation group ${sourceAnimGroup.name} has ${sourceAnimGroup.targetedAnimations.length} targets:`);
+                                // sourceAnimGroup.targetedAnimations.forEach((targetedAnim, idx) => {
+                                //     console.log(`- Target ${idx}: ${targetedAnim.target.name || 'unnamed'}, property: ${targetedAnim.animation.targetProperty}`);
+                                // });
+                                
+                                // Use retargetAnimWithBlendshapes to ensure proper retargeting with morphs
+                                console.log(`Retargeting animation ${sourceAnimGroup.name} from ${filename} to the target mesh...`);
+                                // Create a more unique name for the retargeted group
+                                const retargetedGroupName = `retargeted_${sourceAnimGroup.name}`; 
+                                const retargetedGroup = retargetAnimWithBlendshapes(
+                                    targetMesh,
+                                    sourceAnimGroup, // Use the animation group directly from the file's loaded data
+                                    retargetedGroupName
+                                );
+                                
+                                // After retargeting, check for any null targets that need to be filtered out
+                                if (retargetedGroup && retargetedGroup.targetedAnimations) {
+                                    const originalCount = retargetedGroup.targetedAnimations.length;
+                                    const validTargetedAnims = retargetedGroup.targetedAnimations.filter(ta => {
+                                        // Specifically check for morph target animations with null targets
+                                        if (!ta.target && ta.animation.targetProperty === "influence") {
+                                            console.warn(`[Workaround] Filtering out morph target animation '${ta.animation.name}' in group '${retargetedGroup.name}' because its target is null. This is likely because the target mesh does not have this morph target.`);
+                                            return false;
+                                        }
+                                        // General check for any animation with a null target, as a broader safety net
+                                        if (!ta.target) {
+                                            console.warn(`[Workaround] Filtering out animation '${ta.animation.name}' for property '${ta.animation.targetProperty}' in group '${retargetedGroup.name}' because its target is null.`);
+                                            return false;
+                                        }
+                                        return true;
+                                    });
+
+                                    if (validTargetedAnims.length < originalCount) {
+                                        retargetedGroup.targetedAnimations = validTargetedAnims;
+                                        console.log(`[Workaround] Group '${retargetedGroup.name}' updated: ${originalCount} -> ${validTargetedAnims.length} targeted animations after filtering null targets.`);
+                                    }
+                                }
+                                
+                                // Log targeted animations after retargeting
+                                console.log(`After retargeting - Retargeted Animation Group: ${retargetedGroup.name}, From: ${retargetedGroup.from}, To: ${retargetedGroup.to}, Targets: ${retargetedGroup.targetedAnimations.length}`);
+                                // debugLog.animation(retargetedGroup); // For full details of the retargeted group
+
+                                // Configure the animation
+                                retargetedGroup.loopAnimation = true;
+                                
+                                // Store the retargeted animation
+                                animationGroups.push(retargetedGroup);
+                                console.log(`Successfully retargeted and stored animation: ${retargetedGroup.name}`);
+                            }
+                        } else {
+                            console.warn(`No animation groups found in the loaded file ${filename}`);
+                        }
+                    }
+                    
+                    // Final verification
+                    console.log(`Loaded ${animationGroups.length} animation groups in total`);
+                    
+                    // Initialize with the first animation
+                    if (animationGroups.length > 0) {
+                        console.log("Setting initial animation state...");
+                        // Start with the first animation at full weight
+                        const initialWeights = [1, 0, 0];
+                        blendAnimations(initialWeights);
+                        
+                        // Update UI
+                        document.getElementById("loading").style.display = "none";
+                        isPlaying = true;
+                        
+                        return true;
+                    } else {
+                        console.error("No animation groups were loaded!");
+                        document.getElementById("loading").textContent = "Error loading animations!";
+                        return false;
+                    }
+                } catch (error) {
+                    console.error("Error loading animations:", error);
+                    document.getElementById("loading").textContent = `Error: ${error.message}`;
+                    return false;
+                }
+            }
+            
+            // Blend animations with given weights
+            function blendAnimations(weights, blendingSpeed = 0.1) {
+                if (!animationGroups || animationGroups.length === 0) {
+                    console.warn("No animations available to blend");
+                    return;
+                }
+                
+                console.log(`Blending animations with weights: [${weights.join(', ')}], speed: ${blendingSpeed}`);
+                
+                // Stop all animations first
+                animationGroups.forEach(group => {
+                    if (group) {
+                        console.log(`Stopping animation: ${group.name}`);
+                        group.stop();
+                    }
+                });
+                
+                // Apply weights and start animations
+                animationGroups.forEach((group, index) => {
+                    if (group && weights[index] > 0) {
+                        // Enable blending
+                        if (typeof group.enableBlending === 'function') {
+                            console.log(`Enabling blending for ${group.name} with speed ${blendingSpeed}`);
+                            group.enableBlending(blendingSpeed);
+                        } else {
+                            console.warn(`Group ${group.name} does not have enableBlending function`);
+                        }
+                        
+                        // Set weight
+                        console.log(`Setting weight ${weights[index]} for ${group.name}`);
+                        group.setWeightForAllAnimatables(weights[index]);
+                        
+                        // Verify targets before playing
+                        if (group.targetedAnimations.length === 0) {
+                            console.warn(`Animation group ${group.name} has no targeted animations!`);
+                        } else {
+                            console.log(`${group.name} has ${group.targetedAnimations.length} targeted animations`);
+                        }
+                        
+                        // Log targeted animations
+                        group.targetedAnimations.forEach((targetedAnim, idx) => {
+                            if (!targetedAnim.target) {
+                                console.error(`Target is null for animation ${idx} in group ${group.name}`);
+                            } else {
+                                console.log(`Target ${idx}: ${targetedAnim.target.name || 'unnamed'}, property: ${targetedAnim.animation.targetProperty}`);
+                            }
+                        });
+                        
+                        // Start animation
+                        console.log(`Playing animation: ${group.name}, from: ${group.from}, to: ${group.to}`);
+                        group.play(true); // Loop
+                    }
+                });
+                
+                // Update UI to reflect state
+                isPlaying = true;
+            }
+            
+            // Attach event listeners to UI controls
+            function setupUI() {
+                // Weight sliders
+                document.getElementById('blend1').addEventListener('input', updateBlendWeights);
+                document.getElementById('blend2').addEventListener('input', updateBlendWeights);
+                document.getElementById('blend3').addEventListener('input', updateBlendWeights);
+                document.getElementById('blendSpeed').addEventListener('input', updateBlendSpeed);
+                
+                // Animation buttons
+                document.getElementById('animation1Btn').addEventListener('click', () => setActiveAnimation(0));
+                document.getElementById('animation2Btn').addEventListener('click', () => setActiveAnimation(1));
+                document.getElementById('animation3Btn').addEventListener('click', () => setActiveAnimation(2));
+                
+                // Playback controls
+                document.getElementById('playBtn').addEventListener('click', playAnimations);
+                document.getElementById('pauseBtn').addEventListener('click', pauseAnimations);
+                document.getElementById('stopBtn').addEventListener('click', stopAnimations);
+                document.getElementById('resetBtn').addEventListener('click', resetWeights);
+            }
+            
+            // Update blend weights from UI
+            function updateBlendWeights() {
+                const weight1 = parseFloat(document.getElementById('blend1').value);
+                const weight2 = parseFloat(document.getElementById('blend2').value);
+                const weight3 = parseFloat(document.getElementById('blend3').value);
+                
+                // Update value displays
+                document.getElementById('blend1Value').textContent = weight1.toFixed(2);
+                document.getElementById('blend2Value').textContent = weight2.toFixed(2);
+                document.getElementById('blend3Value').textContent = weight3.toFixed(2);
+                
+                // Apply the new weights
+                const blendingSpeed = parseFloat(document.getElementById('blendSpeed').value);
+                blendAnimations([weight1, weight2, weight3], blendingSpeed);
+            }
+            
+            // Update blending speed
+            function updateBlendSpeed() {
+                const speed = parseFloat(document.getElementById('blendSpeed').value);
+                document.getElementById('blendSpeedValue').textContent = speed.toFixed(2);
+                
+                // Re-apply the current weights with the new blending speed
+                updateBlendWeights();
+            }
+            
+            // Set a single animation as active (weight = 1)
+            function setActiveAnimation(index) {
+                // Reset all buttons
+                document.querySelectorAll('#controls button').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                
+                // Set the active button
+                const buttons = [
+                    document.getElementById('animation1Btn'),
+                    document.getElementById('animation2Btn'),
+                    document.getElementById('animation3Btn')
+                ];
+                
+                if (buttons[index]) {
+                    buttons[index].classList.add('active');
+                }
+                
+                // Set all weights to 0 except for the selected animation
+                const weights = [0, 0, 0];
+                weights[index] = 1;
+                
+                // Update sliders
+                document.getElementById('blend1').value = weights[0];
+                document.getElementById('blend2').value = weights[1];
+                document.getElementById('blend3').value = weights[2];
+                
+                // Update value displays
+                document.getElementById('blend1Value').textContent = weights[0].toFixed(2);
+                document.getElementById('blend2Value').textContent = weights[1].toFixed(2);
+                document.getElementById('blend3Value').textContent = weights[2].toFixed(2);
+                
+                // Apply the weights
+                const blendingSpeed = parseFloat(document.getElementById('blendSpeed').value);
+                blendAnimations(weights, blendingSpeed);
+            }
+            
+            // Play animations
+            function playAnimations() {
+                if (!isPlaying) {
+                    // Get current weights
+                    const weight1 = parseFloat(document.getElementById('blend1').value);
+                    const weight2 = parseFloat(document.getElementById('blend2').value);
+                    const weight3 = parseFloat(document.getElementById('blend3').value);
+                    
+                    // Apply weights
+                    blendAnimations([weight1, weight2, weight3]);
+                    isPlaying = true;
+                }
+            }
+            
+            // Pause animations
+            function pauseAnimations() {
+                if (isPlaying) {
+                    animationGroups.forEach(group => {
+                        if (group) group.pause();
+                    });
+                    isPlaying = false;
+                }
+            }
+            
+            // Stop animations
+            function stopAnimations() {
+                animationGroups.forEach(group => {
+                    if (group) {
+                        group.stop();
+                        group.reset();
+                    }
+                });
+                isPlaying = false;
+            }
+            
+            // Reset .glb to first animation only
+            function resetWeights() {
+                setActiveAnimation(0);
+            }
+            
+            // Initialize everything
+            async function init() {
+                console.log("Initializing blend_animation.html...");
+                const sceneInitialized = await initScene();
+                if (sceneInitialized) {
+                    setupUI();
+                    console.log("Animation blending demo initialized successfully");
+                } else {
+                    console.error("Failed to initialize scene!");
+                }
+            }
+            
+            // Start the application
+            init();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Animation Timeline Editor</title>
+  <style>
+    html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }
+    #renderCanvas { width: 100%; height: 100%; touch-action: none; }
+    #controls { position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.7); color: white; padding: 15px; border-radius: 5px; z-index: 101; max-width: 350px; }
+    select, button, input { margin-top: 5px; }
+    button { padding: 6px 10px; background: #4a6fa8; color: white; border: none; border-radius: 4px; cursor: pointer; margin-right: 5px; }
+    button:hover { background: #5d84c0; }
+    button.active { background: #5d84c0; }
+    button.danger { background: #a84a4a; }
+    button.danger:hover { background: #c05d5d; }
+    
+    /* Timeline Styles */
+    #timelineEditor { 
+      position: absolute; 
+      bottom: 0; 
+      left: 0; 
+      width: 100%; 
+      height: 200px; 
+      background: #1e1e1e; 
+      color: white;
+      z-index: 102;
+      display: flex;
+      flex-direction: column;
+    }
+    #timelineControls {
+      padding: 8px;
+      background: #2d2d2d;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      border-bottom: 1px solid #444;
+    }
+    #timelineTracks {
+      flex-grow: 1;
+      position: relative;
+      overflow-x: auto;
+      overflow-y: hidden;
+      background: #2a2a2a;
+    }
+    .timeline-track {
+      height: 50px;
+      position: relative;
+      border-bottom: 1px solid #444;
+      margin-top: 10px;
+    }
+    .timeline-clip {
+      position: absolute;
+      height: 40px;
+      top: 5px;
+      background: #4a6fa8;
+      border: 1px solid #6a8fc8;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .timeline-clip.selected {
+      background: #6a8fc8;
+      border: 2px solid #8aafff;
+    }
+    .timeline-clip:hover {
+      background: #5d84c0;
+    }
+    .timeline-playhead {
+      position: absolute;
+      width: 2px;
+      background: red;
+      height: 100%;
+      top: 0;
+      z-index: 10;
+      pointer-events: none;
+    }
+    .timeline-ruler {
+      height: 25px;
+      background: #333;
+      position: relative;
+      border-bottom: 1px solid #444;
+    }
+    .timeline-ruler-tick {
+      position: absolute;
+      width: 1px;
+      background: #666;
+      height: 10px;
+      bottom: 0;
+    }
+    .timeline-ruler-tick.major {
+      height: 15px;
+      background: #888;
+    }
+    .timeline-ruler-label {
+      position: absolute;
+      font-size: 10px;
+      color: #aaa;
+      bottom: 16px;
+      transform: translateX(-50%);
+    }
+    .clip-handle {
+      position: absolute;
+      width: 8px;
+      height: 100%;
+      top: 0;
+      cursor: ew-resize;
+      opacity: 0.5;
+      background: rgba(255,255,255,0.3);
+    }
+    .clip-handle.left { left: 0; }
+    .clip-handle.right { right: 0; }
+    .clip-handle:hover {
+      opacity: 0.8;
+    }
+    .clip-label {
+      position: absolute;
+      font-size: 10px;
+      color: white;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 90%;
+      text-align: center;
+      pointer-events: none;
+    }
+    #timeInfo {
+      font-family: monospace;
+      margin-left: auto;
+      background: #222;
+      padding: 3px 8px;
+      border-radius: 3px;
+    }
+  </style>
+  <script src="https://cdn.babylonjs.com/babylon.js"></script>
+  <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+  <script src="https://cdn.babylonjs.com/serializers/babylon.glTF2Serializer.js"></script>
+  <!-- Local scripts -->
+  <script src="SceneAndMeshLoader.js"></script>
+  <script src="retargetAnims.js"></script>
+  <script src="animFetchAndDestroy.js"></script>
+  <script src="initialize.js"></script>
+</head>
+<body>
+  <canvas id="renderCanvas"></canvas>
+  <div id="controls">
+    <h2>Animation Timeline Editor</h2>
+    <div>
+      <label for="animationSelect">Select Animation (zin_glb):</label>
+      <select id="animationSelect"></select>
+      <button id="importAnimButton">Import to Timeline</button>
+    </div>
+    
+    <div style="margin-top: 15px;">
+      <h3>Animation Controls</h3>
+      <button id="playPauseButton">Play</button>
+      <button id="stopButton">Stop</button>
+    </div>
+    
+    <div style="margin-top: 15px;">
+      <h3>Edit Actions</h3>
+      <button id="cutButton" title="Cut the clip at current playhead position">Cut</button>
+      <button id="deleteButton" class="danger" title="Delete selected clip">Delete</button>
+      <button id="trimStartButton" title="Trim start of selected clip to playhead">Trim Start</button>
+      <button id="trimEndButton" title="Trim end of selected clip to playhead">Trim End</button>
+    </div>
+    
+    <div style="margin-top: 15px;">
+      <h3>Export</h3>
+      <button id="exportSelectedButton">Export Selected</button>
+      <button id="exportAllButton">Export All</button>
+    </div>
+    
+    <div style="margin-top: 15px;">
+      <p>Current Frame: <span id="currentFrame">0</span></p>
+      <p>Selected Clip: <span id="selectedClipInfo">None</span></p>
+    </div>
+  </div>
+  
+  <div id="timelineEditor">
+    <div id="timelineControls">
+      <button id="zoomInButton">Zoom In</button>
+      <button id="zoomOutButton">Zoom Out</button>
+      <button id="fitAllButton">Fit All</button>
+      <span id="timeInfo">00:00.000</span>
+    </div>
+    <div class="timeline-ruler" id="timelineRuler"></div>
+    <div id="timelineTracks">
+      <!-- Animation tracks will be added here dynamically -->
+      <div class="timeline-playhead" id="timelinePlayhead"></div>
+    </div>
+  </div>
+
+  <script type="module">
+    // Ensure BABYLON is available globally
+    if (typeof BABYLON === 'undefined' && window.BABYLON) {
+      window.BABYLON = window.BABYLON;
+    } else if (typeof BABYLON === 'undefined') {
+      console.error("Babylon.js not loaded.");
+      alert("Babylon.js not loaded. Check console.");
+    }
+
+    const canvas = document.getElementById('renderCanvas');
+    let engine;
+    let scene;
+    let baseCharacterAsset = null; // Store the loaded base character (glassesGuyNew)
+
+    // Define basePathMesh if not already defined globally by other scripts
+    if (typeof basePathMesh === 'undefined') {
+        window.basePathMesh = './';
+    }
+    if (typeof ParamsManager === 'undefined') {
+        window.ParamsManager = { debug: false };
+    }
+
+    // Timeline variables
+    const timeline = {
+      clips: [],
+      selectedClipIndex: -1,
+      pixelsPerSecond: 100, // Initial zoom level 
+      playhead: 0,          // Current playhead position in seconds
+      isPlaying: false,     // Is the animation playing
+      currentAnimGroup: null, // Current playing animation group
+      frameRate: 30,        // Default frame rate for the timeline
+      dragState: null,      // For drag operations
+      startTime: 0,         // Start time of the scrubbing/playing
+      totalDuration: 0,     // Total duration of all clips
+    };
+    
+    // DOM Elements
+    const timelineTracks = document.getElementById('timelineTracks');
+    const timelinePlayhead = document.getElementById('timelinePlayhead');
+    const timelineRuler = document.getElementById('timelineRuler');
+    const timeInfo = document.getElementById('timeInfo');
+    const currentFrameDisplay = document.getElementById('currentFrame');
+    const selectedClipInfoDisplay = document.getElementById('selectedClipInfo');
+    
+    // Setup helper functions
+    function secondsToTimeCode(seconds) {
+      const min = Math.floor(seconds / 60);
+      const sec = Math.floor(seconds % 60);
+      const ms = Math.floor((seconds % 1) * 1000);
+      return `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}.${ms.toString().padStart(3, '0')}`;
+    }
+    
+    function frameToSeconds(frame, fps = timeline.frameRate) {
+      return frame / fps;
+    }
+    
+    function secondsToFrame(seconds, fps = timeline.frameRate) {
+      return Math.round(seconds * fps);
+    }
+
+    async function setupSceneAndEngine() {
+      engine = new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true });
+      scene = new BABYLON.Scene(engine);
+      const camera = new BABYLON.ArcRotateCamera('cam', -Math.PI/2, Math.PI/2.5, 3, new BABYLON.Vector3(0, 1.2, 0), scene);
+      camera.attachControl(canvas, true);
+      camera.wheelDeltaPercentage = 0.01;
+      new BABYLON.HemisphericLight('light', new BABYLON.Vector3(0, 1, 0), scene);
+      engine.runRenderLoop(() => {
+        scene.render();
+        
+        // Update playhead position during playback
+        if (timeline.isPlaying && timeline.currentAnimGroup) {
+          const elapsedTime = (performance.now() - timeline.startTime) / 1000;
+          updatePlayhead(timeline.playhead + elapsedTime);
+          timeline.startTime = performance.now();
+          
+          // Update frame display
+          currentFrameDisplay.textContent = secondsToFrame(timeline.playhead).toString();
+          
+          // Check if we reached the end of the current animation
+          if (timeline.currentAnimGroup && timeline.playhead > timelineClipToDuration(timeline.selectedClipIndex)) {
+            stopPlayback();
+          }
+        }
+      });
+      window.addEventListener('resize', () => engine.resize());
+      return scene;
+    }
+
+    async function loadBaseCharacterModel(sceneInstance) {
+        if (typeof loadAssetMesh !== 'function') {
+            console.error("loadAssetMesh function is not defined. Make sure SceneAndMeshLoader.js is loaded.");
+            alert("Error: SceneAndMeshLoader.js not loaded properly.");
+            return null;
+        }
+        try {
+            console.log("Loading base character model (glassesGuyNew.glb)...");
+            // Use the new URL for the base model
+            const modelUrl = "https://signcollect.nl/jari/BabylonSignLab/LoadingAnimation/MeshesAndAnims/glassesGuyNew.glb";
+            // When using a full URL for fileName, the path argument to loadAssetMesh will be ignored by ImportMeshAsync if fileName is absolute.
+            // So, window.basePathMesh can remain as is, or be passed as "".
+            baseCharacterAsset = await loadAssetMesh(sceneInstance, "", modelUrl, ParamsManager.debug);
+            
+            if (baseCharacterAsset && baseCharacterAsset.root) {
+                baseCharacterAsset.root.position = BABYLON.Vector3.Zero(); 
+                console.log("Base character model (glassesGuyNew.glb) loaded successfully.");
+            } else {
+                console.error("Failed to load or get the root of the base character model (glassesGuyNew.glb). Asset:", baseCharacterAsset);
+                alert("Failed to load base character (glassesGuyNew.glb). Check console.");
+                return null;
+            }
+            return baseCharacterAsset;
+        } catch (error) {
+            console.error("Error loading base character model (glassesGuyNew.glb):", error);
+            alert("Error loading base character (glassesGuyNew.glb). Check console.");
+            return null;
+        }
+    }
+
+    // Animation handling and trimming functions
+    function clipAnimationGroup(animGroup, from, to, newName) {
+        // ...existing code...
+        const clonedGroup = animGroup.clone(newName); 
+        clonedGroup.targetedAnimations.forEach(targetedAnimation => {
+            const animation = targetedAnimation.animation;
+            const newKeys = [];
+            const originalKeys = animation.getKeys();
+            
+            for (let key of originalKeys) {
+                if (key.frame >= from && key.frame <= to) {
+                    let newKeyFrame = key.frame - from;
+                    // Ensure value is properly cloned if it's an object type
+                    let newValue = key.value;
+                    if (key.value && typeof key.value.clone === 'function') {
+                        newValue = key.value.clone();
+                    } else if (Array.isArray(key.value)) {
+                        newValue = [...key.value];
+                    }
+                    newKeys.push({
+                        frame: newKeyFrame, 
+                        value: newValue 
+                    });
+                }
+            }
+            animation.setKeys(newKeys);
+        });
+        clonedGroup.normalize(0, Math.max(0, to - from));
+        return clonedGroup;
+    }
+
+    async function loadAndRetargetAnimation(animationFileRelativePath, characterAsset) {
+      if (!scene || !characterAsset) return null;
+      
+      let loadedAnimAsset;
+      try {
+        loadedAnimAsset = await BABYLON.SceneLoader.ImportMeshAsync(null, "", animationFileRelativePath, scene);
+      } catch (e) {
+        console.error("Error loading animation GLB:", e);
+        alert("Failed to load animation file: " + animationFileRelativePath);
+        return null;
+      }
+      
+      if (!loadedAnimAsset.animationGroups || loadedAnimAsset.animationGroups.length === 0) {
+        console.error("No animation groups found in:", animationFileRelativePath);
+        loadedAnimAsset.meshes.forEach(m => m.dispose());
+        loadedAnimAsset.skeletons.forEach(s => s.dispose());
+        return null;
+      }
+
+      // Hide the loaded meshes, we only want the animation data
+      loadedAnimAsset.meshes.forEach(mesh => { if (mesh.id !== "__root__") mesh.dispose(); });
+      loadedAnimAsset.skeletons.forEach(s => s.dispose());
+
+      const originalAnimGroup = loadedAnimAsset.animationGroups[0];
+      originalAnimGroup.stop();
+      
+      // Retarget the animation to our character
+      const retargetedAnimation = retargetAnimWithBlendshapes(
+        characterAsset, 
+        originalAnimGroup, 
+        `retargeted_${animationFileRelativePath.split('/').pop().replace('.glb', '')}`
+      );
+      
+      originalAnimGroup.dispose();
+      
+      if (!retargetedAnimation) {
+          console.error("Failed to retarget animation.");
+          return null;
+      }
+      
+      // Ensure the animation is in the scene
+      if (!scene.animationGroups.includes(retargetedAnimation)) {
+        scene.animationGroups.push(retargetedAnimation);
+      }
+      
+      // Compute animation duration in seconds
+      const durationInFrames = retargetedAnimation.to - retargetedAnimation.from;
+      const durationInSeconds = durationInFrames / timeline.frameRate;
+      
+      return {
+        animation: retargetedAnimation,
+        durationFrames: durationInFrames,
+        durationSeconds: durationInSeconds,
+        filename: animationFileRelativePath.split('/').pop()
+      };
+    }
+
+    function renderTimelineRuler() {
+      timelineRuler.innerHTML = '';
+      
+      // Calculate total timeline width based on content or minimum width
+      const totalDuration = Math.max(timeline.totalDuration, 10); // Minimum 10 seconds
+      const timelineWidth = totalDuration * timeline.pixelsPerSecond;
+      timelineRuler.style.width = `${timelineWidth}px`;
+      
+      // Add tick marks - major tick every second, minor tick every 1/4 second
+      for (let time = 0; time <= totalDuration; time += 0.25) {
+        const isMajorTick = time % 1 === 0;
+        const tick = document.createElement('div');
+        tick.className = `timeline-ruler-tick ${isMajorTick ? 'major' : ''}`;
+        tick.style.left = `${time * timeline.pixelsPerSecond}px`;
+        timelineRuler.appendChild(tick);
+        
+        if (isMajorTick) {
+          const label = document.createElement('div');
+          label.className = 'timeline-ruler-label';
+          label.textContent = `${time}s`;
+          label.style.left = `${time * timeline.pixelsPerSecond}px`;
+          timelineRuler.appendChild(label);
+        }
+      }
+    }
+
+    function getTimeAtPosition(x) {
+      // Calculate time position based on x coordinate relative to timeline
+      const rect = timelineTracks.getBoundingClientRect();
+      const scrollLeft = timelineTracks.scrollLeft;
+      const relativeX = x - rect.left + scrollLeft;
+      return relativeX / timeline.pixelsPerSecond;
+    }
+    
+    function addClipToTimeline(animationData, startTime = 0) {
+      // Create a clip object with all needed information
+      const clip = {
+        animationGroup: animationData.animation,
+        filename: animationData.filename,
+        startTime: startTime,                   // Start time in seconds on the timeline
+        duration: animationData.durationSeconds, // Duration in seconds
+        originalDuration: animationData.durationSeconds, // Keep original for reference
+        originalFrames: animationData.durationFrames, // Original frame count
+        startFrame: 0,                         // Frame to start from in the animation
+        endFrame: animationData.durationFrames, // Frame to end at
+        element: null                          // DOM element (will be set when rendered)
+      };
+      
+      timeline.clips.push(clip);
+      
+      // Update total timeline duration
+      timeline.totalDuration = Math.max(timeline.totalDuration, startTime + clip.duration);
+      
+      // Render the clip on timeline
+      renderTimelineClip(timeline.clips.length - 1);
+      
+      // Update the ruler to accommodate the new clip
+      renderTimelineRuler();
+      
+      return timeline.clips.length - 1; // Return the index of the new clip
+    }
+    
+    function renderTimelineClip(clipIndex) {
+      const clip = timeline.clips[clipIndex];
+      if (!clip) return;
+      
+      // Create track if it doesn't exist
+      if (document.getElementById('timeline-track') === null) {
+        const track = document.createElement('div');
+        track.className = 'timeline-track';
+        track.id = 'timeline-track';
+        timelineTracks.appendChild(track);
+      }
+      
+      // Create or update the clip element
+      if (!clip.element) {
+        // Create new clip element
+        const clipElement = document.createElement('div');
+        clipElement.className = 'timeline-clip';
+        clipElement.dataset.clipIndex = clipIndex;
+        
+        // Add drag handles for trimming
+        const leftHandle = document.createElement('div');
+        leftHandle.className = 'clip-handle left';
+        leftHandle.dataset.handle = 'left';
+        
+        const rightHandle = document.createElement('div');
+        rightHandle.className = 'clip-handle right';
+        rightHandle.dataset.handle = 'right';
+        
+        const label = document.createElement('div');
+        label.className = 'clip-label';
+        label.textContent = clip.filename;
+        
+        clipElement.appendChild(leftHandle);
+        clipElement.appendChild(rightHandle);
+        clipElement.appendChild(label);
+        
+        // Set initial position and size
+        clipElement.style.left = `${clip.startTime * timeline.pixelsPerSecond}px`;
+        clipElement.style.width = `${clip.duration * timeline.pixelsPerSecond}px`;
+        
+        // Store element reference
+        clip.element = clipElement;
+        
+        // Add click handler for selection
+        clipElement.addEventListener('click', (e) => {
+          // If we're clicking a handle, don't select
+          if (e.target.classList.contains('clip-handle')) return;
+          
+          selectClip(clipIndex);
+        });
+        
+        // Add handle listeners for trimming
+        leftHandle.addEventListener('mousedown', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          startDragging(clipIndex, 'trimStart', e.clientX);
+        });
+        
+        rightHandle.addEventListener('mousedown', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          startDragging(clipIndex, 'trimEnd', e.clientX);
+        });
+        
+        // Add drag listener for moving clips
+        clipElement.addEventListener('mousedown', (e) => {
+          // Only start drag if clicking the main body (not handles)
+          if (!e.target.classList.contains('clip-handle')) {
+            e.preventDefault();
+            startDragging(clipIndex, 'move', e.clientX);
+          }
+        });
+        
+        document.getElementById('timeline-track').appendChild(clipElement);
+      } else {
+        // Update existing clip element position and size
+        clip.element.style.left = `${clip.startTime * timeline.pixelsPerSecond}px`;
+        clip.element.style.width = `${clip.duration * timeline.pixelsPerSecond}px`;
+      }
+    }
+    
+    function selectClip(clipIndex) {
+      // Deselect previous clip
+      if (timeline.selectedClipIndex !== -1 && timeline.clips[timeline.selectedClipIndex]) {
+        const prevClip = timeline.clips[timeline.selectedClipIndex];
+        if (prevClip.element) {
+          prevClip.element.classList.remove('selected');
+        }
+        
+        // Stop any playing animation
+        if (timeline.currentAnimGroup) {
+          timeline.currentAnimGroup.stop();
+          timeline.currentAnimGroup = null;
+        }
+      }
+      
+      // Select new clip
+      timeline.selectedClipIndex = clipIndex;
+      
+      if (clipIndex !== -1 && timeline.clips[clipIndex]) {
+        const clip = timeline.clips[clipIndex];
+        clip.element.classList.add('selected');
+        
+        // Update info display
+        selectedClipInfoDisplay.textContent = 
+          `${clip.filename} (Duration: ${clip.duration.toFixed(2)}s, Frames: ${Math.round(clip.duration * timeline.frameRate)})`;
+        
+        // Update playhead to start of this clip
+        updatePlayhead(clip.startTime);
+      } else {
+        selectedClipInfoDisplay.textContent = 'None';
+      }
+    }
+    
+    function timelineClipToDuration(clipIndex) {
+      if (clipIndex === -1 || !timeline.clips[clipIndex]) return 0;
+      return timeline.clips[clipIndex].startTime + timeline.clips[clipIndex].duration;
+    }
+    
+    function updatePlayhead(time) {
+      // Clamp time to valid range
+      time = Math.max(0, time);
+      
+      // Update internal state
+      timeline.playhead = time;
+      
+      // Update visual position
+      timelinePlayhead.style.left = `${time * timeline.pixelsPerSecond}px`;
+      
+      // Update time display
+      timeInfo.textContent = secondsToTimeCode(time);
+      currentFrameDisplay.textContent = secondsToFrame(time).toString();
+      
+      // If an animation is selected, update its time too
+      if (timeline.selectedClipIndex !== -1 && timeline.clips[timeline.selectedClipIndex]) {
+        const selectedClip = timeline.clips[timeline.selectedClipIndex];
+        
+        // Check if playhead is within this clip
+        if (time >= selectedClip.startTime && time < (selectedClip.startTime + selectedClip.duration)) {
+          // Calculate relative time within clip
+          const clipTime = time - selectedClip.startTime;
+          const clipFrame = secondsToFrame(clipTime);
+          
+          // If playing, don't change the animation (it's already playing)
+          if (!timeline.isPlaying) {
+            // Set animation to this exact frame
+            selectedClip.animationGroup.goToFrame(selectedClip.startFrame + clipFrame);
+          }
+        }
+      }
+    }
+    
+    function startPlayback() {
+      if (timeline.isPlaying) return; // Already playing
+      
+      if (timeline.selectedClipIndex === -1 || !timeline.clips[timeline.selectedClipIndex]) {
+        alert("Please select a clip to play");
+        return;
+      }
+      
+      const clip = timeline.clips[timeline.selectedClipIndex];
+      
+      // Calculate which frame in the animation we should start from
+      let startTimeInClip = timeline.playhead - clip.startTime;
+      if (startTimeInClip < 0) {
+        // If playhead is before this clip, start from beginning of clip
+        updatePlayhead(clip.startTime);
+        startTimeInClip = 0;
+      }
+      else if (startTimeInClip > clip.duration) {
+        // If playhead is past this clip, go to beginning
+        updatePlayhead(clip.startTime);
+        startTimeInClip = 0;
+      }
+      
+      // Convert to frames
+      const startFrame = clip.startFrame + secondsToFrame(startTimeInClip);
+      
+      // Start playback
+      clip.animationGroup.start(false, 1.0, startFrame, clip.endFrame);
+      timeline.currentAnimGroup = clip.animationGroup;
+      
+      // Update UI
+      timeline.isPlaying = true;
+      timeline.startTime = performance.now();
+      document.getElementById('playPauseButton').textContent = 'Pause';
+    }
+    
+    function pausePlayback() {
+      if (!timeline.isPlaying) return;
+      
+      // Pause current animation
+      if (timeline.currentAnimGroup) {
+        timeline.currentAnimGroup.pause();
+      }
+      
+      // Update UI
+      timeline.isPlaying = false;
+      document.getElementById('playPauseButton').textContent = 'Play';
+    }
+    
+    function stopPlayback() {
+      // Stop and reset
+      if (timeline.currentAnimGroup) {
+        timeline.currentAnimGroup.stop();
+        timeline.currentAnimGroup = null;
+      }
+      
+      // Move playhead back to clip start if currently selected
+      if (timeline.selectedClipIndex !== -1 && timeline.clips[timeline.selectedClipIndex]) {
+        updatePlayhead(timeline.clips[timeline.selectedClipIndex].startTime);
+      }
+      
+      // Update UI
+      timeline.isPlaying = false;
+      document.getElementById('playPauseButton').textContent = 'Play';
+    }
+    
+    function startDragging(clipIndex, dragType, initialX) {
+      // Validate that the clip index is valid
+      if (clipIndex < 0 || clipIndex >= timeline.clips.length || !timeline.clips[clipIndex]) {
+        console.warn("Attempted to drag an invalid clip index:", clipIndex);
+        return;
+      }
+      
+      // Select this clip first
+      selectClip(clipIndex);
+      
+      timeline.dragState = {
+        clipIndex,
+        type: dragType,
+        initialX,
+        initialStartTime: timeline.clips[clipIndex].startTime,
+        initialDuration: timeline.clips[clipIndex].duration
+      };
+      
+      document.addEventListener('mousemove', handleDragMove);
+      document.addEventListener('mouseup', handleDragEnd);
+    }
+    
+    function handleDragMove(e) {
+      // Ensure drag state exists
+      if (!timeline.dragState) return;
+      
+      // Verify the clip still exists and index is valid
+      if (timeline.dragState.clipIndex < 0 || 
+          timeline.dragState.clipIndex >= timeline.clips.length || 
+          !timeline.clips[timeline.dragState.clipIndex]) {
+        handleDragEnd(); // End drag if clip no longer exists
+        return;
+      }
+      
+      const clip = timeline.clips[timeline.dragState.clipIndex];
+      
+      // Calculate drag delta in pixels, then convert to seconds
+      const deltaPixels = e.clientX - timeline.dragState.initialX;
+      const deltaSeconds = deltaPixels / timeline.pixelsPerSecond;
+      
+      switch (timeline.dragState.type) {
+        case 'move':
+          // Move clip (change start time)
+          let newStartTime = Math.max(0, timeline.dragState.initialStartTime + deltaSeconds);
+          clip.startTime = newStartTime;
+          break;
+          
+        case 'trimStart':
+          // Trim start of clip (increase start time, decrease duration)
+          let maxTrim = timeline.dragState.initialDuration - 0.5; // Keep at least 0.5s
+          let trimAmount = Math.min(maxTrim, Math.max(0, deltaSeconds));
+          
+          clip.startTime = timeline.dragState.initialStartTime + trimAmount;
+          clip.duration = timeline.dragState.initialDuration - trimAmount;
+          
+          // Also update the start frame within the animation
+          const frameTrim = secondsToFrame(trimAmount);
+          clip.startFrame = frameTrim;
+          break;
+          
+        case 'trimEnd':
+          // Trim end of clip (decrease duration)
+          let newDuration = Math.max(0.5, timeline.dragState.initialDuration + deltaSeconds);
+          clip.duration = newDuration;
+          
+          // Update end frame
+          clip.endFrame = clip.startFrame + secondsToFrame(clip.duration);
+          break;
+      }
+      
+      // Update visual representation
+      renderTimelineClip(timeline.dragState.clipIndex);
+      
+      // Update total duration if needed
+      updateTotalDuration();
+    }
+    
+    function handleDragEnd() {
+      document.removeEventListener('mousemove', handleDragMove);
+      document.removeEventListener('mouseup', handleDragEnd);
+      
+      try {
+        if (timeline.dragState) {
+          // Update info display for the selected clip
+          if (timeline.selectedClipIndex !== -1 && 
+              timeline.selectedClipIndex < timeline.clips.length && 
+              timeline.clips[timeline.selectedClipIndex]) {
+            
+            const clip = timeline.clips[timeline.selectedClipIndex];
+            selectedClipInfoDisplay.textContent = 
+              `${clip.filename} (Duration: ${clip.duration.toFixed(2)}s, Frames: ${Math.round(clip.duration * timeline.frameRate)})`;
+          }
+          
+          // Update total duration after drag operations
+          updateTotalDuration();
+        }
+      } catch (error) {
+        console.error("Error during drag end:", error);
+      } finally {
+        // Always clear drag state to prevent errors
+        timeline.dragState = null;
+      }
+    }
+    
+    function updateTotalDuration() {
+      // Calculate new total duration based on all clips
+      let maxEndTime = 0;
+      timeline.clips.forEach(clip => {
+        const endTime = clip.startTime + clip.duration;
+        if (endTime > maxEndTime) {
+          maxEndTime = endTime;
+        }
+      });
+      
+      timeline.totalDuration = maxEndTime;
+      renderTimelineRuler();
+    }
+    
+    function cutClipAtPlayhead() {
+      if (timeline.selectedClipIndex === -1 || !timeline.clips[timeline.selectedClipIndex]) {
+        alert("Please select a clip to cut");
+        return;
+      }
+      
+      const clip = timeline.clips[timeline.selectedClipIndex];
+      
+      // Check if playhead is within this clip
+      if (timeline.playhead < clip.startTime || timeline.playhead >= (clip.startTime + clip.duration)) {
+        alert("Playhead must be within the clip to perform a cut");
+        return;
+      }
+      
+      // Calculate cut point in seconds from start of clip
+      const cutPoint = timeline.playhead - clip.startTime;
+      
+      // Stop any playing animation first
+      if (timeline.isPlaying) {
+        stopPlayback();
+      }
+      
+      // Create first segment by cloning and properly trimming
+      const firstAnimGroup = clipAnimationGroup(
+        clip.animationGroup, 
+        clip.startFrame, 
+        clip.startFrame + secondsToFrame(cutPoint),
+        `${clip.animationGroup.name}_part1`
+      );
+      
+      const firstSegment = {
+        animationGroup: firstAnimGroup,
+        filename: `${clip.filename} (Part 1)`,
+        startTime: clip.startTime,
+        duration: cutPoint,
+        originalDuration: clip.originalDuration,
+        originalFrames: clip.originalFrames,
+        startFrame: 0, // Reset to 0 since we created a new trimmed animation 
+        endFrame: secondsToFrame(cutPoint),
+        element: null
+      };
+      
+      // Create second segment with proper trimming
+      const secondAnimGroup = clipAnimationGroup(
+        clip.animationGroup,
+        clip.startFrame + secondsToFrame(cutPoint),
+        clip.endFrame,
+        `${clip.animationGroup.name}_part2`
+      );
+      
+      const secondSegment = {
+        animationGroup: secondAnimGroup,
+        filename: `${clip.filename} (Part 2)`,
+        startTime: clip.startTime + cutPoint,
+        duration: clip.duration - cutPoint,
+        originalDuration: clip.originalDuration,
+        originalFrames: clip.originalFrames,
+        startFrame: 0, // Reset to 0 since we created a new trimmed animation
+        endFrame: secondsToFrame(clip.duration - cutPoint),
+        element: null
+      };
+      
+      // Remove original clip from DOM
+      const trackElement = document.getElementById('timeline-track');
+      if (clip.element && trackElement) {
+        trackElement.removeChild(clip.element);
+      }
+      
+      // Dispose the original animation group since we're replacing it
+      if (clip.animationGroup) {
+        clip.animationGroup.dispose();
+      }
+      
+      // Replace original clip with the two new segments
+      timeline.clips.splice(timeline.selectedClipIndex, 1, firstSegment, secondSegment);
+      
+      // Render both new clips
+      renderTimelineClip(timeline.selectedClipIndex);
+      renderTimelineClip(timeline.selectedClipIndex + 1);
+      
+      // Select the second segment
+      selectClip(timeline.selectedClipIndex + 1);
+    }
+    
+    function deleteSelectedClip() {
+      if (timeline.selectedClipIndex === -1 || !timeline.clips[timeline.selectedClipIndex]) {
+        return;
+      }
+      
+      const clip = timeline.clips[timeline.selectedClipIndex];
+      
+      // Stop any playing animation
+      if (timeline.isPlaying && timeline.currentAnimGroup === clip.animationGroup) {
+        stopPlayback();
+      }
+      
+      // Remove from DOM
+      if (clip.element && clip.element.parentNode) {
+        clip.element.parentNode.removeChild(clip.element);
+      }
+      
+      // Dispose animation group
+      if (clip.animationGroup) {
+        clip.animationGroup.dispose();
+      }
+      
+      // Clear drag state to prevent errors after deletion
+      timeline.dragState = null;
+      
+      // Remove from array
+      timeline.clips.splice(timeline.selectedClipIndex, 1);
+      
+      // Update selection
+      timeline.selectedClipIndex = -1;
+      selectedClipInfoDisplay.textContent = "None";
+      
+      // Update total duration
+      updateTotalDuration();
+      
+      // Re-render all clips to update the timeline
+      timeline.clips.forEach((_, index) => renderTimelineClip(index));
+    }
+    
+    function trimSelectedToPlayhead(trimStart = true) {
+      if (timeline.selectedClipIndex === -1 || !timeline.clips[timeline.selectedClipIndex]) {
+        alert("Please select a clip to trim");
+        return;
+      }
+      
+      const clip = timeline.clips[timeline.selectedClipIndex];
+      
+      if (trimStart) {
+        // Trim start of clip to playhead
+        if (timeline.playhead <= clip.startTime) {
+          // Playhead is before or at clip start, nothing to trim
+          return;
+        }
+        if (timeline.playhead >= clip.startTime + clip.duration) {
+          // Playhead is after or at clip end, can't trim the whole clip
+          alert("Cannot trim the entire clip");
+          return;
+        }
+        
+        // Calculate new start position and duration
+        const trimAmount = timeline.playhead - clip.startTime;
+        clip.startTime = timeline.playhead;
+        clip.duration -= trimAmount;
+        
+        // Update animation frame range
+        clip.startFrame += secondsToFrame(trimAmount);
+      } else {
+        // Trim end of clip to playhead
+        if (timeline.playhead >= clip.startTime + clip.duration) {
+          // Playhead is after or at clip end, nothing to trim
+          return;
+        }
+        if (timeline.playhead <= clip.startTime) {
+          // Playhead is before or at clip start, can't trim the whole clip
+          alert("Cannot trim the entire clip");
+          return;
+        }
+        
+        // Calculate new duration
+        clip.duration = timeline.playhead - clip.startTime;
+        
+        // Update animation frame range
+        clip.endFrame = clip.startFrame + secondsToFrame(clip.duration);
+      }
+      
+      // Update visual representation
+      renderTimelineClip(timeline.selectedClipIndex);
+      
+      // Update clip info display
+      selectedClipInfoDisplay.textContent = 
+        `${clip.filename} (Duration: ${clip.duration.toFixed(2)}s, Frames: ${Math.round(clip.duration * timeline.frameRate)})`;
+      
+      // Update total duration if needed
+      updateTotalDuration();
+    }
+    
+    async function exportSelectedClip() {
+      if (timeline.selectedClipIndex === -1 || !timeline.clips[timeline.selectedClipIndex]) {
+        alert("Please select a clip to export");
+        return;
+      }
+      
+      const clip = timeline.clips[timeline.selectedClipIndex];
+      
+      // Clone the animation group before exporting to avoid modifying the one in the timeline
+      const clipToExport = clipAnimationGroup(
+        clip.animationGroup,
+        clip.startFrame,
+        clip.endFrame,
+        `export_${clip.filename.replace(/\.[^/.]+$/, "")}`
+      );
+      
+      if (!clipToExport) {
+        alert("Failed to prepare animation for export");
+        return;
+      }
+      
+      // Export options
+      const exportOptions = {
+        shouldExportNode: (node) => {
+          let belongsToCharacter = false;
+          let currentNode = node;
+          const characterMeshes = baseCharacterAsset.fetched.meshes;
+          const characterSkeletons = baseCharacterAsset.skeletons;
+
+          while(currentNode) {
+            if (characterMeshes.includes(currentNode) || 
+                (baseCharacterAsset.root === currentNode) ||
+                (characterSkeletons && characterSkeletons.some(s => s.bones.some(b => b.getTransformNode() === currentNode)))
+               ) {
+                belongsToCharacter = true;
+                break;
+            }
+            if ( (baseCharacterAsset.papa && baseCharacterAsset.papa === currentNode) || 
+                 (baseCharacterAsset.opa && baseCharacterAsset.opa === currentNode) || 
+                 (baseCharacterAsset.god && baseCharacterAsset.god === currentNode) ) {
+                    belongsToCharacter = true;
+                    break;
+            }
+            currentNode = currentNode.parent;
+          }
+          return belongsToCharacter;
+        },
+        shouldExportAnimation: (animationGroup) => {
+          return animationGroup === clipToExport;
+        }
+      };
+      
+      try {
+        console.log("Exporting selected clip...");
+        const filename = `export_${clip.filename.replace(/\.[^/.]+$/, "")}`;
+        const result = await BABYLON.GLTF2Export.GLBAsync(scene, filename, exportOptions);
+        result.downloadFiles();
+        console.log("Export complete");
+        
+        // Dispose the temporary animation group used for export
+        clipToExport.dispose();
+      } catch (error) {
+        console.error("Error exporting clip:", error);
+        alert("Failed to export clip. Check console for details.");
+        if (clipToExport) clipToExport.dispose();
+      }
+    }
+    
+    async function exportAllClips() {
+      if (timeline.clips.length === 0) {
+        alert("No clips to export");
+        return;
+      }
+      
+      // For now, just concat all animations into a single sequence
+      let totalTime = 0;
+      const exportAnimGroups = [];
+      
+      // Process each clip to create a continuous sequence
+      for (let clipIndex = 0; clipIndex < timeline.clips.length; clipIndex++) {
+        const clip = timeline.clips[clipIndex];
+        
+        // Clone and trim the animation first
+        const trimmedAnim = clipAnimationGroup(
+          clip.animationGroup,
+          clip.startFrame,
+          clip.endFrame, 
+          `export_part${clipIndex+1}`
+        );
+        
+        exportAnimGroups.push({
+          animation: trimmedAnim,
+          duration: clip.duration
+        });
+        
+        totalTime += clip.duration;
+      }
+      
+      // Now combine all animations into one sequence
+      // For simplicity, we're just exporting the first animation 
+      // In a real app, you'd want to properly sequence these together
+      
+      if (exportAnimGroups.length === 0) {
+        alert("No valid clips to export");
+        return;
+      }
+      
+      // Export options
+      const exportOptions = {
+        shouldExportNode: (node) => {
+          let belongsToCharacter = false;
+          let currentNode = node;
+          const characterMeshes = baseCharacterAsset.fetched.meshes;
+          const characterSkeletons = baseCharacterAsset.skeletons;
+
+          while(currentNode) {
+            if (characterMeshes.includes(currentNode) || 
+                (baseCharacterAsset.root === currentNode) ||
+                (characterSkeletons && characterSkeletons.some(s => s.bones.some(b => b.getTransformNode() === currentNode)))
+               ) {
+                belongsToCharacter = true;
+                break;
+            }
+            if ( (baseCharacterAsset.papa && baseCharacterAsset.papa === currentNode) || 
+                 (baseCharacterAsset.opa && baseCharacterAsset.opa === currentNode) || 
+                 (baseCharacterAsset.god && baseCharacterAsset.god === currentNode) ) {
+                    belongsToCharacter = true;
+                    break;
+            }
+            currentNode = currentNode.parent;
+          }
+          return belongsToCharacter;
+        },
+        shouldExportAnimation: (animationGroup) => {
+          return exportAnimGroups.some(item => item.animation === animationGroup);
+        }
+      };
+      
+      try {
+        console.log("Exporting all clips...");
+        const result = await BABYLON.GLTF2Export.GLBAsync(scene, "export_all_clips", exportOptions);
+        result.downloadFiles();
+        console.log("Export complete");
+        
+        // Dispose temporary animations
+        exportAnimGroups.forEach(item => {
+          item.animation.dispose();
+        });
+      } catch (error) {
+        console.error("Error exporting clips:", error);
+        alert("Failed to export clips. Check console for details.");
+        exportAnimGroups.forEach(item => {
+          item.animation.dispose();
+        });
+      }
+    }
+
+    async function fetchAnimationList() {
+        try {
+            const response = await fetch('listAnimationFiles.php?folder=zin_glb');
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}, message: ${await response.text()}`);
+            }
+            const data = await response.json();
+            const select = document.getElementById('animationSelect');
+            select.innerHTML = ''; 
+
+            if (data.success && data.files && Array.isArray(data.files)) {
+                if (data.files.length === 0) {
+                    select.innerHTML = '<option value="">No animations found in zin_glb/</option>';
+                    console.warn("No animation files returned from zin_glb/");
+                    return;
+                }
+                data.files.forEach(filePath => { 
+                    const option = document.createElement('option');
+                    option.value = filePath; 
+                    option.textContent = filePath.split('/').pop();
+                    select.appendChild(option);
+                });
+            } else {
+                console.error("Failed to fetch or parse animation list:", data.error || "Unknown error from PHP");
+                select.innerHTML = '<option value="">Error loading list</option>';
+            }
+        } catch (error) {
+            console.error("Error fetching animation list:", error);
+            document.getElementById('animationSelect').innerHTML = '<option value="">Error fetching list</option>';
+            alert("Could not fetch animation list. Check console and ensure listAnimationFiles.php is working.");
+        }
+    }
+    
+    function setupTimelineInteractions() {
+      // Timeline tracks click for positioning the playhead
+      timelineTracks.addEventListener('click', (e) => {
+        if (e.target === timelineTracks || e.target.className === 'timeline-track') {
+          const time = getTimeAtPosition(e.clientX);
+          updatePlayhead(time);
+        }
+      });
+      
+      // Zoom controls
+      document.getElementById('zoomInButton').addEventListener('click', () => {
+        timeline.pixelsPerSecond *= 1.5;
+        renderTimelineRuler();
+        timeline.clips.forEach((_, index) => renderTimelineClip(index));
+        timelinePlayhead.style.left = `${timeline.playhead * timeline.pixelsPerSecond}px`;
+      });
+      
+      document.getElementById('zoomOutButton').addEventListener('click', () => {
+        timeline.pixelsPerSecond /= 1.5;
+        renderTimelineRuler();
+        timeline.clips.forEach((_, index) => renderTimelineClip(index));
+        timelinePlayhead.style.left = `${timeline.playhead * timeline.pixelsPerSecond}px`;
+      });
+      
+      document.getElementById('fitAllButton').addEventListener('click', () => {
+        if (timeline.totalDuration > 0) {
+          // Calculate zoom level to fit all content
+          const containerWidth = timelineTracks.clientWidth;
+          timeline.pixelsPerSecond = containerWidth / timeline.totalDuration;
+          renderTimelineRuler();
+          timeline.clips.forEach((_, index) => renderTimelineClip(index));
+          timelinePlayhead.style.left = `${timeline.playhead * timeline.pixelsPerSecond}px`;
+        }
+      });
+      
+      // Import button
+      document.getElementById('importAnimButton').addEventListener('click', async () => {
+        const selectedFile = document.getElementById('animationSelect').value;
+        if (!selectedFile) {
+          alert("Please select an animation to import");
+          return;
+        }
+        
+        // Load and retarget the animation
+        const animationData = await loadAndRetargetAnimation(selectedFile, baseCharacterAsset);
+        if (!animationData) {
+          alert("Failed to load or retarget animation");
+          return;
+        }
+        
+        // Add to timeline at current playhead position 
+        const clipIndex = addClipToTimeline(animationData, timeline.playhead);
+        
+        // Select the newly added clip
+        selectClip(clipIndex);
+      });
+      
+      // Play/Pause button
+      document.getElementById('playPauseButton').addEventListener('click', () => {
+        if (timeline.isPlaying) {
+          pausePlayback();
+        } else {
+          startPlayback();
+        }
+      });
+      
+      // Stop button
+      document.getElementById('stopButton').addEventListener('click', () => {
+        stopPlayback();
+      });
+      
+      // Cut button
+      document.getElementById('cutButton').addEventListener('click', () => {
+        cutClipAtPlayhead();
+      });
+      
+      // Delete button
+      document.getElementById('deleteButton').addEventListener('click', () => {
+        deleteSelectedClip();
+      });
+      
+      // Trim buttons
+      document.getElementById('trimStartButton').addEventListener('click', () => {
+        trimSelectedToPlayhead(true);
+      });
+      
+      document.getElementById('trimEndButton').addEventListener('click', () => {
+        trimSelectedToPlayhead(false);
+      });
+      
+      // Export buttons
+      document.getElementById('exportSelectedButton').addEventListener('click', () => {
+        exportSelectedClip();
+      });
+      
+      document.getElementById('exportAllButton').addEventListener('click', () => {
+        exportAllClips();
+      });
+    }
+
+    async function main() {
+        const currentScene = await setupSceneAndEngine();
+        if (!currentScene) {
+            alert("Scene setup failed. Aborting.");
+            return;
+        }
+        
+        baseCharacterAsset = await loadBaseCharacterModel(currentScene);
+        if (!baseCharacterAsset) {
+            console.error("Main character (glassesGuyNew.glb) could not be loaded. Animation editing will not work correctly.");
+            return;
+        }
+        
+        await fetchAnimationList();
+        
+        // Initialize timeline
+        renderTimelineRuler();
+        setupTimelineInteractions();
+        
+        console.log("Animation Timeline Editor initialized successfully!");
+    }
+
+    main().catch(err => {
+        console.error("Unhandled error in main:", err);
+        alert("An unexpected error occurred. Check the console for details.");
+    });
+  </script>
+</body>
+</html>

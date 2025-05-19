@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animation Blending Timeline Explanation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1, h2, h3 {
+            color: #222;
+        }
+        .timeline-container {
+            margin: 40px 0;
+            position: relative;
+        }
+        .timeline {
+            position: relative;
+            height: 200px;
+            background: #f9f9f9;
+            border-radius: 5px;
+            padding: 20px;
+            overflow: hidden;
+        }
+        .timeline-track {
+            position: relative;
+            height: 100%;
+        }
+        .timeline-ruler {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 30px;
+            display: flex;
+            border-top: 1px solid #ccc;
+        }
+        .timeline-ruler-mark {
+            flex: 1;
+            text-align: center;
+            border-right: 1px solid #ccc;
+            font-size: 12px;
+            padding-top: 5px;
+        }
+        .sentence-anim, .gloss-anim {
+            position: absolute;
+            border-radius: 5px;
+            padding: 10px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        .sentence-anim {
+            background-color: #3498db;
+            top: 20px;
+        }
+        .gloss-anim {
+            background-color: #e74c3c;
+            top: 80px;
+        }
+        .blend-region {
+            position: absolute;
+            height: 40px;
+            background-color: rgba(155, 89, 182, 0.7);
+            z-index: 10;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        .blend-arrow {
+            position: absolute;
+            width: 0; 
+            height: 0; 
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: 10px solid #9b59b6;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .timeline-event {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background-color: #f1c40f;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 20;
+        }
+        .timeline-event-label {
+            position: absolute;
+            font-size: 10px;
+            transform: translateX(-50%);
+            background: #f1c40f;
+            padding: 2px 5px;
+            border-radius: 3px;
+            white-space: nowrap;
+        }
+        .weight-graph {
+            position: absolute;
+            width: 100%;
+            height: 50px;
+            bottom: 35px;
+            display: flex;
+            align-items: flex-end;
+        }
+        .weight-line {
+            position: absolute;
+            height: 2px;
+            background-color: #333;
+            z-index: 5;
+        }
+        .code-block {
+            background: #f5f5f5;
+            border-left: 3px solid #3498db;
+            padding: 15px;
+            margin: 20px 0;
+            overflow-x: auto;
+            font-family: monospace;
+        }
+        .explanation {
+            margin-bottom: 30px;
+            padding: 0 15px;
+        }
+        .box {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .box h3 {
+            margin-top: 0;
+        }
+        .back-button {
+            display: inline-block;
+            margin: 20px 0;
+            padding: 10px 15px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .weight-value {
+            position: absolute;
+            font-size: 10px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <h1>Animation Blending Timeline Explanation</h1>
+    <a href="version2.html" class="back-button">Back to Animation Demo</a>
+    
+    <div class="explanation">
+        <h2>How Animation Blending Works in Babylon.js</h2>
+        <p>Animation blending allows for smooth transitions between different animations. In your implementation, there are two primary animations:</p>
+        <ul>
+            <li><strong>Sentence Animation</strong> (zin1_250507_5.glb) - The base animation</li>
+            <li><strong>Gloss Animation</strong> (1_250507_12.glb) - The animation to blend in</li>
+        </ul>
+        <p>The blending between these animations is controlled by three main parameters:</p>
+        <ul>
+            <li><strong>Blending Speed</strong> - How quickly one animation blends into another (lower values = smoother transitions)</li>
+            <li><strong>Animation Weight</strong> - The influence of each animation (0 = no influence, 1 = full influence)</li>
+            <li><strong>Blend Delay</strong> - The timing overlap between animations during transitions</li>
+        </ul>
+    </div>
+
+    <div class="box">
+        <h3>Play With Delay Timeline</h3>
+        <p>When "Play Sentence + Delayed Gloss (3s)" is clicked, the following sequence occurs:</p>
+
+        <div class="timeline-container">
+            <div class="timeline">
+                <div class="timeline-track">
+                    <!-- Sentence animation -->
+                    <div class="sentence-anim" style="left: 0%; width: 100%;">Sentence Animation</div>
+                    
+                    <!-- Gloss animation with gradual weight increase/decrease -->
+                    <div class="gloss-anim" style="left: 30%; width: 40%;">Gloss Animation</div>
+                    
+                    <!-- Blend in section -->
+                    <div class="blend-region" style="left: 30%; width: 5%; top: 80px;">
+                        Blend In
+                    </div>
+                    <div class="blend-arrow" style="top: 120px; left: 32.5%;"></div>
+                    
+                    <!-- Blend out section -->
+                    <div class="blend-region" style="left: 65%; width: 5%; top: 80px;">
+                        Blend Out
+                    </div>
+                    <div class="blend-arrow" style="top: 120px; left: 67.5%;"></div>
+                    
+                    <!-- Timeline events -->
+                    <div class="timeline-event" style="top: 80px; left: 30%;"></div>
+                    <div class="timeline-event-label" style="top: 60px; left: 30%;">Start Gloss (t=3s)</div>
+                    
+                    <div class="timeline-event" style="top: 80px; left: 70%;"></div>
+                    <div class="timeline-event-label" style="top: 60px; left: 70%;">Gloss Complete</div>
+                    
+                    <!-- Weight graph -->
+                    <div class="weight-graph">
+                        <!-- Sentence weight remains constant at 1.0 -->
+                        <div class="weight-line" style="top: 10px; left: 0%; width: 100%;"></div>
+                        <div class="weight-value" style="top: 0px; left: 10px;">Sentence Weight: 1.0</div>
+                        
+                        <!-- Gloss weight increases from 0 to 1.0 -->
+                        <div class="weight-line" style="top: 20px; left: 30%; width: 5%; transform: rotate(-45deg); transform-origin: left center;"></div>
+                        <div class="weight-value" style="top: 30px; left: 30%;">0.0</div>
+                        
+                        <!-- Gloss weight holds at 1.0 -->
+                        <div class="weight-line" style="top: 30px; left: 35%; width: 30%;"></div>
+                        <div class="weight-value" style="top: 20px; left: 45%;">Gloss Weight: 1.0</div>
+                        
+                        <!-- Gloss weight decreases from 1.0 to 0 -->
+                        <div class="weight-line" style="top: 30px; left: 65%; width: 5%; transform: rotate(45deg); transform-origin: left center;"></div>
+                        <div class="weight-value" style="top: 30px; left: 70%;">0.0</div>
+                    </div>
+                    
+                    <!-- Timeline ruler -->
+                    <div class="timeline-ruler">
+                        <div class="timeline-ruler-mark">0s</div>
+                        <div class="timeline-ruler-mark">1s</div>
+                        <div class="timeline-ruler-mark">2s</div>
+                        <div class="timeline-ruler-mark">3s</div>
+                        <div class="timeline-ruler-mark">4s</div>
+                        <div class="timeline-ruler-mark">5s</div>
+                        <div class="timeline-ruler-mark">6s</div>
+                        <div class="timeline-ruler-mark">7s</div>
+                        <div class="timeline-ruler-mark">8s</div>
+                        <div class="timeline-ruler-mark">9s</div>
+                        <div class="timeline-ruler-mark">10s</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <p>This approach keeps both animations playing simultaneously, but controls their influence through weights:</p>
+        <ul>
+            <li>Sentence animation plays continuously from beginning to end</li>
+            <li>Gloss animation starts after 3 seconds with weight gradually increasing from 0 to 1</li>
+            <li>When gloss animation completes, its weight gradually decreases from 1 to 0</li>
+            <li>Both animations can be seen simultaneously during the weighted blend periods</li>
+        </ul>
+    </div>
+
+    <div class="box">
+        <h3>Blended Animation Timeline</h3>
+        <p>When "Play Blended Animation" is clicked, this more complex sequence occurs:</p>
+
+        <div class="timeline-container">
+            <div class="timeline">
+                <div class="timeline-track">
+                    <!-- First half of sentence animation -->
+                    <div class="sentence-anim" style="left: 0%; width: 45%;">First Half of Sentence</div>
+                    
+                    <!-- Transition period -->
+                    <div class="blend-region" style="left: 45%; width: 10%; top: 20px;">
+                        Blend
+                    </div>
+                    <div class="blend-arrow" style="top: 60px; left: 50%;"></div>
+                    
+                    <!-- Gloss animation -->
+                    <div class="gloss-anim" style="left: 45%; width: 40%;">Gloss Animation</div>
+                    
+                    <!-- Second transition period -->
+                    <div class="blend-region" style="left: 75%; width: 10%; top: 80px;">
+                        Blend
+                    </div>
+                    <div class="blend-arrow" style="top: 80px; left: 80%; transform: rotate(180deg) translateX(50%);"></div>
+                    
+                    <!-- Second half of sentence animation -->
+                    <div class="sentence-anim" style="left: 75%; width: 25%;">Second Half of Sentence</div>
+                    
+                    <!-- Timeline events -->
+                    <div class="timeline-event" style="top: 20px; left: 45%;"></div>
+                    <div class="timeline-event-label" style="top: 0px; left: 45%;">Start Blend to Gloss</div>
+                    
+                    <div class="timeline-event" style="top: 50px; left: 55%;"></div>
+                    <div class="timeline-event-label" style="top: 40px; left: 55%;">Sentence Paused</div>
+                    
+                    <div class="timeline-event" style="top: 80px; left: 75%;"></div>
+                    <div class="timeline-event-label" style="top: 70px; left: 75%;">Start Blend to Sentence</div>
+                    
+                    <div class="timeline-event" style="top: 20px; left: 85%;"></div>
+                    <div class="timeline-event-label" style="top: 0px; left: 85%;">Gloss Stopped</div>
+                    
+                    <!-- Weight graph -->
+                    <div class="weight-graph">
+                        <!-- Sentence weight -->
+                        <div class="weight-line" style="top: 10px; left: 0%; width: 45%;"></div>
+                        <div class="weight-value" style="top: 0px; left: 10px;">Sentence Weight: 1.0</div>
+                        
+                        <div class="weight-line" style="top: 10px; left: 45%; width: 10%; transform: rotate(45deg); transform-origin: left center;"></div>
+                        <div class="weight-line" style="top: 20px; left: 55%; width: 20%;"></div>
+                        <div class="weight-value" style="top: 20px; left: 65%;">0.0</div>
+                        
+                        <div class="weight-line" style="top: 20px; left: 75%; width: 10%; transform: rotate(-45deg); transform-origin: left center;"></div>
+                        <div class="weight-line" style="top: 10px; left: 85%; width: 15%;"></div>
+                        <div class="weight-value" style="top: 0px; left: 90%;">1.0</div>
+                        
+                        <!-- Gloss weight -->
+                        <div class="weight-value" style="top: 45px; left: 45%;">0.0</div>
+                        <div class="weight-line" style="top: 45px; left: 45%; width: 10%; transform: rotate(-45deg); transform-origin: left center;"></div>
+                        <div class="weight-line" style="top: 35px; left: 55%; width: 20%;"></div>
+                        <div class="weight-value" style="top: 35px; left: 65%;">Gloss Weight: 1.0</div>
+                        
+                        <div class="weight-line" style="top: 35px; left: 75%; width: 10%; transform: rotate(45deg); transform-origin: left center;"></div>
+                        <div class="weight-value" style="top: 45px; left: 85%;">0.0</div>
+                    </div>
+                    
+                    <!-- Timeline ruler -->
+                    <div class="timeline-ruler">
+                        <div class="timeline-ruler-mark">0s</div>
+                        <div class="timeline-ruler-mark">1s</div>
+                        <div class="timeline-ruler-mark">2s</div>
+                        <div class="timeline-ruler-mark">3s</div>
+                        <div class="timeline-ruler-mark">4s</div>
+                        <div class="timeline-ruler-mark">5s</div>
+                        <div class="timeline-ruler-mark">6s</div>
+                        <div class="timeline-ruler-mark">7s</div>
+                        <div class="timeline-ruler-mark">8s</div>
+                        <div class="timeline-ruler-mark">9s</div>
+                        <div class="timeline-ruler-mark">10s</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <p>This approach is more complex and involves temporarily pausing animations:</p>
+        <ol>
+            <li>Sentence animation plays from beginning until midpoint</li>
+            <li>Gloss animation begins slightly before sentence midpoint with weight increasing from 0 to 1</li>
+            <li>Sentence animation pauses while gloss animation plays at full weight</li>
+            <li>Near gloss animation completion, sentence animation resumes from midpoint with weight increasing from 0 to 1</li>
+            <li>Gloss animation weight decreases from 1 to 0 and eventually stops</li>
+            <li>Sentence animation continues at full weight to completion</li>
+        </ol>
+    </div>
+    
+    <div class="box">
+        <h3>How Blending is Implemented in the Code</h3>
+        
+        <h4>Setting Up Animation Weights</h4>
+        <div class="code-block">
+// Function to apply weight to animation
+function applyAnimationWeight(animGroup, weight) {
+    if (!animGroup) return;
+    
+    try {
+        // Apply weight to all animatables in this group
+        animGroup.setWeightForAllAnimatables(weight);
+        console.log(`Applied weight ${weight} to ${animGroup.name}`);
+    } catch (error) {
+        console.error(`Error applying weight to ${animGroup.name}:`, error);
+    }
+}
+        </div>
+        
+        <h4>Enabling Blending on Animation Group</h4>
+        <div class="code-block">
+// From retargetAnims.js - added to animation groups
+clonedAnimGroup.enableBlending = function(blendingSpeed) {
+    // Make sure we convert the parameter to a number to avoid any issues
+    const speedValue = typeof blendingSpeed === "number" ? blendingSpeed : 0.1;
+    
+    // Enable blending on all animatables in this group
+    this.reset(); // Reset the animation
+    
+    // Set proper weight to 0 to start blend from 0
+    // and gradually blend to full weight (1.0)
+    this.setWeightForAllAnimatables(0);
+    
+    // For each targeted animation in this group, enable blending
+    for (let i = 0; i < this._targetedAnimations.length; i++) {
+        const targetedAnim = this._targetedAnimations[i];
+        if (targetedAnim && targetedAnim.animation) {
+            targetedAnim.animation.enableBlending = true;
+            targetedAnim.animation.blendingSpeed = speedValue;
+        }
+    }
+    
+    console.log(`[enableBlending] Enabled blending on '${this.name}' with speed ${speedValue}`);
+    return this; // For method chaining
+};
+        </div>
+        
+        <h4>Gradual Weight Transition for Smooth Blending</h4>
+        <div class="code-block">
+// Gradually increase the weight for smooth blending
+let currentWeight = 0;
+const targetWeight = animationWeights.gloss;
+const incrementSteps = 10;
+const weightIncrement = targetWeight / incrementSteps;
+const incrementInterval = 50; // ms
+
+const weightInterval = setInterval(() => {
+    currentWeight += weightIncrement;
+    if (currentWeight >= targetWeight) {
+        currentWeight = targetWeight;
+        clearInterval(weightInterval);
+    }
+    applyAnimationWeight(glossAnimGroup, currentWeight);
+}, incrementInterval);
+        </div>
+    </div>
+
+    <div class="explanation">
+        <h2>Animation Blending Concepts</h2>
+        <table>
+            <tr>
+                <th>Concept</th>
+                <th>Description</th>
+                <th>In Your Code</th>
+            </tr>
+            <tr>
+                <td>Weight-based Blending</td>
+                <td>Animations are combined based on weight values between 0 and 1</td>
+                <td>Using <code>setWeightForAllAnimatables()</code> to gradually change influence</td>
+            </tr>
+            <tr>
+                <td>Additive Blending</td>
+                <td>Multiple animations contribute to final pose based on their weights</td>
+                <td>Both sentence and gloss animations can influence the character simultaneously</td>
+            </tr>
+            <tr>
+                <td>Blending Speed</td>
+                <td>How quickly one animation transitions to another</td>
+                <td>Controlled by <code>blendingSpeed</code> and weight adjustment intervals</td>
+            </tr>
+            <tr>
+                <td>Temporal Sequencing</td>
+                <td>The timing and order of animations in the sequence</td>
+                <td>Using <code>setTimeout()</code> to coordinate animation phases</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="box">
+        <h3>Tips for Optimizing Blending</h3>
+        <ol>
+            <li><strong>Adjust Blend Speed</strong>: Lower values (0.01-0.05) create smoother transitions but take longer</li>
+            <li><strong>Tune Weight Values</strong>: Experiment with maximum weight values to balance animation influence</li>
+            <li><strong>Overlap Timing</strong>: Adjust overlap duration for more natural transitions between animations</li>
+            <li><strong>Frame Selection</strong>: For best results, blend between similar poses or natural transition points</li>
+            <li><strong>Animation Length</strong>: Shorter gloss animations are easier to blend into sentences</li>
+        </ol>
+    </div>
+
+    <a href="version2.html" class="back-button">Back to Animation Demo</a>
+</body>
+</html>

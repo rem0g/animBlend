@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Animation Timeline</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .header {
+            margin-bottom: 20px;
+        }
+
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+
+        .controls {
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+
+        button {
+            padding: 8px 16px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        button:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+
+        .animation-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .animation-option {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .animation-option.selected {
+            background-color: #e1f0fa;
+            border-color: #3498db;
+        }
+
+        .timeline-container {
+            position: relative;
+            width: 100%;
+            overflow-x: auto;
+            margin-bottom: 30px;
+        }
+
+        .timeline {
+            position: relative;
+            height: 200px;
+            width: 100%;
+            min-width: 800px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+        }
+
+        .timeline-track {
+            position: relative;
+            height: 50px;
+            margin: 10px 0;
+            padding: 5px 0;
+        }
+
+        .timeline-animation {
+            position: absolute;
+            height: 40px;
+            border-radius: 4px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            padding: 0 10px;
+            font-size: 12px;
+        }
+
+        .timeline-animation:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+        }
+
+        .timeline-animation.sentence {
+            background-color: #3498db;
+        }
+
+        .timeline-animation.gloss {
+            background-color: #e74c3c;
+        }
+
+        .timeline-animation.blend {
+            background-color: #9b59b6;
+        }
+
+        .timeline-marker {
+            position: absolute;
+            width: 2px;
+            top: 0;
+            height: 100%;
+            background-color: #2ecc71;
+            z-index: 100;
+        }
+
+        .timeline-scrubber {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #27ae60;
+            border-radius: 50%;
+            top: -5px;
+            transform: translateX(-5px);
+            z-index: 101;
+            cursor: ew-resize;
+        }
+
+        .ruler {
+            position: relative;
+            height: 30px;
+            border-top: 1px solid #ddd;
+            display: flex;
+        }
+
+        .ruler-tick {
+            position: absolute;
+            width: 1px;
+            height: 10px;
+            background-color: #95a5a6;
+            bottom: 0;
+        }
+
+        .ruler-label {
+            position: absolute;
+            font-size: 10px;
+            color: #7f8c8d;
+            bottom: 12px;
+            transform: translateX(-50%);
+            white-space: nowrap;
+        }
+
+        .info-panel {
+            padding: 15px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+
+        .info-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .blend-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .blend-parameter {
+            background-color: #ecf0f1;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .explanation {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #e8f6fd;
+            border-left: 4px solid #3498db;
+            border-radius: 4px;
+        }
+
+        .tooltip {
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            z-index: 1000;
+            pointer-events: none;
+            display: none;
+            white-space: nowrap;
+        }
+
+        .back-button {
+            display: inline-block;
+            margin: 10px 0 20px;
+            padding: 8px 16px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+
+        .flex-controls {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .control-group {
+            margin-bottom: 10px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="range"] {
+            width: 100%;
+        }
+
+        input[type="checkbox"] {
+            margin-right: 5px;
+        }
+
+        .slider-value {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .animation-description {
+            margin: 20px 0;
+            font-size: 14px;
+        }
+
+        .sample {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 5px;
+            vertical-align: middle;
+        }
+
+        .sample.sentence {
+            background-color: #3498db;
+        }
+
+        .sample.gloss {
+            background-color: #e74c3c;
+        }
+
+        .sample.blend {
+            background-color: #9b59b6;
+        }
+
+        /* Animation Display Container */
+        .animation-display {
+            display: flex;tion: column;
+            width: 100%;ems: flex-start;
+            margin-bottom: 20px;
+            gap: 20px;
+            flex-wrap: wrap;
+        }       flex-direction: column;
+            }
+        .animation-viewer {
+            flex: 1;
+            min-width: 300px;babylonjs.com/babylon.js"></script>
+            height: 400px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;on Timeline</h1>
+        }   <a href="version2.html" class="back-button">Back to Animation Demo</a>
+        </div>
+        #renderCanvas {
+            width: 100%;anation">
+            height: 100%;
+            touch-action: none;isualizes how animation files are blended together over time. Select animations from your library and 
+        }       see how they appear on the timeline. Adjust blending parameters to see how they affect the transitions.
+            </p>
+        .timeline-section {
+            flex: 1;
+            min-width: 300px;-description">
+        }   <p>
+                <span class="sample sentence"></span> Sentence Animation
+        .loading-overlay {s="sample gloss" style="margin-left: 20px;"></span> Gloss Animation
+            position: absolute;mple blend" style="margin-left: 20px;"></span> Blend Region
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;controls">
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;="blend-method">Blend Method:</label>
+            align-items: center;d-method">
+            justify-content: center;elayed">Sentence + Delayed Gloss</option>
+            color: white;on value="midpoint">Insert Gloss at Midpoint</option>
+            font-size: 18px;
+            z-index: 1000;
+        }
+            <div class="control-group">
+        .spinner {abel for="blend-speed">Blend Speed: <span id="blend-speed-value">0.05</span></label>
+            border: 4px solid rgba(255, 255, 255, 0.3);n="0.01" max="0.5" step="0.01" value="0.05">
+            border-top: 4px solid white;
+            border-radius: 50%;
+            width: 30px;control-group">
+            height: 30px;r="gloss-weight">Gloss Weight: <span id="gloss-weight-value">1.0</span></label>
+            animation: spin 1s linear infinite;eight" min="0.1" max="1" step="0.1" value="1.0">
+            margin-right: 10px;
+        }
+            <div class="control-group">
+        @keyframes spin {r="gloss-delay">Gloss Delay (seconds): <span id="gloss-delay-value">3.0</span></label>
+            0% { transform: rotate(0deg); }ss-delay" min="0.5" max="5.0" step="0.5" value="3.0">
+            100% { transform: rotate(360deg); }
+        }/div>
+
+        @media (max-width: 768px) {tor">
+            .controls {e Animations:</h3>
+                flex-direction: column;s" class="animation-options"></div>
+                align-items: flex-start;
+            }
+        <div class="animation-selector">
+            .flex-controls {ions:</h3>
+                flex-direction: column;class="animation-options"></div>
+            }>
+        }
+    </style> class="controls">
+    <script src="https://cdn.babylonjs.com/babylon.js"></script>>
+    <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+    <script src="SceneAndMeshLoader.js"></script>>⏸ Pause</button>
+    <script src="initialize.js"></script>⏹ Reset</button>
+    <script src="animFetchAndDestroy.js"></script>
+    <script src="retargetAnims.js"></script>
+</head> <div class="timeline-container">
+<body>      <div class="timeline" id="timeline">
+    <div class="container">ion tracks will be added here -->
+        <div class="header">timeline-marker" id="timeline-marker">
+            <h1>Dynamic Animation Timeline</h1>er" id="timeline-scrubber"></div>
+            <a href="version2.html" class="back-button">Back to Animation Demo</a>
+        </div>div>
+            <div class="ruler" id="ruler">
+        <div class="explanation"> will be added here -->
+            <p>iv>
+                This timeline visualizes how animation files are blended together over time. Select animations from your library and 
+                see how they appear on the timeline. Adjust blending parameters to see how they affect the transitions.
+            </p>ss="info-panel">
+        </div>iv class="info-title">Animation Timing Details</div>
+            <div id="timing-details">Select animations and update the timeline to see details.</div>
+        <div class="animation-description">
+            <p> <div class="blend-parameter">Blend Speed: <span id="info-blend-speed">0.05</span></div>
+                <span class="sample sentence"></span> Sentence Animationo-gloss-weight">1.0</span></div>
+                <span class="sample gloss" style="margin-left: 20px;"></span> Gloss Animationion">0s</span></div>
+                <span class="sample blend" style="margin-left: 20px;"></span> Blend Region">0s</span></div>
+            </p>v>
+        </div>
+    </div>
+        <div class="animation-display">
+            <div class="animation-viewer">v>
+                <canvas id="renderCanvas"></canvas>
+                <div id="loading-overlay" class="loading-overlay">
+                    <div class="spinner"></div>
+                    <div>Loading 3D Character...</div>
+                </div>tions = [];
+            </div>edSentence = null;
+            selectedGloss = null;
+            <div class="timeline-section">
+                <div class="flex-controls">
+                    <div class="control-group">
+                        <label for="blend-method">Blend Method:</label>
+                        <select id="blend-method">e duration in seconds
+                            <option value="delayed">Sentence + Delayed Gloss</option>
+                            <option value="midpoint">Insert Gloss at Midpoint</option>
+                        </select>
+                    </div>1.0;
+        let glossDelay = 3.0;
+                    <div class="control-group">
+                        <label for="blend-speed">Blend Speed: <span id="blend-speed-value">0.05</span></label>
+                        <input type="range" id="blend-speed" min="0.01" max="0.5" step="0.01" value="0.05">
+                    </div>ocument.getElementById('timeline');
+        const ruler = document.getElementById('ruler');
+                    <div class="control-group">'timeline-marker');
+                        <label for="gloss-weight">Gloss Weight: <span id="gloss-weight-value">1.0</span></label>
+                        <input type="range" id="gloss-weight" min="0.1" max="1" step="0.1" value="1.0">
+                    </div>
+        // Initial setup
+                    <div class="control-group">aded', async function() {
+                        <label for="gloss-delay">Gloss Delay (seconds): <span id="gloss-delay-value">3.0</span></label>
+                        <input type="range" id="gloss-delay" min="0.5" max="5.0" step="0.5" value="3.0">
+                    </div>
+                </div>controls
+            setupControls();
+                <div class="animation-selector">
+                    <h3>Sentence Animations:</h3>
+                    <div id="sentence-animations" class="animation-options"></div>
+                </div>
+            // Update info panel with default values
+                <div class="animation-selector">
+                    <h3>Gloss Animations:</h3>
+                    <div id="gloss-animations" class="animation-options"></div>
+                </div>rDragging();
+        });
+                <div class="controls">
+                    <button id="update-timeline">Update Timeline</button>
+                    <button id="play-animation">▶ Play</button>
+                    <button id="pause-animation" disabled>⏸ Pause</button>
+                    <button id="reset-animation">⏹ Reset</button>;
+                </div>
+            </div>er.addEventListener('mousedown', (e) => {
+        </div>  isDragging = true;
+                e.preventDefault();
+        <div class="timeline-container">
+            <div class="timeline" id="timeline">
+                <!-- Animation tracks will be added here -->
+                <div class="timeline-marker" id="timeline-marker">
+                    <div class="timeline-scrubber" id="timeline-scrubber"></div>, timeline.offsetWidth));
+                </div>dateMarkerPosition(x / timeline.offsetWidth);
+            </div>
+            <div class="ruler" id="ruler">
+                <!-- Time markers will be added here -->
+            </div>nt.addEventListener('mouseup', () => {
+        </div>  isDragging = false;
+            });
+        <div class="info-panel">
+            <div class="info-title">Animation Timing Details</div>
+            <div id="timing-details">Select animations and update the timeline to see details.</div>
+            <div class="blend-info">(x / timeline.offsetWidth);
+                <div class="blend-parameter">Blend Speed: <span id="info-blend-speed">0.05</span></div>
+                <div class="blend-parameter">Gloss Weight: <span id="info-gloss-weight">1.0</span></div>
+                <div class="blend-parameter">Sentence Duration: <span id="info-sentence-duration">0s</span></div>
+                <div class="blend-parameter">Gloss Duration: <span id="info-gloss-duration">0s</span></div>
+            </div>pdateMarkerPosition(percentage) {
+        </div>rrentTime = percentage * totalDuration;
+    </div>  const position = percentage * timeline.offsetWidth;
+            marker.style.left = `${position}px`;
+    <div class="tooltip" id="tooltip"></div>
+                left: position,
+    <script>    content: `${currentTime.toFixed(1)}s`
+        // Global animation data
+        let sentenceAnimations = [];
+        let glossAnimations = [];
+        let selectedSentence = null;server (simulated here)
+        let selectedGloss = null;ions() {
+        let isPlaying = false;
+        let animationStartTime = 0;h animation lists from your file structure
+        let currentTime = 0; implementation, you might use AJAX to get this from your server
+        let animationFrame = null;
+        let totalDuration = 10; // Default timeline duration in seconds
+                sentenceAnimations = [
+        // Configuration parameters50507_5.glb', duration: 8.0, frames: 240 },
+        let blendSpeed = 0.05;in2_250507_10.glb', duration: 6.5, frames: 195 },
+        let glossWeight = 1.0;in3_250507_15.glb', duration: 7.2, frames: 216 }
+        let glossDelay = 3.0;
+        let blendMethod = 'delayed';
+                // Sample gloss animations
+        // Babylon.js specific variables
+        let scene, engine, canvas, loadedMesh; duration: 2.0, frames: 60 },
+        let glossAnimGroup, sentenceAnimGroup; duration: 1.5, frames: 45 },
+                    { name: '3_250507_14.glb', duration: 2.2, frames: 66 },
+        // DOM Elementsame: 'alcohol_250507_46.glb', duration: 1.8, frames: 54 }
+        const timeline = document.getElementById('timeline');
+        const ruler = document.getElementById('ruler');
+        const marker = document.getElementById('timeline-marker');
+        const scrubber = document.getElementById('timeline-scrubber');nceAnimations, selectSentenceAnimation);
+        const tooltip = document.getElementById('tooltip');', glossAnimations, selectGlossAnimation);
+        const loadingOverlay = document.getElementById('loading-overlay');
+                // Select first animations by default
+        // Initial setupenceAnimations.length > 0) selectSentenceAnimation(sentenceAnimations[0]);
+        document.addEventListener('DOMContentLoaded', async function() {ssAnimations[0]);
+            // Initialize 3D Scene
+            await initBabylonScene();ns loaded successfully');
+            } catch (error) {
+            // Load animation listsr loading animations:', error);
+            await loadAnimations();
+            
+            // Set up controls
+            setupControls();n selector with options
+            tion populateAnimationSelector(containerId, animations, selectCallback) {
+            // Create initial empty timelineementById(containerId);
+            createTimeline();ML = '';
+            
+            // Update info panel with default values
+            updateInfoPanel(); document.createElement('div');
+                option.className = 'animation-option';
+            // Setup marker dragging `${anim.name} (${anim.duration.toFixed(1)}s)`;
+            setupMarkerDragging();e = anim.name;
+        });     
+                option.addEventListener('click', () => {
+        // Initialize the Babylon.js sceness from all options
+        async function initBabylonScene() {All('.animation-option').forEach(opt => {
+            canvas = document.getElementById("renderCanvas");
+                    });
+            try {   
+                // Create scene and engineto this option
+                [scene, engine] = await createScene(canvas);
+                    
+                // Load the character meshk
+                const modelUrl = "https://signcollect.nl/jari/BabylonSignLab/LoadingAnimation/MeshesAndAnims/glassesGuyNew.glb";
+                console.log("Loading character mesh from:", modelUrl);
+                
+                const result = await BABYLON.SceneLoader.ImportMeshAsync(null, "", modelUrl, scene);
+                
+                // Create an asset object similar to what loadAssetMesh returns
+                loadedMesh = {
+                    fetched: result,ers
+                    root: result.meshes[0],
+                    skeletons: result.skeletons,
+                    morphTargetManagers: []method').addEventListener('change', function(e) {
+                };endMethod = e.target.value;
+                updateInfoPanel();
+                // Find all meshes with morphTargetManagers
+                result.meshes.forEach(mesh => {
+                    if (mesh.morphTargetManager) {
+                        loadedMesh.morphTargetManagers.push(mesh.morphTargetManager);(e) {
+                    }Speed = parseFloat(e.target.value);
+                });ument.getElementById('blend-speed-value').textContent = blendSpeed.toFixed(2);
+                document.getElementById('info-blend-speed').textContent = blendSpeed.toFixed(2);
+                // Set up transform node hierarchy
+                var rootTransformNode = new BABYLON.TransformNode("papa");
+                loadedMesh.root.parent = rootTransformNode;
+                loadedMesh.papa = rootTransformNode;addEventListener('input', function(e) {
+                glossWeight = parseFloat(e.target.value);
+                var papaTransformNode = new BABYLON.TransformNode("opa"); = glossWeight.toFixed(1);
+                loadedMesh.papa.parent = papaTransformNode;).textContent = glossWeight.toFixed(1);
+                loadedMesh.opa = papaTransformNode;
+                
+                var opaTransformNode = new BABYLON.TransformNode("god");
+                loadedMesh.opa.parent = opaTransformNode;ntListener('input', function(e) {
+                loadedMesh.god = opaTransformNode;alue);
+                document.getElementById('gloss-delay-value').textContent = glossDelay.toFixed(1);
+                // Set up camera);
+                var camera = new BABYLON.ArcRotateCamera("camera", 0, Math.PI/2, 2, BABYLON.Vector3.Zero(), scene);
+                camera.attachControl(canvas, true);
+                camera.lowerRadiusLimit = 0.5;
+                camera.upperRadiusLimit = 6;timeline').addEventListener('click', function() {
+                camera.radius = 1.5;
+                
+                // Load the morph target mapping for retargeting
+                await loadMorphTargetMapping();
+                ment.getElementById('play-animation').addEventListener('click', function() {
+                console.log("Character mesh loaded successfully");
+                loadingOverlay.style.display = 'none';
+                
+                // Start the render loop
+                engine.runRenderLoop(function() {ion').addEventListener('click', function() {
+                    scene.render();
+                });
+                
+                // Handle window resize
+                window.addEventListener("resize", function() {tListener('click', function() {
+                    engine.resize();
+                });
+            } catch (error) {
+                console.error("Error initializing 3D scene:", error);
+                loadingOverlay.innerHTML = `<div>Error loading 3D character: ${error.message}</div>`;
+            }ion createTimeline() {
+        }   // Clear existing timeline content (except marker)
+            const elements = timeline.querySelectorAll(':not(#timeline-marker)');
+        // Load the morphTarget mapping for retargeting
+        async function loadMorphTargetMapping() {
+            try {ear ruler
+                const response = await fetch("indexToGlassesGuyMorphs.json");
+                const morphMap = await response.json();
+                window.glassesGuyMorphMap = morphMap;
+                console.log("Morph target mapping loaded:",  every 0.5 seconds
+                    Object.keys(window.glassesGuyMorphMap).length + " entries");
+            } catch (error) {
+                console.error("Error loading morph target mapping:", error);
+            }   const tick = document.createElement('div');
+        }       tick.className = 'ruler-tick';
+                tick.style.left = `${i * tickSpacing}%`;
+        // Event handling for timeline marker/scrubber
+        function setupMarkerDragging() {econds
+            let isDragging = false;
+            const timelineRect = timeline.getBoundingClientRect();
+                    label.className = 'ruler-label';
+            scrubber.addEventListener('mousedown', (e) => {+ 's';
+                isDragging = true;ft = `${i * tickSpacing}%`;
+                e.preventDefault();ld(label);
+            });     tick.style.height = '15px'; // Taller tick for whole seconds
+                }
+            document.addEventListener('mousemove', (e) => {
+                if (isDragging) {(tick);
+                    const x = Math.max(0, Math.min(e.clientX - timelineRect.left, timeline.offsetWidth));
+                    updateMarkerPosition(x / timeline.offsetWidth);
+                }set marker position
+            });ker.style.left = '0';
+            
+            document.addEventListener('mouseup', () => {
+                isDragging = false;n
+            });n selectSentenceAnimation(animation) {
+            selectedSentence = animation;
+            timeline.addEventListener('click', (e) => {
+                const x = e.clientX - timelineRect.left;
+                updateMarkerPosition(x / timeline.offsetWidth);
+            });ct gloss animation
+        }unction selectGlossAnimation(animation) {
+            selectedGloss = animation;
+        // Update marker position based on percentage (0-1)
+        function updateMarkerPosition(percentage) {
+            currentTime = percentage * totalDuration;
+            const position = percentage * timeline.offsetWidth;animations
+            marker.style.left = `${position}px`;
+            updateTooltip({ntence || !selectedGloss) {
+                left: position,elect both a sentence and a gloss animation.');
+                content: `${currentTime.toFixed(1)}s`
+            });
+            
+            // Update animation time position if animations are loaded
+            updateAnimationsForCurrentTime();Sentence.duration, selectedSentence.duration / 2 + selectedGloss.duration + 1);
+        }   if (blendMethod === 'delayed') {
+                totalDuration = Math.max(selectedSentence.duration, glossDelay + selectedGloss.duration);
+        // Update the animation position based on current time
+        function updateAnimationsForCurrentTime() {
+            if (!scene || !sentenceAnimGroup || !glossAnimGroup) return;
+            createTimeline();
+            if (blendMethod === 'delayed') {
+                // Update sentence animationion type
+                if (currentTime <= sentenceAnimGroup.to / 30) {;
+                    sentenceAnimGroup.goToFrame(currentTime * 30); // Convert time to frames assuming 30fps
+                }ine.appendChild(sentenceTrack);
+                
+                // Update gloss animationreateElement('div');
+                if (currentTime >= glossDelay && currentTime <= glossDelay + (glossAnimGroup.to / 30)) {
+                    const glossTime = currentTime - glossDelay;
+                    glossAnimGroup.goToFrame(glossTime * 30);
+                    endTrack = document.createElement('div');
+                    // Calculate weight for blending
+                    const blendInDuration = 0.3;
+                    const blendOutDuration = 0.3;
+                    const glossDuration = glossAnimGroup.to / 30;method
+                    dMethod === 'delayed') {
+                    // Handle blend-ine duration
+                    if (glossTime < blendInDuration) {ectedSentence, 0, totalDuration, 'sentence');
+                        const weight = Math.min(glossTime / blendInDuration * glossWeight, glossWeight);
+                        applyAnimationWeight(glossAnimGroup, weight);
+                    }imationToTrack(glossTrack, selectedGloss, glossDelay, glossDelay + selectedGloss.duration, 'gloss');
+                    // Handle blend-out
+                    else if (glossTime > glossDuration - blendOutDuration) {
+                        const weight = Math.max(((glossDuration - glossTime) / blendOutDuration) * glossWeight, 0);
+                        applyAnimationWeight(glossAnimGroup, weight);
+                    }
+                    // Full weight during main animation
+                    else {gion(blendTrack, glossDelay, glossDelay + blendInDuration, 'Blend In');
+                        applyAnimationWeight(glossAnimGroup, glossWeight);
+                    }end out
+                } else {Region(blendTrack, glossDelay + selectedGloss.duration - blendOutDuration, 
+                    // Outside of gloss animation time rangeation, 'Blend Out');
+                    applyAnimationWeight(glossAnimGroup, 0);
+                }/ Midpoint blend method
+            } else {t sentenceMidpoint = selectedSentence.duration / 2;
+                // Midpoint animation approach
+                const sentenceMidpoint = selectedSentence.duration / 2;
+                const glossStart = sentenceMidpoint - 0.3;dSentence, 0, sentenceMidpoint, 'sentence', 'First Half');
+                const glossDuration = selectedGloss.duration;
+                const secondHalfStart = glossStart + glossDuration - 0.3;
+                const glossStart = sentenceMidpoint - 0.3; // Start slightly before midpoint for blending
+                // First half of sentenceTrack, selectedGloss, glossStart, glossStart + selectedGloss.duration, 'gloss');
+                if (currentTime < glossStart) {
+                    sentenceAnimGroup.goToFrame(currentTime * 30);
+                    applyAnimationWeight(sentenceAnimGroup, 1.0);s.duration - 0.3;
+                    applyAnimationWeight(glossAnimGroup, 0);entence, secondHalfStart, totalDuration, 'sentence', 'Second Half');
+                }
+                // Blend from sentence to gloss
+                else if (currentTime >= glossStart && currentTime < glossStart + 0.3) {s');
+                    sentenceAnimGroup.goToFrame(Math.min(currentTime * 30, sentenceMidpoint * 30));ce');
+                    glossAnimGroup.goToFrame((currentTime - glossStart) * 30);
+                    
+                    const sentenceWeight = Math.max(1 - ((currentTime - glossStart) / 0.3), 0);
+                    const glossWeight = Math.min((currentTime - glossStart) / 0.3, 1) * glossWeight;
+                    
+                    applyAnimationWeight(sentenceAnimGroup, sentenceWeight);
+                    applyAnimationWeight(glossAnimGroup, glossWeight);
+                }addAnimationToTrack(track, animation, startTime, endTime, type, customLabel) {
+                // Gloss onlyment.createElement('div');
+                else if (currentTime >= glossStart + 0.3 && currentTime < secondHalfStart - 0.3) {
+                    glossAnimGroup.goToFrame((currentTime - glossStart) * 30);
+                    applyAnimationWeight(sentenceAnimGroup, 0);
+                    applyAnimationWeight(glossAnimGroup, glossWeight);
+                } width = ((endTime - startTime) / totalDuration) * 100;
+                // Blend from gloss back to sentence
+                else if (currentTime >= secondHalfStart - 0.3 && currentTime < secondHalfStart) {
+                    glossAnimGroup.goToFrame((currentTime - glossStart) * 30);
+                    sentenceAnimGroup.goToFrame(sentenceMidpoint * 30);
+                    abel
+                    const glossWeightFactor = Math.max(1 - ((currentTime - (secondHalfStart - 0.3)) / 0.3), 0);
+                    const sentenceWeightFactor = Math.min((currentTime - (secondHalfStart - 0.3)) / 0.3, 1);
+                    ooltip data
+                    applyAnimationWeight(glossAnimGroup, glossWeightFactor * glossWeight);
+                    applyAnimationWeight(sentenceAnimGroup, sentenceWeightFactor);
+                }dataset.duration = (endTime - startTime).toFixed(1);
+                // Second half of sentencen.frames;
+                else if (currentTime >= secondHalfStart) {
+                    const adjustedTime = sentenceMidpoint + (currentTime - secondHalfStart);
+                    sentenceAnimGroup.goToFrame(adjustedTime * 30);
+                    applyAnimationWeight(sentenceAnimGroup, 1.0);
+                    applyAnimationWeight(glossAnimGroup, 0);
+                }   Start: ${anim.dataset.startTime}s<br>
+            }       End: ${anim.dataset.endTime}s<br>
+        }           Duration: ${anim.dataset.duration}s<br>
+                    Frames: ${anim.dataset.frames}
+        // Load animations from the server
+        async function loadAnimations() {
+            try {pdateTooltip({
+                // Get the actual glb files from your directory structure
+                const glossPath = 'glos_glb/';
+                const sentencePath = 'zin_glb/';
+                });
+                // Populate sentence animations
+                sentenceAnimations = [= 'block';
+                    { name: 'zin1_250507_5.glb', duration: 8.0, frames: 240 },
+                    { name: 'zin2_250507_10.glb', duration: 6.5, frames: 195 },
+                    { name: 'zin3_250507_15.glb', duration: 7.2, frames: 216 }
+                ];oltip.style.display = 'none';
+                
+                // Populate gloss animations
+                glossAnimations = [mousemove', function(e) {
+                    { name: '1_250507_12.glb', duration: 2.0, frames: 60 },
+                    { name: '2_250507_13.glb', duration: 1.5, frames: 45 },
+                    { name: '3_250507_14.glb', duration: 2.2, frames: 66 },
+                    { name: 'alcohol_250507_46.glb', duration: 1.8, frames: 54 }
+                ];appendChild(anim);
+                rn anim;
+                // Populate animation selectors
+                populateAnimationSelector('sentence-animations', sentenceAnimations, selectSentenceAnimation);
+                populateAnimationSelector('gloss-animations', glossAnimations, selectGlossAnimation);
+                 addBlendRegion(track, startTime, endTime, label) {
+                // Select first animations by default');
+                if (sentenceAnimations.length > 0) selectSentenceAnimation(sentenceAnimations[0]);
+                if (glossAnimations.length > 0) selectGlossAnimation(glossAnimations[0]);
+                alculate position and width based on time
+                console.log('Animations loaded successfully');
+            } catch (error) {ndTime - startTime) / totalDuration) * 100;
+                console.error('Error loading animations:', error);
+            }lend.style.left = `${left}%`;
+        }   blend.style.width = `${width}%`;
+            
+        // Helper function to load animation file and retarget it to the character
+        async function loadAnimationFile(filename, folder, scene, targetMeshAsset) {
+            console.log(`Loading animation: ${folder}/${filename}`);
+            blend.dataset.startTime = startTime.toFixed(1);
+            try {.dataset.endTime = endTime.toFixed(1);
+                // Load the animation using the animation player
+                let animGroup;
+                
+                // Import the animation directly
+                const result = await BABYLON.SceneLoader.ImportAnimationsAsync(
+                    `${folder}/`, filename, scenecontent = `
+                );${label}<br>
+                ataset.startTime}s<br>
+                if (result.animationGroups && result.animationGroups.length > 0) {
+                    const originalGroup = result.animationGroups[0];aset.duration}s<br>
+                    console.log(`Animation loaded directly: ${originalGroup.name}`);lend Speed: ${blend.dataset.blendSpeed}
+                    ;
+                    // Use our custom retargeting function from retargetAnims.js
+                    animGroup = retargetAnimWithBlendshapes(targetMeshAsset, originalGroup, "retargeted_" + filename);
+                    
+                    if (animGroup) {
+                        console.log(`Successfully retargeted animation: ${animGroup.name}`);
+                        // Ensure animation is properly configured;
+                        animGroup.loopAnimation = false;
+                        return animGroup;
+                    }
+                }
+                dEventListener('mouseout', function() {
+                console.error(`No animation groups found in ${filename}`);
+                return null;
+            } catch (error) {
+                console.error(`Error loading animation ${filename}:`, error);ove', function(e) {
+                return null;
+            }+ 10) + 'px';
+        }
+        
+        // Enhance animation group with blending capabilities if they don't existk.appendChild(blend);
+        function enhanceAnimationGroup(animGroup) {
+            if (!animGroup) return;
+            
+            // Add enableBlending method if it doesn't exist
+            if (!animGroup.enableBlending) {ip(options) {
+                animGroup.enableBlending = function(blendingSpeed) {f (options.content) {
+                    const speedValue = typeof blendingSpeed === "number" ? blendingSpeed : 0.1;       tooltip.innerHTML = options.content;
+                        }
+                    // Reset and set weight for blending
+                    this.reset();
+                    this.setWeightForAllAnimatables(0);= (options.left + 10) + 'px';
+                    }
+                    // Enable blending on all animations
+                    for (let i = 0; i < this._targetedAnimations.length; i++) {
+                        const targetedAnim = this._targetedAnimations[i];
+                        if (targetedAnim && targetedAnim.animation) {
+                            targetedAnim.animation.enableBlending = true;
+                            targetedAnim.animation.blendingSpeed = speedValue;
+                        } selected animation details
+                    }
+                    tailsElement = document.getElementById('timing-details');
+                    console.log(`[enhanceAnimationGroup] Enabled blending on '${this.name}' with speed ${speedValue}`);
+                    return this;
+                };e the timeline to see details.';
+            }
+            
+            // Add setWeightForAllAnimatables method if it doesn't exist
+            if (!animGroup.setWeightForAllAnimatables) {ation displays
+                animGroup.setWeightForAllAnimatables = function(weight) {getElementById('info-sentence-duration').textContent = `${selectedSentence.duration.toFixed(1)}s`;
+                    for (let i = 0; i < this._targetedAnimations.length; i++) {.getElementById('info-gloss-duration').textContent = `${selectedGloss.duration.toFixed(1)}s`;
+                        const targetedAnim = this._targetedAnimations[i];
+                        if (targetedAnim && targetedAnim.animation) {
+                            targetedAnim.animation.weight = weight;endMethod === 'delayed') {
+                        }   details = `
+                    }        Sentence animation "${selectedSentence.name}" plays for its full duration (${selectedSentence.duration.toFixed(1)}s).
+                    return this;glossDelay.toFixed(1)}s with a blend-in duration of ${blendSpeed.toFixed(2)}s.
+                };ctedGloss.duration.toFixed(1)}s with a blend-out near the end.
+            }.duration, glossDelay + selectedGloss.duration).toFixed(1)}s.
+        }
+        
+        // Helper function to apply weight to animation2;
+        function applyAnimationWeight(animGroup, weight) {
+            if (!animGroup) return;nce animation "${selectedSentence.name}" plays until halfway (${sentenceMidpoint.toFixed(1)}s).
+            loss animation "${selectedGloss.name}" starts blending in slightly before the midpoint.
+            try {oss animation completes (${selectedGloss.duration.toFixed(1)}s), the sentence continues from its midpoint.
+                // Apply weight to all animatables in this group  Total animation sequence: ${Math.max(selectedSentence.duration, sentenceMidpoint + selectedGloss.duration).toFixed(1)}s.
+                animGroup.setWeightForAllAnimatables(weight);   `;
+            } catch (error) {   }
+                console.error(`Error applying weight to ${animGroup.name}:`, error);    
+            }e(/\s+/g, ' ').trim();
+        }
+
+        // Populate animation selector with optionslay the animation timeline
+        function populateAnimationSelector(containerId, animations, selectCallback) {playAnimation() {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            ntById('play-animation').disabled = true;
+            animations.forEach(anim => {
+                const option = document.createElement('div');
+                option.className = 'animation-option';   isPlaying = true;
+                option.textContent = `${anim.name} (${anim.duration.toFixed(1)}s)`;            animationStartTime = Date.now() - (currentTime * 1000);
+                option.dataset.name = anim.name;
+                
+                option.addEventListener('click', () => {
+                    // Remove selected class from all options
+                    container.querySelectorAll('.animation-option').forEach(opt => {    const now = Date.now();
+                        opt.classList.remove('selected');mationStartTime) / 1000;
+                    });
+                    
+                    // Add selected class to this option
+                    option.classList.add('selected');
+                        return;
+                    // Call select callback
+                    selectCallback(anim);
+                });
+                uration);
+                container.appendChild(option);
+            });ontinue the animation
+        }nimate);
+
+        // Setup control event handlers
+        function setupControls() {
+            // Blend method selection
+            document.getElementById('blend-method').addEventListener('change', function(e) {
+                blendMethod = e.target.value; the animation timeline
+                updateInfoPanel();
+            });(!isPlaying) return;
+               
+            // Blend speed slider            document.getElementById('play-animation').disabled = false;
+            document.getElementById('blend-speed').addEventListener('input', function(e) {use-animation').disabled = true;
+                blendSpeed = parseFloat(e.target.value);
+                document.getElementById('blend-speed-value').textContent = blendSpeed.toFixed(2);
+                document.getElementById('info-blend-speed').textContent = blendSpeed.toFixed(2);
+            });nFrame);
+            ull;
+            // Gloss weight slider
+            document.getElementById('gloss-weight').addEventListener('input', function(e) {
+                glossWeight = parseFloat(e.target.value);
+                document.getElementById('gloss-weight-value').textContent = glossWeight.toFixed(1);
+                document.getElementById('info-gloss-weight').textContent = glossWeight.toFixed(1);
+                
+                // If animation is currently playing, update the weight in real-time
+                if (glossAnimGroup && isPlaying) {ateMarkerPosition(0);
+                    updateAnimationsForCurrentTime();
+                }d('play-animation').disabled = false;
+            });
+            
+            // Gloss delay slider
+            document.getElementById('gloss-delay').addEventListener('input', function(e) {
+                glossDelay = parseFloat(e.target.value);                document.getElementById('gloss-delay-value').textContent = glossDelay.toFixed(1);                updateInfoPanel();            });                        // Update timeline button            document.getElementById('update-timeline').addEventListener('click', async function() {                await updateTimeline();            });                        // Play button            document.getElementById('play-animation').addEventListener('click', function() {                playAnimation();            });                        // Pause button            document.getElementById('pause-animation').addEventListener('click', function() {                pauseAnimation();            });                        // Reset button            document.getElementById('reset-animation').addEventListener('click', function() {                resetAnimation();            });        }        // Create empty timeline with ruler        function createTimeline() {            // Clear existing timeline content (except marker)            const elements = timeline.querySelectorAll(':not(#timeline-marker)');            elements.forEach(el => el.remove());                        // Clear ruler            ruler.innerHTML = '';                        // Create ruler ticks and labels            const tickCount = totalDuration * 2; // One tick every 0.5 seconds            const tickSpacing = 100 / tickCount; // Percentage of timeline width                        for (let i = 0; i <= tickCount; i++) {                const tick = document.createElement('div');                tick.className = 'ruler-tick';                tick.style.left = `${i * tickSpacing}%`;                                // Add label for whole seconds                if (i % 2 === 0) {                    const label = document.createElement('div');                    label.className = 'ruler-label';                    label.textContent = (i / 2).toFixed(0) + 's';                    label.style.left = `${i * tickSpacing}%`;                    ruler.appendChild(label);                    tick.style.height = '15px'; // Taller tick for whole seconds                }                                ruler.appendChild(tick);            }                        // Reset marker position            marker.style.left = '0';        }        // Select sentence animation        function selectSentenceAnimation(animation) {            selectedSentence = animation;            updateInfoPanel();        }        // Select gloss animation        function selectGlossAnimation(animation) {            selectedGloss = animation;            updateInfoPanel();        }        // Update the timeline visualization based on selected animations        async function updateTimeline() {            if (!selectedSentence || !selectedGloss) {                alert('Please select both a sentence and a gloss animation.');                return;            }                        // Show loading overlay            loadingOverlay.style.display = 'flex';            loadingOverlay.innerHTML = '<div class="spinner"></div><div>Loading animations...</div>';                        try {                // Load the actual animation files                sentenceAnimGroup = await loadAnimationFile(selectedSentence.name, 'zin_glb', scene, loadedMesh);                glossAnimGroup = await loadAnimationFile(selectedGloss.name, 'glos_glb', scene, loadedMesh);                                if (!sentenceAnimGroup || !glossAnimGroup) {                    throw new Error("Failed to load one or both animations");                }                                // Calculate the timeline parameters                totalDuration = Math.max(selectedSentence.duration, selectedSentence.duration / 2 + selectedGloss.duration + 1);                if (blendMethod === 'delayed') {                    totalDuration = Math.max(selectedSentence.duration, glossDelay + selectedGloss.duration);                }                                // Recreate the empty timeline                createTimeline();                                // Create tracks for each animation type                const sentenceTrack = document.createElement('div');                sentenceTrack.className = 'timeline-track';                timeline.appendChild(sentenceTrack);                                const glossTrack = document.createElement('div');                glossTrack.className = 'timeline-track';                timeline.appendChild(glossTrack);                                const blendTrack = document.createElement('div');                blendTrack.className = 'timeline-track';                timeline.appendChild(blendTrack);                                // Add the animations to the timeline based on blend method                if (blendMethod === 'delayed') {                    // Sentence runs entire duration                    addAnimationToTrack(sentenceTrack, selectedSentence, 0, totalDuration, 'sentence');                                        // Gloss starts at delay                    addAnimationToTrack(glossTrack, selectedGloss, glossDelay, glossDelay + selectedGloss.duration, 'gloss');                                        // Add blend regions                    const blendInDuration = 0.3; // 300ms for blend in                    const blendOutDuration = 0.3; // 300ms for blend out                                        // Blend in                    addBlendRegion(blendTrack, glossDelay, glossDelay + blendInDuration, 'Blend In');                                        // Blend out                    addBlendRegion(blendTrack, glossDelay + selectedGloss.duration - blendOutDuration,                                   glossDelay + selectedGloss.duration, 'Blend Out');                } else {                    // Midpoint blend method                    const sentenceMidpoint = selectedSentence.duration / 2;                                        // First half of sentence                    addAnimationToTrack(sentenceTrack, selectedSentence, 0, sentenceMidpoint, 'sentence', 'First Half');                                        // Gloss animation                    const glossStart = sentenceMidpoint - 0.3; // Start slightly before midpoint for blending                    addAnimationToTrack(glossTrack, selectedGloss, glossStart, glossStart + selectedGloss.duration, 'gloss');                                        // Second half of sentence                    const secondHalfStart = glossStart + selectedGloss.duration - 0.3;                    addAnimationToTrack(sentenceTrack, selectedSentence, secondHalfStart, totalDuration, 'sentence', 'Second Half');                                        // Add blend regions                    addBlendRegion(blendTrack, glossStart, glossStart + 0.3, 'Blend To Gloss');                    addBlendRegion(blendTrack, secondHalfStart - 0.3, secondHalfStart, 'Blend To Sentence');                }                                // Reset animation state but stay at current position                const currentPercent = currentTime / totalDuration;                resetAnimation();                updateMarkerPosition(currentPercent);                                // Update character to initial state                if (sentenceAnimGroup) {                    sentenceAnimGroup.goToFrame(0);                    applyAnimationWeight(sentenceAnimGroup, 1.0);                }                if (glossAnimGroup) {                    glossAnimGroup.goToFrame(0);                    applyAnimationWeight(glossAnimGroup, 0);                }                                // Hide loading overlay                loadingOverlay.style.display = 'none';            } catch (error) {                console.error("Error updating timeline:", error);                loadingOverlay.innerHTML = `<div>Error loading animations: ${error.message}</div>`;            }        }        // Add an animation to a timeline track        function addAnimationToTrack(track, animation, startTime, endTime, type, customLabel) {            const anim = document.createElement('div');            anim.className = `timeline-animation ${type}`;                        // Calculate position and width based on time            const left = (startTime / totalDuration) * 100;            const width = ((endTime - startTime) / totalDuration) * 100;                        anim.style.left = `${left}%`;            anim.style.width = `${width}%`;                        // Set label            anim.textContent = customLabel || animation.name;                        // Add tooltip data            anim.dataset.startTime = startTime.toFixed(1);            anim.dataset.endTime = endTime.toFixed(1);            anim.dataset.duration = (endTime - startTime).toFixed(1);            anim.dataset.frames = animation.frames;                        // Add hover event for tooltip            anim.addEventListener('mouseover', function(e) {                const content = `                    ${anim.textContent}<br>                    Start: ${anim.dataset.startTime}s<br>                    End: ${anim.dataset.endTime}s<br>                    Duration: ${anim.dataset.duration}s<br>                    Frames: ${anim.dataset.frames}                `;                                updateTooltip({                    left: e.clientX,                    top: e.clientY,                    content: content                });                                tooltip.style.display = 'block';            });                        anim.addEventListener('mouseout', function() {                tooltip.style.display = 'none';            });                        anim.addEventListener('mousemove', function(e) {                tooltip.style.left = (e.clientX + 10) + 'px';                tooltip.style.top = (e.clientY + 10) + 'px';            });                        track.appendChild(anim);            return anim;        }        // Add a blend region to the timeline        function addBlendRegion(track, startTime, endTime, label) {            const blend = document.createElement('div');            blend.className = 'timeline-animation blend';                        // Calculate position and width based on time            const left = (startTime / totalDuration) * 100;            const width = ((endTime - startTime) / totalDuration) * 100;                        blend.style.left = `${left}%`;            blend.style.width = `${width}%`;                        blend.textContent = label;                        // Add tooltip data            blend.dataset.startTime = startTime.toFixed(1);            blend.dataset.endTime = endTime.toFixed(1);            blend.dataset.duration = (endTime - startTime).toFixed(1);            blend.dataset.blendSpeed = blendSpeed;                        // Add hover event for tooltip            blend.addEventListener('mouseover', function(e) {                const content = `                    ${label}<br>                    Start: ${blend.dataset.startTime}s<br>                    End: ${blend.dataset.endTime}s<br>                    Duration: ${blend.dataset.duration}s<br>                    Blend Speed: ${blend.dataset.blendSpeed}                `;                                updateTooltip({                    left: e.clientX,                    top: e.clientY,                    content: content                });                                tooltip.style.display = 'block';            });                        blend.addEventListener('mouseout', function() {                tooltip.style.display = 'none';            });                        blend.addEventListener('mousemove', function(e) {                tooltip.style.left = (e.clientX + 10) + 'px';                tooltip.style.top = (e.clientY + 10) + 'px';            });                        track.appendChild(blend);            return blend;        }        // Update tooltip display        function updateTooltip(options) {            if (options.content) {                tooltip.innerHTML = options.content;            }                        if (options.left !== undefined) {                tooltip.style.left = (options.left + 10) + 'px';            }                        if (options.top !== undefined) {                tooltip.style.top = (options.top + 10) + 'px';            }        }        // Update info panel with selected animation details        function updateInfoPanel() {            const detailsElement = document.getElementById('timing-details');                        if (!selectedSentence || !selectedGloss) {                detailsElement.textContent = 'Select animations and update the timeline to see details.';                return;            }                        // Update duration displays            document.getElementById('info-sentence-duration').textContent = `${selectedSentence.duration.toFixed(1)}s`;            document.getElementById('info-gloss-duration').textContent = `${selectedGloss.duration.toFixed(1)}s`;                        let details = '';            if (blendMethod === 'delayed') {                details = `                    Sentence animation "${selectedSentence.name}" plays for its full duration (${selectedSentence.duration.toFixed(1)}s).                    Gloss animation "${selectedGloss.name}" starts at ${glossDelay.toFixed(1)}s with a blend-in duration of ${blendSpeed.toFixed(2)}s.                    The gloss animation plays for ${selectedGloss.duration.toFixed(1)}s with a blend-out near the end.                    Total animation sequence: ${Math.max(selectedSentence.duration, glossDelay + selectedGloss.duration).toFixed(1)}s.                `;            } else {                const sentenceMidpoint = selectedSentence.duration / 2;                details = `                    Sentence animation "${selectedSentence.name}" plays until halfway (${sentenceMidpoint.toFixed(1)}s).                    Gloss animation "${selectedGloss.name}" starts blending in slightly before the midpoint.                    After the gloss animation completes (${selectedGloss.duration.toFixed(1)}s), the sentence continues from its midpoint.                    Total animation sequence: ${Math.max(selectedSentence.duration, sentenceMidpoint + selectedGloss.duration).toFixed(1)}s.                `;            }                        detailsElement.textContent = details.replace(/\s+/g, ' ').trim();        }        // Play the animation timeline        function playAnimation() {            if (isPlaying || !sentenceAnimGroup || !glossAnimGroup) return;                        document.getElementById('play-animation').disabled = true;            document.getElementById('pause-animation').disabled = false;                        isPlaying = true;            animationStartTime = Date.now() - (currentTime * 1000);                        function animate() {                if (!isPlaying) return;                                const now = Date.now();                currentTime = (now - animationStartTime) / 1000;                                if (currentTime >= totalDuration) {                    // Animation completed                    resetAnimation();                    return;                }                                // Update marker position                updateMarkerPosition(currentTime / totalDuration);                                // Continue the animation                animationFrame = requestAnimationFrame(animate);            }                        animate();        }        // Pause the animation timeline        function pauseAnimation() {            if (!isPlaying) return;                        document.getElementById('play-animation').disabled = false;            document.getElementById('pause-animation').disabled = true;                        isPlaying = false;            if (animationFrame) {                cancelAnimationFrame(animationFrame);                animationFrame = null;            }        }        // Reset the animation timeline        function resetAnimation() {            pauseAnimation();            currentTime = 0;            updateMarkerPosition(0);                        // Reset character to initial state            if (sentenceAnimGroup) {                sentenceAnimGroup.goToFrame(0);                applyAnimationWeight(sentenceAnimGroup, 1.0);            }            if (glossAnimGroup) {                glossAnimGroup.goToFrame(0);                applyAnimationWeight(glossAnimGroup, 0);            }                        document.getElementById('play-animation').disabled = false;            document.getElementById('pause-animation').disabled = true;        }    </script></body></html>
