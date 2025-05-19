@@ -18,43 +18,43 @@
 function retargetAnimWithBlendshapes(targetMeshAsset, animGroup, cloneName = "anim") {
     console.log("Retargeting animation to target mesh (Corrected Logic)...");
 
-    // Create a mapping of shortened morphTarget names to full target names if it exists
-    // This helps when animations use different naming conventions (e.g., morphTarget38 vs glassesGuy_mesh_2_38_MorphTarget)
-    function createMorphTargetMapping(targetMeshAsset) {
+    // Use the glassesGuyMap for direct mapping of morphTarget names
+    const morphTargetNameMap = glassesGuyMap();
+    console.log(`Loaded morphTarget name mapping with ${Object.keys(morphTargetNameMap).length} entries`);
+    
+    // Create a mapping of morphTarget objects
+    function createMorphTargetObjectMapping(targetMeshAsset, morphTargetNameMap) {
         const mapping = {};
         
         // Process all morph target managers in the target mesh
-        if (targetMeshAsset.morphTargetManagers && targetMeshAsset.morphTargetManagers.length > 0) {
-            for (let i = 0; i < targetMeshAsset.morphTargetManagers.length; i++) {
-                const mtm = targetMeshAsset.morphTargetManagers[i];
-                if (!mtm) continue;
-                
-                // For each morph target in the manager
-                for (let j = 0; j < mtm.numTargets; j++) {
-                    const target = mtm.getTarget(j);
-                    if (!target || !target.name) continue;
-                    
-                    // Add the full name to mapping
-                    mapping[target.name] = target;
-                    
-                    // Check if the target name follows the pattern "glassesGuy_mesh_X_Y_MorphTarget"
-                    const matches = target.name.match(/glassesGuy_mesh_(\d+)_(\d+)_MorphTarget/);
-                    if (matches && matches.length === 3) {
-                        // Create a mapping for the shortened form "morphTargetY"
-                        const shortName = `morphTarget${matches[2]}`;
-                        mapping[shortName] = target;
-                        console.log(`Created mapping: ${shortName} -> ${target.name}`);
+        if (targetMeshAsset.fetched && targetMeshAsset.fetched.meshes) {
+            targetMeshAsset.fetched.meshes.forEach(mesh => {
+                if (mesh.morphTargetManager) {
+                    for (let j = 0; j < mesh.morphTargetManager.numTargets; j++) {
+                        const target = mesh.morphTargetManager.getTarget(j);
+                        if (!target || !target.name) continue;
+                        
+                        // Add the full name to mapping
+                        mapping[target.name] = target;
+                        
+                        // For each entry in morphTargetNameMap, map the short name to the actual object
+                        Object.entries(morphTargetNameMap).forEach(([shortName, fullName]) => {
+                            if (target.name === fullName) {
+                                mapping[shortName] = target;
+                                console.log(`Mapped ${shortName} -> ${target.name}`);
+                            }
+                        });
                     }
                 }
-            }
+            });
         }
         
-        console.log(`Created morph target mapping with ${Object.keys(mapping).length} entries`);
+        console.log(`Created morph target object mapping with ${Object.keys(mapping).length} entries`);
         return mapping;
     }
     
     // Generate the mapping once
-    const morphTargetMapping = createMorphTargetMapping(targetMeshAsset);
+    const morphTargetObjectMap = createMorphTargetObjectMapping(targetMeshAsset, morphTargetNameMap);
 
     // Clone the animation group using the mapping function
     const clonedAnimGroup = animGroup.clone(cloneName, (originalTarget) => {
@@ -64,10 +64,30 @@ function retargetAnimWithBlendshapes(targetMeshAsset, animGroup, cloneName = "an
         }
         const targetName = originalTarget.name;
         
-        // Check if there's a direct mapping for this target (for shortened names)
-        if (morphTargetMapping[targetName]) {
-            console.log(`Found mapping for target: ${targetName}`);
-            return morphTargetMapping[targetName];
+        // Check the morphTargetObjectMap first for direct mappings (including short names)
+        if (morphTargetObjectMap[targetName]) {
+            console.log(`Found object map for target: ${targetName} -> ${morphTargetObjectMap[targetName].name}`);
+            return morphTargetObjectMap[targetName];
+        }
+        
+        // Check morphTargetNameMap for name-based mapping
+        if (morphTargetNameMap[targetName]) {
+            const mappedName = morphTargetNameMap[targetName];
+            console.log(`Found name map for target: ${targetName} -> ${mappedName}`);
+            
+            // Look for this morphTarget in all mesh morphTargetManagers
+            if (targetMeshAsset.fetched && targetMeshAsset.fetched.meshes) {
+                for (const mesh of targetMeshAsset.fetched.meshes) {
+                    if (mesh.morphTargetManager) {
+                        for (let i = 0; i < mesh.morphTargetManager.numTargets; i++) {
+                            const target = mesh.morphTargetManager.getTarget(i);
+                            if (target && target.name === mappedName) {
+                                return target;
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         // 1. Check for Bone
@@ -122,32 +142,35 @@ function retargetAnimWithBlendshapes(targetMeshAsset, animGroup, cloneName = "an
         return null;
     });
 
+    //debug output clonedAnimGroup in console.log
+    console.log(clonedAnimGroup);
+
     // FIX: Add enableBlending method to the cloned animation group
     // This is what was missing - enableBlending is a function for animation blending
     // which must be added to the cloned animation group
-    clonedAnimGroup.enableBlending = function(blendingSpeed) {
-        // Make sure we convert the parameter to a number to avoid any issues
-        const speedValue = typeof blendingSpeed === "number" ? blendingSpeed : 0.1;
+    // clonedAnimGroup.enableBlending = function(blendingSpeed) {
+    //     // Make sure we convert the parameter to a number to avoid any issues
+    //     const speedValue = typeof blendingSpeed === "number" ? blendingSpeed : 0.1;
         
-        // Enable blending on all animatables in this group
-        this.reset(); // Reset the animation
+    //     // Enable blending on all animatables in this group
+    //     this.reset(); // Reset the animation
         
-        // Set proper weight to 0 to start blend from 0
-        // and gradually blend to full weight (1.0)
-        this.setWeightForAllAnimatables(0);
+    //     // Set proper weight to 0 to start blend from 0
+    //     // and gradually blend to full weight (1.0)
+    //     this.setWeightForAllAnimatables(0);
         
-        // For each targeted animation in this group, enable blending
-        for (let i = 0; i < this._targetedAnimations.length; i++) {
-            const targetedAnim = this._targetedAnimations[i];
-            if (targetedAnim && targetedAnim.animation) {
-                targetedAnim.animation.enableBlending = true;
-                targetedAnim.animation.blendingSpeed = speedValue;
-            }
-        }
+    //     // For each targeted animation in this group, enable blending
+    //     for (let i = 0; i < this._targetedAnimations.length; i++) {
+    //         const targetedAnim = this._targetedAnimations[i];
+    //         if (targetedAnim && targetedAnim.animation) {
+    //             targetedAnim.animation.enableBlending = true;
+    //             targetedAnim.animation.blendingSpeed = speedValue;
+    //         }
+    //     }
         
-        console.log(`[enableBlending] Enabled blending on '${this.name}' with speed ${speedValue}`);
-        return this; // For method chaining
-    };
+    //     console.log(`[enableBlending] Enabled blending on '${this.name}' with speed ${speedValue}`);
+    //     return this; // For method chaining
+    // };
 
     return clonedAnimGroup;
 }
@@ -463,151 +486,152 @@ function createSequentialAnimationManager(targetMeshAsset, animGroups, blendingT
 //         });
 // }
 
-// function glassesGuyMap() {
-//     return {
-//         "morphTarget0": "glassesGuy_mesh_0_23_MorphTarget",
-//         "morphTarget1": "glassesGuy_mesh_0_25_MorphTarget",
-//         "morphTarget2": "glassesGuy_mesh_0_27_MorphTarget",
-//         "morphTarget3": "glassesGuy_mesh_0_29_MorphTarget",
-//         "morphTarget4": "glassesGuy_mesh_1_24_MorphTarget",
-//         "morphTarget5": "glassesGuy_mesh_1_26_MorphTarget",
-//         "morphTarget6": "glassesGuy_mesh_1_28_MorphTarget",
-//         "morphTarget7": "glassesGuy_mesh_1_30_MorphTarget",
-//         "morphTarget8": "glassesGuy_mesh_2_0_MorphTarget",
-//         "morphTarget9": "glassesGuy_mesh_2_1_MorphTarget",
-//         "morphTarget10": "glassesGuy_mesh_2_2_MorphTarget",
-//         "morphTarget11": "glassesGuy_mesh_2_3_MorphTarget",
-//         "morphTarget12": "glassesGuy_mesh_2_4_MorphTarget",
-//         "morphTarget13": "glassesGuy_mesh_2_5_MorphTarget",
-//         "morphTarget14": "glassesGuy_mesh_2_6_MorphTarget",
-//         "morphTarget15": "glassesGuy_mesh_2_7_MorphTarget",
-//         "morphTarget16": "glassesGuy_mesh_2_8_MorphTarget",
-//         "morphTarget17": "glassesGuy_mesh_2_9_MorphTarget",
-//         "morphTarget18": "glassesGuy_mesh_2_10_MorphTarget",
-//         "morphTarget19": "glassesGuy_mesh_2_11_MorphTarget",
-//         "morphTarget20": "glassesGuy_mesh_2_12_MorphTarget",
-//         "morphTarget21": "glassesGuy_mesh_2_13_MorphTarget",
-//         "morphTarget22": "glassesGuy_mesh_2_14_MorphTarget",
-//         "morphTarget23": "glassesGuy_mesh_2_15_MorphTarget",
-//         "morphTarget24": "glassesGuy_mesh_2_16_MorphTarget",
-//         "morphTarget25": "glassesGuy_mesh_2_17_MorphTarget",
-//         "morphTarget26": "glassesGuy_mesh_2_18_MorphTarget",
-//         "morphTarget27": "glassesGuy_mesh_2_19_MorphTarget",
-//         "morphTarget28": "glassesGuy_mesh_2_20_MorphTarget",
-//         "morphTarget29": "glassesGuy_mesh_2_21_MorphTarget",
-//         "morphTarget30": "glassesGuy_mesh_2_22_MorphTarget",
-//         "morphTarget31": "glassesGuy_mesh_2_23_MorphTarget",
-//         "morphTarget32": "glassesGuy_mesh_2_24_MorphTarget",
-//         "morphTarget33": "glassesGuy_mesh_2_25_MorphTarget",
-//         "morphTarget34": "glassesGuy_mesh_2_26_MorphTarget",
-//         "morphTarget35": "glassesGuy_mesh_2_27_MorphTarget",
-//         "morphTarget36": "glassesGuy_mesh_2_28_MorphTarget",
-//         "morphTarget37": "glassesGuy_mesh_2_29_MorphTarget",
-//         "morphTarget38": "glassesGuy_mesh_2_30_MorphTarget",
-//         "morphTarget39": "glassesGuy_mesh_2_31_MorphTarget",
-//         "morphTarget40": "glassesGuy_mesh_2_32_MorphTarget",
-//         "morphTarget41": "glassesGuy_mesh_2_33_MorphTarget",
-//         "morphTarget42": "glassesGuy_mesh_2_34_MorphTarget",
-//         "morphTarget43": "glassesGuy_mesh_2_35_MorphTarget",
-//         "morphTarget44": "glassesGuy_mesh_2_36_MorphTarget",
-//         "morphTarget45": "glassesGuy_mesh_2_37_MorphTarget",
-//         "morphTarget46": "glassesGuy_mesh_2_38_MorphTarget",
-//         "morphTarget47": "glassesGuy_mesh_2_39_MorphTarget",
-//         "morphTarget48": "glassesGuy_mesh_2_40_MorphTarget",
-//         "morphTarget49": "glassesGuy_mesh_2_41_MorphTarget",
-//         "morphTarget50": "glassesGuy_mesh_2_42_MorphTarget",
-//         "morphTarget51": "glassesGuy_mesh_2_43_MorphTarget",
-//         "morphTarget52": "glassesGuy_mesh_2_44_MorphTarget",
-//         "morphTarget53": "glassesGuy_mesh_2_45_MorphTarget",
-//         "morphTarget54": "glassesGuy_mesh_2_46_MorphTarget",
-//         "morphTarget55": "glassesGuy_mesh_2_47_MorphTarget",
-//         "morphTarget56": "glassesGuy_mesh_2_48_MorphTarget",
-//         "morphTarget57": "glassesGuy_mesh_2_50_MorphTarget",
-//         "morphTarget58": "glassesGuy_mesh_2_51_MorphTarget",
-//         "morphTarget59": "glassesGuy_mesh_3_9_MorphTarget",
-//         "morphTarget60": "glassesGuy_mesh_3_10_MorphTarget",
-//         "morphTarget61": "glassesGuy_mesh_3_11_MorphTarget",
-//         "morphTarget62": "glassesGuy_mesh_3_34_MorphTarget",
-//         "morphTarget63": "glassesGuy_mesh_3_49_MorphTarget",
-//         "morphTarget64": "glassesGuy_mesh_5_0_MorphTarget",
-//         "morphTarget65": "glassesGuy_mesh_5_1_MorphTarget",
-//         "morphTarget66": "glassesGuy_mesh_6_0_MorphTarget",
-//         "morphTarget67": "glassesGuy_mesh_6_1_MorphTarget",
-//         "morphTarget68": "glassesGuy_mesh_7_0_MorphTarget",
-//         "morphTarget69": "glassesGuy_mesh_7_1_MorphTarget"
-//     };
-// }
-// function NPMGlassesGuyMap() {
-//         return {
-//             "glassesGuy_mesh_0_23_MorphTarget": "morphTarget0",
-//             "glassesGuy_mesh_0_25_MorphTarget": "morphTarget1",
-//             "glassesGuy_mesh_0_27_MorphTarget": "morphTarget2",
-//             "glassesGuy_mesh_0_29_MorphTarget": "morphTarget3",
-//             "glassesGuy_mesh_1_24_MorphTarget": "morphTarget4",
-//             "glassesGuy_mesh_1_26_MorphTarget": "morphTarget5",
-//             "glassesGuy_mesh_1_28_MorphTarget": "morphTarget6",
-//             "glassesGuy_mesh_1_30_MorphTarget": "morphTarget7",
-//             "glassesGuy_mesh_2_0_MorphTarget": "morphTarget8",
-//             "glassesGuy_mesh_2_1_MorphTarget": "morphTarget9",
-//             "glassesGuy_mesh_2_2_MorphTarget": "morphTarget10",
-//             "glassesGuy_mesh_2_3_MorphTarget": "morphTarget11",
-//             "glassesGuy_mesh_2_4_MorphTarget": "morphTarget12",
-//             "glassesGuy_mesh_2_5_MorphTarget": "morphTarget13",
-//             "glassesGuy_mesh_2_6_MorphTarget": "morphTarget14",
-//             "glassesGuy_mesh_2_7_MorphTarget": "morphTarget15",
-//             "glassesGuy_mesh_2_8_MorphTarget": "morphTarget16",
-//             "glassesGuy_mesh_2_9_MorphTarget": "morphTarget17",
-//             "glassesGuy_mesh_2_10_MorphTarget": "morphTarget18",
-//             "glassesGuy_mesh_2_11_MorphTarget": "morphTarget19",
-//             "glassesGuy_mesh_2_12_MorphTarget": "morphTarget20",
-//             "glassesGuy_mesh_2_13_MorphTarget": "morphTarget21",
-//             "glassesGuy_mesh_2_14_MorphTarget": "morphTarget22",
-//             "glassesGuy_mesh_2_15_MorphTarget": "morphTarget23",
-//             "glassesGuy_mesh_2_16_MorphTarget": "morphTarget24",
-//             "glassesGuy_mesh_2_17_MorphTarget": "morphTarget25",
-//             "glassesGuy_mesh_2_18_MorphTarget": "morphTarget26",
-//             "glassesGuy_mesh_2_19_MorphTarget": "morphTarget27",
-//             "glassesGuy_mesh_2_20_MorphTarget": "morphTarget28",
-//             "glassesGuy_mesh_2_21_MorphTarget": "morphTarget29",
-//             "glassesGuy_mesh_2_22_MorphTarget": "morphTarget30",
-//             "glassesGuy_mesh_2_23_MorphTarget": "morphTarget31",
-//             "glassesGuy_mesh_2_24_MorphTarget": "morphTarget32",
-//             "glassesGuy_mesh_2_25_MorphTarget": "morphTarget33",
-//             "glassesGuy_mesh_2_26_MorphTarget": "morphTarget34",
-//             "glassesGuy_mesh_2_27_MorphTarget": "morphTarget35",
-//             "glassesGuy_mesh_2_28_MorphTarget": "morphTarget36",
-//             "glassesGuy_mesh_2_29_MorphTarget": "morphTarget37",
-//             "glassesGuy_mesh_2_30_MorphTarget": "morphTarget38",
-//             "glassesGuy_mesh_2_31_MorphTarget": "morphTarget39",
-//             "glassesGuy_mesh_2_32_MorphTarget": "morphTarget40",
-//             "glassesGuy_mesh_2_33_MorphTarget": "morphTarget41",
-//             "glassesGuy_mesh_2_34_MorphTarget": "morphTarget42",
-//             "glassesGuy_mesh_2_35_MorphTarget": "morphTarget43",
-//             "glassesGuy_mesh_2_36_MorphTarget": "morphTarget44",
-//             "glassesGuy_mesh_2_37_MorphTarget": "morphTarget45",
-//             "glassesGuy_mesh_2_38_MorphTarget": "morphTarget46",
-//             "glassesGuy_mesh_2_39_MorphTarget": "morphTarget47",
-//             "glassesGuy_mesh_2_40_MorphTarget": "morphTarget48",
-//             "glassesGuy_mesh_2_41_MorphTarget": "morphTarget49",
-//             "glassesGuy_mesh_2_42_MorphTarget": "morphTarget50",
-//             "glassesGuy_mesh_2_43_MorphTarget": "morphTarget51",
-//             "glassesGuy_mesh_2_44_MorphTarget": "morphTarget52",
-//             "glassesGuy_mesh_2_45_MorphTarget": "morphTarget53",
-//             "glassesGuy_mesh_2_46_MorphTarget": "morphTarget54",
-//             "glassesGuy_mesh_2_47_MorphTarget": "morphTarget55",
-//             "glassesGuy_mesh_2_48_MorphTarget": "morphTarget56",
-//             "glassesGuy_mesh_2_50_MorphTarget": "morphTarget57",
-//             "glassesGuy_mesh_2_51_MorphTarget": "morphTarget58",
-//             "glassesGuy_mesh_3_9_MorphTarget": "morphTarget59",
-//             "glassesGuy_mesh_3_10_MorphTarget": "morphTarget60",
-//             "glassesGuy_mesh_3_11_MorphTarget": "morphTarget61",
-//             "glassesGuy_mesh_3_34_MorphTarget": "morphTarget62",
-//             "glassesGuy_mesh_3_49_MorphTarget": "morphTarget63",
-//             "glassesGuy_mesh_5_0_MorphTarget": "morphTarget64",
-//             "glassesGuy_mesh_5_1_MorphTarget": "morphTarget65",
-//             "glassesGuy_mesh_6_0_MorphTarget": "morphTarget66",
-//             "glassesGuy_mesh_6_1_MorphTarget": "morphTarget67",
-//             "glassesGuy_mesh_7_0_MorphTarget": "morphTarget68",
-//             "glassesGuy_mesh_7_1_MorphTarget": "morphTarget69"
-//         };
-//     }
+function glassesGuyMap() {
+    return {
+        "morphTarget0": "glassesGuy_mesh_0_23_MorphTarget",
+        "morphTarget1": "glassesGuy_mesh_0_25_MorphTarget",
+        "morphTarget2": "glassesGuy_mesh_0_27_MorphTarget",
+        "morphTarget3": "glassesGuy_mesh_0_29_MorphTarget",
+        "morphTarget4": "glassesGuy_mesh_1_24_MorphTarget",
+        "morphTarget5": "glassesGuy_mesh_1_26_MorphTarget",
+        "morphTarget6": "glassesGuy_mesh_1_28_MorphTarget",
+        "morphTarget7": "glassesGuy_mesh_1_30_MorphTarget",
+        "morphTarget8": "glassesGuy_mesh_2_0_MorphTarget",
+        "morphTarget9": "glassesGuy_mesh_2_1_MorphTarget",
+        "morphTarget10": "glassesGuy_mesh_2_2_MorphTarget",
+        "morphTarget11": "glassesGuy_mesh_2_3_MorphTarget",
+        "morphTarget12": "glassesGuy_mesh_2_4_MorphTarget",
+        "morphTarget13": "glassesGuy_mesh_2_5_MorphTarget",
+        "morphTarget14": "glassesGuy_mesh_2_6_MorphTarget",
+        "morphTarget15": "glassesGuy_mesh_2_7_MorphTarget",
+        "morphTarget16": "glassesGuy_mesh_2_8_MorphTarget",
+        "morphTarget17": "glassesGuy_mesh_2_9_MorphTarget",
+        "morphTarget18": "glassesGuy_mesh_2_10_MorphTarget",
+        "morphTarget19": "glassesGuy_mesh_2_11_MorphTarget",
+        "morphTarget20": "glassesGuy_mesh_2_12_MorphTarget",
+        "morphTarget21": "glassesGuy_mesh_2_13_MorphTarget",
+        "morphTarget22": "glassesGuy_mesh_2_14_MorphTarget",
+        "morphTarget23": "glassesGuy_mesh_2_15_MorphTarget",
+        "morphTarget24": "glassesGuy_mesh_2_16_MorphTarget",
+        "morphTarget25": "glassesGuy_mesh_2_17_MorphTarget",
+        "morphTarget26": "glassesGuy_mesh_2_18_MorphTarget",
+        "morphTarget27": "glassesGuy_mesh_2_19_MorphTarget",
+        "morphTarget28": "glassesGuy_mesh_2_20_MorphTarget",
+        "morphTarget29": "glassesGuy_mesh_2_21_MorphTarget",
+        "morphTarget30": "glassesGuy_mesh_2_22_MorphTarget",
+        "morphTarget31": "glassesGuy_mesh_2_23_MorphTarget",
+        "morphTarget32": "glassesGuy_mesh_2_24_MorphTarget",
+        "morphTarget33": "glassesGuy_mesh_2_25_MorphTarget",
+        "morphTarget34": "glassesGuy_mesh_2_26_MorphTarget",
+        "morphTarget35": "glassesGuy_mesh_2_27_MorphTarget",
+        "morphTarget36": "glassesGuy_mesh_2_28_MorphTarget",
+        "morphTarget37": "glassesGuy_mesh_2_29_MorphTarget",
+        "morphTarget38": "glassesGuy_mesh_2_30_MorphTarget",
+        "morphTarget39": "glassesGuy_mesh_2_31_MorphTarget",
+        "morphTarget40": "glassesGuy_mesh_2_32_MorphTarget",
+        "morphTarget41": "glassesGuy_mesh_2_33_MorphTarget",
+        "morphTarget42": "glassesGuy_mesh_2_34_MorphTarget",
+        "morphTarget43": "glassesGuy_mesh_2_35_MorphTarget",
+        "morphTarget44": "glassesGuy_mesh_2_36_MorphTarget",
+        "morphTarget45": "glassesGuy_mesh_2_37_MorphTarget",
+        "morphTarget46": "glassesGuy_mesh_2_38_MorphTarget",
+        "morphTarget47": "glassesGuy_mesh_2_39_MorphTarget",
+        "morphTarget48": "glassesGuy_mesh_2_40_MorphTarget",
+        "morphTarget49": "glassesGuy_mesh_2_41_MorphTarget",
+        "morphTarget50": "glassesGuy_mesh_2_42_MorphTarget",
+        "morphTarget51": "glassesGuy_mesh_2_43_MorphTarget",
+        "morphTarget52": "glassesGuy_mesh_2_44_MorphTarget",
+        "morphTarget53": "glassesGuy_mesh_2_45_MorphTarget",
+        "morphTarget54": "glassesGuy_mesh_2_46_MorphTarget",
+        "morphTarget55": "glassesGuy_mesh_2_47_MorphTarget",
+        "morphTarget56": "glassesGuy_mesh_2_48_MorphTarget",
+        "morphTarget57": "glassesGuy_mesh_2_50_MorphTarget",
+        "morphTarget58": "glassesGuy_mesh_2_51_MorphTarget",
+        "morphTarget59": "glassesGuy_mesh_3_9_MorphTarget",
+        "morphTarget60": "glassesGuy_mesh_3_10_MorphTarget",
+        "morphTarget61": "glassesGuy_mesh_3_11_MorphTarget",
+        "morphTarget62": "glassesGuy_mesh_3_34_MorphTarget",
+        "morphTarget63": "glassesGuy_mesh_3_49_MorphTarget",
+        "morphTarget64": "glassesGuy_mesh_5_0_MorphTarget",
+        "morphTarget65": "glassesGuy_mesh_5_1_MorphTarget",
+        "morphTarget66": "glassesGuy_mesh_6_0_MorphTarget",
+        "morphTarget67": "glassesGuy_mesh_6_1_MorphTarget",
+        "morphTarget68": "glassesGuy_mesh_7_0_MorphTarget",
+        "morphTarget69": "glassesGuy_mesh_7_1_MorphTarget"
+    };
+}
+
+function NPMGlassesGuyMap() {
+        return {
+            "glassesGuy_mesh_0_23_MorphTarget": "morphTarget0",
+            "glassesGuy_mesh_0_25_MorphTarget": "morphTarget1",
+            "glassesGuy_mesh_0_27_MorphTarget": "morphTarget2",
+            "glassesGuy_mesh_0_29_MorphTarget": "morphTarget3",
+            "glassesGuy_mesh_1_24_MorphTarget": "morphTarget4",
+            "glassesGuy_mesh_1_26_MorphTarget": "morphTarget5",
+            "glassesGuy_mesh_1_28_MorphTarget": "morphTarget6",
+            "glassesGuy_mesh_1_30_MorphTarget": "morphTarget7",
+            "glassesGuy_mesh_2_0_MorphTarget": "morphTarget8",
+            "glassesGuy_mesh_2_1_MorphTarget": "morphTarget9",
+            "glassesGuy_mesh_2_2_MorphTarget": "morphTarget10",
+            "glassesGuy_mesh_2_3_MorphTarget": "morphTarget11",
+            "glassesGuy_mesh_2_4_MorphTarget": "morphTarget12",
+            "glassesGuy_mesh_2_5_MorphTarget": "morphTarget13",
+            "glassesGuy_mesh_2_6_MorphTarget": "morphTarget14",
+            "glassesGuy_mesh_2_7_MorphTarget": "morphTarget15",
+            "glassesGuy_mesh_2_8_MorphTarget": "morphTarget16",
+            "glassesGuy_mesh_2_9_MorphTarget": "morphTarget17",
+            "glassesGuy_mesh_2_10_MorphTarget": "morphTarget18",
+            "glassesGuy_mesh_2_11_MorphTarget": "morphTarget19",
+            "glassesGuy_mesh_2_12_MorphTarget": "morphTarget20",
+            "glassesGuy_mesh_2_13_MorphTarget": "morphTarget21",
+            "glassesGuy_mesh_2_14_MorphTarget": "morphTarget22",
+            "glassesGuy_mesh_2_15_MorphTarget": "morphTarget23",
+            "glassesGuy_mesh_2_16_MorphTarget": "morphTarget24",
+            "glassesGuy_mesh_2_17_MorphTarget": "morphTarget25",
+            "glassesGuy_mesh_2_18_MorphTarget": "morphTarget26",
+            "glassesGuy_mesh_2_19_MorphTarget": "morphTarget27",
+            "glassesGuy_mesh_2_20_MorphTarget": "morphTarget28",
+            "glassesGuy_mesh_2_21_MorphTarget": "morphTarget29",
+            "glassesGuy_mesh_2_22_MorphTarget": "morphTarget30",
+            "glassesGuy_mesh_2_23_MorphTarget": "morphTarget31",
+            "glassesGuy_mesh_2_24_MorphTarget": "morphTarget32",
+            "glassesGuy_mesh_2_25_MorphTarget": "morphTarget33",
+            "glassesGuy_mesh_2_26_MorphTarget": "morphTarget34",
+            "glassesGuy_mesh_2_27_MorphTarget": "morphTarget35",
+            "glassesGuy_mesh_2_28_MorphTarget": "morphTarget36",
+            "glassesGuy_mesh_2_29_MorphTarget": "morphTarget37",
+            "glassesGuy_mesh_2_30_MorphTarget": "morphTarget38",
+            "glassesGuy_mesh_2_31_MorphTarget": "morphTarget39",
+            "glassesGuy_mesh_2_32_MorphTarget": "morphTarget40",
+            "glassesGuy_mesh_2_33_MorphTarget": "morphTarget41",
+            "glassesGuy_mesh_2_34_MorphTarget": "morphTarget42",
+            "glassesGuy_mesh_2_35_MorphTarget": "morphTarget43",
+            "glassesGuy_mesh_2_36_MorphTarget": "morphTarget44",
+            "glassesGuy_mesh_2_37_MorphTarget": "morphTarget45",
+            "glassesGuy_mesh_2_38_MorphTarget": "morphTarget46",
+            "glassesGuy_mesh_2_39_MorphTarget": "morphTarget47",
+            "glassesGuy_mesh_2_40_MorphTarget": "morphTarget48",
+            "glassesGuy_mesh_2_41_MorphTarget": "morphTarget49",
+            "glassesGuy_mesh_2_42_MorphTarget": "morphTarget50",
+            "glassesGuy_mesh_2_43_MorphTarget": "morphTarget51",
+            "glassesGuy_mesh_2_44_MorphTarget": "morphTarget52",
+            "glassesGuy_mesh_2_45_MorphTarget": "morphTarget53",
+            "glassesGuy_mesh_2_46_MorphTarget": "morphTarget54",
+            "glassesGuy_mesh_2_47_MorphTarget": "morphTarget55",
+            "glassesGuy_mesh_2_48_MorphTarget": "morphTarget56",
+            "glassesGuy_mesh_2_50_MorphTarget": "morphTarget57",
+            "glassesGuy_mesh_2_51_MorphTarget": "morphTarget58",
+            "glassesGuy_mesh_3_9_MorphTarget": "morphTarget59",
+            "glassesGuy_mesh_3_10_MorphTarget": "morphTarget60",
+            "glassesGuy_mesh_3_11_MorphTarget": "morphTarget61",
+            "glassesGuy_mesh_3_34_MorphTarget": "morphTarget62",
+            "glassesGuy_mesh_3_49_MorphTarget": "morphTarget63",
+            "glassesGuy_mesh_5_0_MorphTarget": "morphTarget64",
+            "glassesGuy_mesh_5_1_MorphTarget": "morphTarget65",
+            "glassesGuy_mesh_6_0_MorphTarget": "morphTarget66",
+            "glassesGuy_mesh_6_1_MorphTarget": "morphTarget67",
+            "glassesGuy_mesh_7_0_MorphTarget": "morphTarget68",
+            "glassesGuy_mesh_7_1_MorphTarget": "morphTarget69"
+        };
+}

@@ -85,59 +85,49 @@ const MorphTargetDebugger = {
     },
     
     /**
-     * Creates a mapping between short morph target names (morphTargetX) and mesh-specific morph target names
-     * @param {Object} targetMeshAsset - The asset object containing meshes with morph targets
-     * @returns {Object} A mapping from short names to actual morph target objects
+     * Tests all possible morph target combinations to help diagnose mapping issues
+     * @param {Object} targetMeshAsset - The mesh asset
+     * @param {String} animationTarget - Name of the morph target in the animation (e.g., "morphTarget38")
      */
-    createMorphTargetMapping: function(targetMeshAsset) {
-        const mapping = {};
-        
-        console.group("🗺️ MorphTarget Debugger - Creating Morph Target Mapping");
+    testMorphTargetMapping: function(targetMeshAsset, animationTarget) {
+        console.group(`🧪 MorphTarget Mapping Test for "${animationTarget}"`);
         
         if (!targetMeshAsset || !targetMeshAsset.fetched || !targetMeshAsset.fetched.meshes) {
             console.error("Invalid mesh asset provided");
             console.groupEnd();
-            return mapping;
+            return;
         }
         
-        // Process each mesh in the asset
-        targetMeshAsset.fetched.meshes.forEach((mesh) => {
+        // First check if the map has a direct entry
+        const map = glassesGuyMap();
+        const mappedName = map[animationTarget];
+        console.log(`Map entry: ${animationTarget} → ${mappedName || "NOT FOUND"}`);
+        
+        // Search for morph targets in all meshes
+        let found = false;
+        targetMeshAsset.fetched.meshes.forEach((mesh, meshIndex) => {
             if (mesh.morphTargetManager) {
-                // For each morph target in the manager
                 for (let i = 0; i < mesh.morphTargetManager.numTargets; i++) {
                     const target = mesh.morphTargetManager.getTarget(i);
-                    if (!target || !target.name) continue;
                     
-                    // Add the full name to mapping
-                    mapping[target.name] = target;
-                    
-                    // Check if the target name follows patterns like "glassesGuy_mesh_X_Y_MorphTarget"
-                    let shortName = null;
-                    
-                    const pattern1 = /.*_(\d+)_MorphTarget$/;
-                    const matches1 = target.name.match(pattern1);
-                    if (matches1 && matches1.length === 2) {
-                        shortName = `morphTarget${matches1[1]}`;
+                    if (target.name === animationTarget) {
+                        console.log(`✅ Direct match found in mesh ${meshIndex} (${mesh.name}), target ${i}`);
+                        found = true;
                     }
                     
-                    const pattern2 = /.*_mesh_\d+_(\d+)_MorphTarget$/;
-                    const matches2 = target.name.match(pattern2);
-                    if (matches2 && matches2.length === 2) {
-                        shortName = `morphTarget${matches2[1]}`;
-                    }
-                    
-                    if (shortName) {
-                        mapping[shortName] = target;
-                        console.log(`Mapped: ${shortName} → ${target.name}`);
+                    if (target.name === mappedName) {
+                        console.log(`✅ Mapped match found in mesh ${meshIndex} (${mesh.name}), target ${i}`);
+                        found = true;
                     }
                 }
             }
         });
         
-        console.log(`Created ${Object.keys(mapping).length} mappings`);
-        console.groupEnd();
+        if (!found) {
+            console.warn(`❌ No matching morph target found for "${animationTarget}" or its mapped name "${mappedName}"`);
+        }
         
-        return mapping;
+        console.groupEnd();
     }
 };
 

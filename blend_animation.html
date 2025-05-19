@@ -130,6 +130,7 @@
     <script src="initialize.js"></script>
     <script src="animFetchAndDestroy.js"></script>
     <script src="morphTargetDebugger.js"></script>
+    <script src="animationDebugger.js"></script>
     
     <script>
         // Main Application Script
@@ -446,31 +447,26 @@
                                 
                                 // After retargeting, check for any null targets that need to be filtered out
                                 if (retargetedGroup && retargetedGroup.targetedAnimations) {
-                                    const originalCount = retargetedGroup.targetedAnimations.length;
-                                    const validTargetedAnims = retargetedGroup.targetedAnimations.filter(ta => {
-                                        // Specifically check for morph target animations with null targets
-                                        if (!ta.target && ta.animation.targetProperty === "influence") {
-                                            console.warn(`[Workaround] Filtering out morph target animation '${ta.animation.name}' in group '${retargetedGroup.name}' because its target is null. This is likely because the target mesh does not have this morph target.`);
-                                            return false;
-                                        }
-                                        // General check for any animation with a null target, as a broader safety net
+                                    console.log(`Before filtering: ${retargetedGroup.name} has ${retargetedGroup.targetedAnimations.length} targeted animations`);
+                                    
+                                    // Filter out all targeted animations with null targets
+                                    const validTargetedAnims = retargetedGroup.targetedAnimations.filter((ta, idx) => {
                                         if (!ta.target) {
-                                            console.warn(`[Workaround] Filtering out animation '${ta.animation.name}' for property '${ta.animation.targetProperty}' in group '${retargetedGroup.name}' because its target is null.`);
+                                            console.warn(`[Filter] Removing animation ${idx} with null target in ${retargetedGroup.name}`);
                                             return false;
                                         }
                                         return true;
                                     });
-
-                                    if (validTargetedAnims.length < originalCount) {
+                                    
+                                    // Replace the targeted animations array with the filtered version
+                                    if (validTargetedAnims.length < retargetedGroup.targetedAnimations.length) {
+                                        console.log(`Filtered ${retargetedGroup.targetedAnimations.length - validTargetedAnims.length} animations with null targets`);
                                         retargetedGroup.targetedAnimations = validTargetedAnims;
-                                        console.log(`[Workaround] Group '${retargetedGroup.name}' updated: ${originalCount} -> ${validTargetedAnims.length} targeted animations after filtering null targets.`);
                                     }
+                                    
+                                    console.log(`After filtering: ${retargetedGroup.name} has ${retargetedGroup.targetedAnimations.length} targeted animations`);
                                 }
                                 
-                                // Log targeted animations after retargeting
-                                console.log(`After retargeting - Retargeted Animation Group: ${retargetedGroup.name}, From: ${retargetedGroup.from}, To: ${retargetedGroup.to}, Targets: ${retargetedGroup.targetedAnimations.length}`);
-                                // debugLog.animation(retargetedGroup); // For full details of the retargeted group
-
                                 // Configure the animation
                                 retargetedGroup.loopAnimation = true;
                                 
@@ -530,6 +526,16 @@
                 // Apply weights and start animations
                 animationGroups.forEach((group, index) => {
                     if (group && weights[index] > 0) {
+                        // First, perform a final check for null targets
+                        if (group.targetedAnimations) {
+                            // Check if we still have null targets and filter them out
+                            const validAnims = group.targetedAnimations.filter(anim => anim.target !== null);
+                            if (validAnims.length < group.targetedAnimations.length) {
+                                console.log(`Removing ${group.targetedAnimations.length - validAnims.length} null targets from ${group.name} during playback`);
+                                group.targetedAnimations = validAnims;
+                            }
+                        }
+                        
                         // Enable blending
                         if (typeof group.enableBlending === 'function') {
                             console.log(`Enabling blending for ${group.name} with speed ${blendingSpeed}`);
@@ -538,29 +544,31 @@
                             console.warn(`Group ${group.name} does not have enableBlending function`);
                         }
                         
-                        // Set weight
-                        console.log(`Setting weight ${weights[index]} for ${group.name}`);
-                        group.setWeightForAllAnimatables(weights[index]);
-                        
-                        // Verify targets before playing
-                        if (group.targetedAnimations.length === 0) {
-                            console.warn(`Animation group ${group.name} has no targeted animations!`);
-                        } else {
+                        // Only continue if we have valid targeted animations
+                        if (group.targetedAnimations && group.targetedAnimations.length > 0) {
+                            // Set weight
+                            console.log(`Setting weight ${weights[index]} for ${group.name}`);
+                            group.setWeightForAllAnimatables(weights[index]);
+                            
+                            // Verify targets before playing
                             console.log(`${group.name} has ${group.targetedAnimations.length} targeted animations`);
-                        }
-                        
-                        // Log targeted animations
-                        group.targetedAnimations.forEach((targetedAnim, idx) => {
-                            if (!targetedAnim.target) {
-                                console.error(`Target is null for animation ${idx} in group ${group.name}`);
-                            } else {
+                            
+                            // Only log the first 10 targets to avoid console spam
+                            const logLimit = 10;
+                            group.targetedAnimations.slice(0, logLimit).forEach((targetedAnim, idx) => {
                                 console.log(`Target ${idx}: ${targetedAnim.target.name || 'unnamed'}, property: ${targetedAnim.animation.targetProperty}`);
+                            });
+                            
+                            if (group.targetedAnimations.length > logLimit) {
+                                console.log(`... and ${group.targetedAnimations.length - logLimit} more targets (not shown)`);
                             }
-                        });
-                        
-                        // Start animation
-                        console.log(`Playing animation: ${group.name}, from: ${group.from}, to: ${group.to}`);
-                        group.play(true); // Loop
+                            
+                            // Start animation
+                            console.log(`Playing animation: ${group.name}, from: ${group.from}, to: ${group.to}, with ${group.targetedAnimations.length} targets`);
+                            group.play(true); // Loop
+                        } else {
+                            console.warn(`Cannot play ${group.name} because it has no targeted animations`);
+                        }
                     }
                 });
                 
